@@ -1,4 +1,4 @@
-package lying.fengfeng.foodrecords.ui.compose
+package lying.fengfeng.foodrecords.ui.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
