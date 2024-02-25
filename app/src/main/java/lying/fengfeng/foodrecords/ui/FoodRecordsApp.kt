@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -20,9 +22,7 @@ fun FoodRecordsApp() {
 
     val viewModel: HomeViewModel = viewModel()
 
-    val showDialog = remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
     val navController = rememberNavController()
 
@@ -35,8 +35,9 @@ fun FoodRecordsApp() {
                 FoodRecordsBottomBar(
                     navController = navController,
                     fabOnClick = {
-                    viewModel.updateList(888)
-                })
+                        showDialog = true
+                        viewModel.updateList(888)
+                    })
             }
         ) { paddingValues ->
             FoodRecordsNavHost(
@@ -46,9 +47,9 @@ fun FoodRecordsApp() {
                     .fillMaxSize()
             )
 
-            if (showDialog.value) {
+            if (showDialog) {
                 InsertionDialog {
-                    showDialog.value = false
+                    showDialog = false
                 }
             }
         }
