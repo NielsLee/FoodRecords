@@ -1,14 +1,15 @@
 package lying.fengfeng.foodrecords.ui.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -80,6 +82,9 @@ object InsertionDialogCompose {
     @Composable
     fun InsertionDialog(onDismiss: () -> Unit) {
 
+        val configuration = LocalConfiguration.current
+        var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)}
+
         var typeSelectionExpanded by remember { mutableStateOf(false) }
         var selectedTypeText by remember { mutableStateOf(foodTypes[0]) }
 
@@ -104,7 +109,10 @@ object InsertionDialogCompose {
                 modifier = Modifier
                     .padding(20.dp)
                     .wrapContentHeight()
-                    .fillMaxWidth()
+                    .wrapContentWidth()
+                    .aspectRatio(
+                        1f / 1f
+                    )
 
             ) {
                 Text(
@@ -128,26 +136,33 @@ object InsertionDialogCompose {
                     ) {
 
                         // 名称
-                        OutlinedTextField(
-                            value = foodName,
-                            onValueChange = { newText ->
-                                foodName = newText
-                            },
-                            label = { Text("Name") },
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .focusRequester(focusRequester)
-                                .onFocusChanged {
+                                .weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = foodName,
+                                onValueChange = { newText ->
+                                    foodName = newText
                                 },
-                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-                        )
+                                label = { Text("Name") },
+                                modifier = Modifier
+                                    .focusRequester(focusRequester)
+                                    .onFocusChanged {
+                                    },
+                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                            )
+                        }
 
                         LaunchedEffect(Unit) {
                             focusRequester.requestFocus()
                         }
 
                         // 生产日期
-                        Box {
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
                             OutlinedTextField(
                                 readOnly = false,
                                 value = date,
@@ -210,6 +225,7 @@ object InsertionDialogCompose {
                             onExpandedChange = { typeSelectionExpanded = !typeSelectionExpanded },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .weight(1f)
 
                         ) {
                             OutlinedTextField(
@@ -258,6 +274,7 @@ object InsertionDialogCompose {
                             onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .weight(1f)
                         ) {
                             OutlinedTextField(
                                 readOnly = true,
@@ -299,18 +316,22 @@ object InsertionDialogCompose {
                     }
 
                     Column(
-                        modifier = Modifier.weight(1f).padding(10.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(10.dp)
                     ) {
 
                         OutlinedCard(
-                            modifier = Modifier.height(80.dp).fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(3f / 4f)
                         ) {
 
                         }
                         Row {
                             IconButton(
                                 onClick = { /*TODO*/ },
-                                modifier = Modifier.size(80.dp)
+//                                modifier = Modifier.size(80.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.icsvg_camera),
@@ -319,7 +340,7 @@ object InsertionDialogCompose {
                             }
                             IconButton(
                                 onClick = { /*TODO*/ },
-                                modifier = Modifier.size(80.dp)
+//                                modifier = Modifier.size(80.dp)
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.icsvg_album),

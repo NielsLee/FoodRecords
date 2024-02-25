@@ -3,6 +3,7 @@ package lying.fengfeng.foodrecords
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -37,6 +38,8 @@ import lying.fengfeng.foodrecords.ui.theme.FoodRecordsTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val TAG = "MainActivity"
+        enableEdgeToEdge()
         setContent {
             MyApp()
         }
@@ -118,10 +121,11 @@ fun MyApp() {
                         ) {
                             Icon(Icons.Filled.Add, "Localized description")
                         }
-                    }
+                    },
+                    modifier = Modifier
+                        .padding(0.dp)
                 )
             }
-
         ) { paddingValues ->
 
             when(selectedScreen.value) {
