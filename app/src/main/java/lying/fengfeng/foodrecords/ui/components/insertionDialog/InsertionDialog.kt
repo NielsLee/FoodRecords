@@ -1,4 +1,4 @@
-package lying.fengfeng.foodrecords.ui.components
+package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -42,7 +43,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -51,9 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 
@@ -75,10 +76,16 @@ object TempData {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsertionDialog(onDismiss: () -> Unit) {
+fun InsertionDialog() {
 
     val configuration = LocalConfiguration.current
-    var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)}
+    val mContext = LocalContext.current
+
+    val dialogViewModel: InsertionDialogViewModel = viewModel()
+    var isDialogShown by remember { dialogViewModel.isDialogShown }
+    var isPreviewing by remember { dialogViewModel.isPreviewing }
+
+    var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
 
     var typeSelectionExpanded by remember { mutableStateOf(false) }
     var selectedTypeText by remember { mutableStateOf(TempData.foodTypes[0]) }
@@ -86,23 +93,29 @@ fun InsertionDialog(onDismiss: () -> Unit) {
     var shelfLifeExpanded by remember { mutableStateOf(false) }
     var shelfLifeValue by remember { mutableStateOf(TempData.shelfLifeList[0]) }
 
-    var foodName by remember { mutableStateOf("foodNameValue") }
+    var foodName by remember { mutableStateOf("FoodName") }
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = todayMillis())
     var openDialog by remember { mutableStateOf(false) }
-    var date by remember { mutableStateOf(dateWithFormat(todayMillis(), "YYYY-mm-dd")) }
+    var date by remember { mutableStateOf(dateWithFormat(todayMillis(), "YYYY-MM-dd")) }
 
     val focusRequester = remember { FocusRequester() }
 
     Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = {
+            isDialogShown = false
+            isPreviewing = false
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnClickOutside = false
+        ),
     ) {
         Card(
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(4.dp),
             modifier = Modifier
-                .padding(20.dp)
+                .padding(12.dp)
                 .wrapContentHeight()
                 .wrapContentWidth()
                 .aspectRatio(
@@ -126,7 +139,7 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(10.dp),
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
 
@@ -143,6 +156,7 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                             },
                             label = { Text("Name") },
                             modifier = Modifier
+                                .fillMaxWidth()
                                 .focusRequester(focusRequester)
                                 .onFocusChanged {
                                 },
@@ -190,7 +204,7 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                                         onClick = {
                                             openDialog = false
                                             datePickerState.selectedDateMillis?.also {
-                                                date = dateWithFormat(it, "YYYY-mm-dd")
+                                                date = dateWithFormat(it, "YYYY-MM-dd")
                                             }
                                         },
                                     ) {
@@ -205,7 +219,10 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                                     ) {
                                         Text("Cancel")
                                     }
-                                }
+                                },
+                                properties = DialogProperties(
+                                    dismissOnClickOutside = false
+                                ),
                             ) {
 
                                 DatePicker(state = datePickerState)
@@ -313,7 +330,7 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(10.dp)
+                        .padding(8.dp)
                 ) {
 
                     OutlinedCard(
@@ -321,28 +338,41 @@ fun InsertionDialog(onDismiss: () -> Unit) {
                             .fillMaxWidth()
                             .aspectRatio(3f / 4f)
                     ) {
+                        FoodPreview(mContext)
+                    }
 
-                    }
-                    Row {
-                        IconButton(
-                            onClick = { /*TODO*/ },
-//                                modifier = Modifier.size(80.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icsvg_camera),
-                                contentDescription = null,
-                            )
-                        }
-                        IconButton(
-                            onClick = { /*TODO*/ },
-//                                modifier = Modifier.size(80.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icsvg_album),
-                                contentDescription = null,
-                            )
-                        }
-                    }
+//                    Row(
+//                        modifier = Modifier.fillMaxHeight(),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        IconButton(
+//                            onClick = { /*TODO*/ },
+//                            modifier = Modifier
+//                                .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
+//                        ) {
+//                            Icon(
+//                                Icons.Filled.Close,
+//                                contentDescription = null,
+//                            )
+//                        }
+//
+//                        Spacer(Modifier.weight(1f))
+//
+//                        IconButton(
+//                            onClick = { /*TODO*/ },
+//                            modifier = Modifier
+//                                .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
+//                        ) {
+//                            Icon(
+//                                Icons.Filled.Check,
+//                                contentDescription = null,
+//                            )
+//                        }
+//                    }
+
+                    IconButtonRow(
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }
