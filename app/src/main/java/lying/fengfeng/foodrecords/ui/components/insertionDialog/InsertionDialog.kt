@@ -53,26 +53,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
-
-object TempData {
-
-    val foodTypes = listOf("CXK", "FCC", "CLN", "MJQ")
-    var shelfLifeList = listOf(
-        "1Day",
-        "1Day",
-        "1Day",
-        "7Days",
-        "15Days",
-        "30Days",
-        "60Days",
-        "90Days",
-        "180Days"
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,22 +69,26 @@ fun InsertionDialog() {
     val dialogViewModel: InsertionDialogViewModel = viewModel()
     var isDialogShown by remember { dialogViewModel.isDialogShown }
     var isPreviewing by remember { dialogViewModel.isPreviewing }
+    var isCaptured by remember { dialogViewModel.isCaptured }
 
     var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
 
     var typeSelectionExpanded by remember { mutableStateOf(false) }
-    var selectedTypeText by remember { mutableStateOf(TempData.foodTypes[0]) }
 
     var shelfLifeExpanded by remember { mutableStateOf(false) }
-    var shelfLifeValue by remember { mutableStateOf(TempData.shelfLifeList[0]) }
 
-    var foodName by remember { mutableStateOf("FoodName") }
+    var foodName by remember { dialogViewModel.foodName }
+    var productionDate by remember { dialogViewModel.productionDate }
+    var foodType by remember { dialogViewModel.foodType }
+    var shelfLife by remember { dialogViewModel.shelfLife }
 
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = todayMillis())
     var openDialog by remember { mutableStateOf(false) }
-    var date by remember { mutableStateOf(dateWithFormat(todayMillis(), "YYYY-MM-dd")) }
 
     val focusRequester = remember { FocusRequester() }
+    val cameraState = rememberCameraState()
+
+    isCaptured = false
 
     Dialog(
         onDismissRequest = {
@@ -174,9 +163,9 @@ fun InsertionDialog() {
                     ) {
                         OutlinedTextField(
                             readOnly = false,
-                            value = date,
+                            value = productionDate,
                             onValueChange = { newValue ->
-                                date = newValue
+                                productionDate = newValue
                             },
                             label = { Text("Select Date") },
                             trailingIcon = {
@@ -204,7 +193,7 @@ fun InsertionDialog() {
                                         onClick = {
                                             openDialog = false
                                             datePickerState.selectedDateMillis?.also {
-                                                date = dateWithFormat(it, "YYYY-MM-dd")
+                                                productionDate = dateWithFormat(it, "YYYY-MM-dd")
                                             }
                                         },
                                     ) {
@@ -242,7 +231,7 @@ fun InsertionDialog() {
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = selectedTypeText,
+                            value = foodType,
                             onValueChange = { },
                             label = { Text("Type") },
                             trailingIcon = {
@@ -266,10 +255,10 @@ fun InsertionDialog() {
 
                         ) {
 
-                            TempData.foodTypes.forEach { selectionOption ->
+                            InsertionDialogViewModel.TempData.foodTypes.forEach { selectionOption ->
                                 DropdownMenuItem(
                                     onClick = {
-                                        selectedTypeText = selectionOption
+                                        foodType = selectionOption
                                         typeSelectionExpanded = false
                                     },
                                     text = {
@@ -290,7 +279,7 @@ fun InsertionDialog() {
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = shelfLifeValue,
+                            value = shelfLife,
                             onValueChange = { },
                             label = { Text("Shelf Life") },
                             trailingIcon = {
@@ -312,10 +301,10 @@ fun InsertionDialog() {
                             modifier = Modifier.exposedDropdownSize(),
                         ) {
 
-                            TempData.shelfLifeList.forEach { selectionOption ->
+                            InsertionDialogViewModel.TempData.shelfLifeList.forEach { selectionOption ->
                                 DropdownMenuItem(
                                     onClick = {
-                                        shelfLifeValue = selectionOption
+                                        shelfLife = selectionOption
                                         shelfLifeExpanded = false
                                     },
                                     text = {
@@ -331,6 +320,7 @@ fun InsertionDialog() {
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
+                        .padding(top = 8.dp)
                 ) {
 
                     OutlinedCard(
@@ -338,40 +328,14 @@ fun InsertionDialog() {
                             .fillMaxWidth()
                             .aspectRatio(3f / 4f)
                     ) {
-                        FoodPreview(mContext)
+                        FoodPreview(mContext, cameraState)
                     }
 
-//                    Row(
-//                        modifier = Modifier.fillMaxHeight(),
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        IconButton(
-//                            onClick = { /*TODO*/ },
-//                            modifier = Modifier
-//                                .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
-//                        ) {
-//                            Icon(
-//                                Icons.Filled.Close,
-//                                contentDescription = null,
-//                            )
-//                        }
-//
-//                        Spacer(Modifier.weight(1f))
-//
-//                        IconButton(
-//                            onClick = { /*TODO*/ },
-//                            modifier = Modifier
-//                                .border(width = 1.dp, color = Color.Gray, shape = CircleShape)
-//                        ) {
-//                            Icon(
-//                                Icons.Filled.Check,
-//                                contentDescription = null,
-//                            )
-//                        }
-//                    }
-
                     IconButtonRow(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 4.dp),
+                        cameraState
                     )
                 }
             }

@@ -4,6 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.util.Size
+import androidx.camera.view.CameraController
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -17,44 +21,67 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
+import com.ujizin.camposer.state.CameraState
+import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.rememberCamSelector
-import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.utils.ImageUtil
 
 @Composable
 fun FoodPreview(
-    mContext: Context
+    context: Context,
+    cameraState: CameraState
 ) {
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val cameraState = rememberCameraState()
     val camSelector by rememberCamSelector(CamSelector.Back)
     var cameraPermissionGranted by remember { mutableStateOf(false) }
+    val isCaptured by remember { dialogViewModel.isCaptured }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         if (cameraPermissionGranted) {
-            CameraPreview(
-                cameraState = cameraState,
-                camSelector = camSelector,
-                modifier = Modifier.fillMaxSize(),
-                isFocusOnTapEnabled = false
-            ) {
+            if (!isCaptured) {
+                CameraPreview(
+                    cameraState = cameraState,
+                    camSelector = camSelector,
+                    modifier = Modifier.fillMaxSize(),
+                    isFocusOnTapEnabled = false,
+                    imageCaptureTargetSize = ImageTargetSize(
+                        outputSize = CameraController.OutputSize(Size(480, 640)))
+                ) {
 
+                }
+            } else {
+                val picturePath = FoodInfoRepo.getAbsolutePictureDir() + dialogViewModel.pictureUUID.value
+                val bitmap = BitmapFactory.decodeFile(picturePath)
+                val rotate = ImageUtil.getImageOrientation(picturePath)
+                val imageBitmap = bitmap.asImageBitmap()
+                val painter = BitmapPainter(imageBitmap)
+
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize().rotate(rotate.toFloat())
+                )
             }
         } else {
             IconButton(
                 onClick = {
                     MainScope().launch {
                         val permission = ContextCompat.checkSelfPermission(
-                            mContext,
+                            context,
                             Manifest.permission.CAMERA
                         )
                         if (permission == PackageManager.PERMISSION_GRANTED) {
@@ -62,7 +89,7 @@ fun FoodPreview(
                             dialogViewModel.isPreviewing.value = true
                         } else {
                             ActivityCompat.requestPermissions(
-                                mContext as Activity,
+                                context as Activity,
                                 arrayOf(Manifest.permission.CAMERA),
                                 888
                             )

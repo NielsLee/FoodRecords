@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import android.util.Log
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
@@ -27,14 +28,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ujizin.camposer.state.CameraState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import java.io.File
+import java.util.UUID
 
 @Composable
 fun IconButtonRow(
-    modifier: Modifier
+    modifier: Modifier,
+    cameraState: CameraState
 ) {
+    val pictureUUID = UUID.randomUUID().toString()
     val dialogViewModel: InsertionDialogViewModel = viewModel()
 
     var isPreviewing by remember { dialogViewModel.isPreviewing }
+    var isCaptured by remember { dialogViewModel.isCaptured }
     var showDialog by remember { dialogViewModel.isDialogShown }
 
     val buttonsExpanded = updateTransition(!isPreviewing, label = "IconButtonsTransition")
@@ -144,7 +155,14 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
-
+                    val foodInfo = FoodInfo(
+                        dialogViewModel.foodName.value,
+                        dialogViewModel.productionDate.value,
+                        dialogViewModel.foodType.value,
+                        dialogViewModel.shelfLife.value,
+                        pictureUUID
+                    )
+                    Log.d("LLF", "IconButtonRow: $foodInfo")
                 },
                 modifier = Modifier
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }
@@ -157,7 +175,12 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
-                    //TODO: take a photo
+                    val file = File(FoodInfoRepo.getAbsolutePictureDir() + pictureUUID)
+                    dialogViewModel.pictureUUID.value = pictureUUID
+                    cameraState.takePicture(file) {
+                        Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")
+                        isCaptured = true
+                    }
                     isPreviewing = false
                 },
                 modifier = Modifier
