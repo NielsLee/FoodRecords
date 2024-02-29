@@ -29,8 +29,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.CameraState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import java.io.File
@@ -44,76 +42,56 @@ fun IconButtonRow(
     val pictureUUID = UUID.randomUUID().toString()
     val dialogViewModel: InsertionDialogViewModel = viewModel()
 
-    var isPreviewing by remember { dialogViewModel.isPreviewing }
-    var isCaptured by remember { dialogViewModel.isCaptured }
     var showDialog by remember { dialogViewModel.isDialogShown }
+    var cameraStatus by remember { dialogViewModel.cameraStatus }
 
-    val buttonsExpanded = updateTransition(!isPreviewing, label = "IconButtonsTransition")
+    val buttonsContracted = updateTransition(cameraStatus, label = "IconButtonsContracted")
 
-    val offsetXLeft by buttonsExpanded.animateDp(
+    val offsetXLeft by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {
-            if (targetState) {
+            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+                keyframes {
+                    durationMillis = 300
+                    (-54).dp at 0
+                    0.dp at 150
+
+                }
+            } else {
                 keyframes {
                     durationMillis = 300
                     0.dp at 0
                     (-54).dp at 150
                 }
-            } else {
-                keyframes {
-                    durationMillis = 300
-                    (-54).dp at 0
-                    0.dp at 150
-                }
             }
-    }) { expanded ->
-        if (expanded) (-54).dp else 0.dp
+    }) { status ->
+        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else (-54).dp
     }
 
-    val offsetXRight by buttonsExpanded.animateDp(
+    val offsetXRight by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {
-            if (targetState) {
-                keyframes {
-                    durationMillis = 300
-                    0.dp at 0
-                    54.dp at 150
-                }
-            } else {
+            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     54.dp at 0
                     0.dp at 150
                 }
+            } else {
+                keyframes {
+                    durationMillis = 300
+                    0.dp at 0
+                    54.dp at 150
+                }
             }
         }
-    ) { expanded ->
-        if (expanded) 54.dp else 0.dp
+    ) { status ->
+        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else 54.dp
     }
 
-    val edgeButtonAlpha by buttonsExpanded.animateFloat(
+    val edgeButtonAlpha by buttonsContracted.animateFloat(
         transitionSpec = {
-            if (targetState) {
-                keyframes {
-                    durationMillis = 300
-                    0f at 0
-                    1f at 300
-                }
-            } else {
-                keyframes {
-                    durationMillis = 300
-                    1f at 0
-                    0f at 300
-                }
-            }
-        }, label = ""
-    ) {
-        if (it) 1f else 0f
-    }
-
-    val centerButtonAlpha by buttonsExpanded.animateFloat(
-        transitionSpec = {
-            if (targetState) {
+            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     1f at 0
@@ -127,8 +105,28 @@ fun IconButtonRow(
                 }
             }
         }, label = ""
-    ) {
-        if (it) 0f else 1f
+    ) { status ->
+        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0f else 1f
+    }
+
+    val centerButtonAlpha by buttonsContracted.animateFloat(
+        transitionSpec = {
+            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+                keyframes {
+                    durationMillis = 300
+                    0f at 0
+                    1f at 300
+                }
+            } else {
+                keyframes {
+                    durationMillis = 300
+                    1f at 0
+                    0f at 300
+                }
+            }
+        }, label = ""
+    ) { status ->
+        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 1f else 0f
     }
 
     Row(
@@ -148,7 +146,7 @@ fun IconButtonRow(
                     .offset { IntOffset(offsetXLeft.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
                     .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = !isPreviewing
+                enabled = (cameraStatus != InsertionDialogViewModel.CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Close, contentDescription = null)
             }
@@ -168,7 +166,7 @@ fun IconButtonRow(
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
                     .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = !isPreviewing
+                enabled = (cameraStatus != InsertionDialogViewModel.CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
@@ -179,14 +177,13 @@ fun IconButtonRow(
                     dialogViewModel.pictureUUID.value = pictureUUID
                     cameraState.takePicture(file) {
                         Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")
-                        isCaptured = true
+                        cameraStatus = InsertionDialogViewModel.CameraStatus.IMAGE_READY
                     }
-                    isPreviewing = false
                 },
                 modifier = Modifier
                     .alpha(centerButtonAlpha)
                     .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = isPreviewing
+                enabled = (cameraStatus == InsertionDialogViewModel.CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Camera, contentDescription = null)
             }

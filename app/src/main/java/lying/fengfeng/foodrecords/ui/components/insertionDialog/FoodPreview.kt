@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.util.Log
 import android.util.Size
 import androidx.camera.view.CameraController
 import androidx.compose.foundation.Image
@@ -52,43 +53,64 @@ fun FoodPreview(
     val dialogViewModel: InsertionDialogViewModel = viewModel()
     val camSelector by rememberCamSelector(CamSelector.Back)
     var cameraPermissionGranted by remember { mutableStateOf(false) }
-    val isCaptured by remember { dialogViewModel.isCaptured }
+    var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         if (cameraPermissionGranted) {
-            if (!isCaptured) {
-                CameraPreview(
-                    cameraState = cameraState,
-                    camSelector = camSelector,
-                    modifier = Modifier.fillMaxSize(),
-                    isFocusOnTapEnabled = false,
-                    imageCaptureTargetSize = ImageTargetSize(
-                        outputSize = CameraController.OutputSize(Size(480, 640)))
-                ) {
-
-                }
-            } else {
-                val picturePath = FoodInfoRepo.getAbsolutePictureDir() + dialogViewModel.pictureUUID.value
-                var bitmap by remember { mutableStateOf(createBitmap()) }
-                val imageBitmap = bitmap.asImageBitmap()
-                val painter = BitmapPainter(imageBitmap)
-
-                LaunchedEffect(Unit) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        bitmap = Glide.with(context).asBitmap().load(picturePath)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
-                            .submit().get()
+            when(cameraStatus) {
+                InsertionDialogViewModel.CameraStatus.IDLE -> {
+                    Log.d("LLF", "FoodPreview: status IDLE")
+                    IconButton(
+                        onClick = {
+                            cameraStatus = InsertionDialogViewModel.CameraStatus.PREVIEWING
+                        },
+                        Modifier.fillMaxSize()
+                    ) {
+                        Icon(Icons.Filled.CameraAlt, null)
                     }
                 }
+                InsertionDialogViewModel.CameraStatus.PREVIEWING -> {
+                    Log.d("LLF", "FoodPreview: status PREVIEWING")
 
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
-                )
+                    CameraPreview(
+                        cameraState = cameraState,
+                        camSelector = camSelector,
+                        modifier = Modifier.fillMaxSize(),
+                        isFocusOnTapEnabled = false,
+                        imageCaptureTargetSize = ImageTargetSize(
+                            outputSize = CameraController.OutputSize(Size(480, 640)))
+                    ) {
+
+                    }
+                }
+                InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
+                    Log.d("LLF", "FoodPreview: status READY")
+
+                    val picturePath = FoodInfoRepo.getAbsolutePictureDir() + dialogViewModel.pictureUUID.value
+                    var bitmap by remember { mutableStateOf(createBitmap()) }
+                    val imageBitmap = bitmap.asImageBitmap()
+                    val painter = BitmapPainter(imageBitmap)
+
+                    LaunchedEffect(Unit) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            bitmap = Glide.with(context).asBitmap().load(picturePath)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+                                .submit().get()
+                        }
+                    }
+
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                else -> {
+                    Log.d("LLF", "FoodPreview: status ELSE")
+                }
             }
         } else {
             IconButton(
@@ -100,7 +122,7 @@ fun FoodPreview(
                         )
                         if (permission == PackageManager.PERMISSION_GRANTED) {
                             cameraPermissionGranted = true
-                            dialogViewModel.isPreviewing.value = true
+                            cameraStatus = InsertionDialogViewModel.CameraStatus.PREVIEWING
                         } else {
                             ActivityCompat.requestPermissions(
                                 context as Activity,

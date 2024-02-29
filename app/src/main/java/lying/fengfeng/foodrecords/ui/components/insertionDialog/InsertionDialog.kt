@@ -68,8 +68,7 @@ fun InsertionDialog() {
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
     var isDialogShown by remember { dialogViewModel.isDialogShown }
-    var isPreviewing by remember { dialogViewModel.isPreviewing }
-    var isCaptured by remember { dialogViewModel.isCaptured }
+    var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
 
@@ -88,12 +87,12 @@ fun InsertionDialog() {
     val focusRequester = remember { FocusRequester() }
     val cameraState = rememberCameraState()
 
-    isCaptured = false
+    cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
 
     Dialog(
         onDismissRequest = {
             isDialogShown = false
-            isPreviewing = false
+            cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
         },
         properties = DialogProperties(
             usePlatformDefaultWidth = false,

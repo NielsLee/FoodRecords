@@ -7,8 +7,7 @@ import lying.fengfeng.foodrecords.utils.DateUtil
 class InsertionDialogViewModel: ViewModel() {
 
     var isDialogShown = mutableStateOf(false)
-    var isPreviewing = mutableStateOf(false)
-    var isCaptured = mutableStateOf(false)
+    var cameraStatus = mutableStateOf(CameraStatus.IDLE)
 
     var foodName = mutableStateOf("FoodName")
     var productionDate = mutableStateOf(
@@ -35,5 +34,12 @@ class InsertionDialogViewModel: ViewModel() {
             "90Days",
             "180Days"
         )
+    }
+
+    enum class CameraStatus {
+        IDLE,
+        PREVIEWING,
+        CAPTURED,
+        IMAGE_READY
     }
 }
