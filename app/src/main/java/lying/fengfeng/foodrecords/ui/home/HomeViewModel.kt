@@ -1,17 +1,18 @@
 package lying.fengfeng.foodrecords.ui.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import lying.fengfeng.foodrecords.entities.FoodInfo
 
 
 class HomeViewModel: ViewModel() {
 
-    var intList = mutableStateListOf<Int>()
+    var foodInfoList = mutableStateOf(listOf(FoodInfo("FoodName1", "2022-02-02", "CXasdfasdfasdfasdfaK", "7dayfs", "uuid"),
+    ))
 
-    fun updateList(value: Int) {
-        intList.add(value)
+    fun updateList(value: FoodInfo) {
+        Log.d("LLF", "updateList: ")
+        foodInfoList.value = foodInfoList.value.toMutableList().apply { add(value) }
     }
 }
