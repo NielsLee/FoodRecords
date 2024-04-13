@@ -12,7 +12,6 @@ class HomeViewModel: ViewModel() {
     ))
 
     fun updateList(value: FoodInfo) {
-        Log.d("LLF", "updateList: ")
         foodInfoList.value = foodInfoList.value.toMutableList().apply { add(value) }
     }
 }

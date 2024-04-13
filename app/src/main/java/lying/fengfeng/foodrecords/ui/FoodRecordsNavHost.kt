@@ -17,7 +17,7 @@ fun FoodRecordsNavHost(
     modifier: Modifier = Modifier
 ) {
 
-    val viewModel: HomeViewModel = viewModel()
+    val homeViewModel: HomeViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -25,7 +25,7 @@ fun FoodRecordsNavHost(
         modifier = modifier
     ) {
         composable("home") {
-            HomeScreen(viewModel = viewModel)
+            HomeScreen(homeViewModel)
         }
         composable("list") {
             ListScreen()
