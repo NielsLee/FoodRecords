@@ -14,4 +14,8 @@ class HomeViewModel: ViewModel() {
     fun updateList(value: FoodInfo) {
         foodInfoList.value = foodInfoList.value.toMutableList().apply { add(value) }
     }
+
+    fun updateList(list: List<FoodInfo>) {
+        foodInfoList.value = list
+    }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDownCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -32,11 +32,13 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 
 @Composable
-@Preview
 fun FoodInfoCard(
     @PreviewParameter(provider = FoodNamePreviewProvider::class)
     foodInfo: FoodInfo,
-    modifier: Modifier = Modifier.width(300.dp).height(400.dp)
+    modifier: Modifier = Modifier
+        .width(300.dp)
+        .height(400.dp),
+    onDestroy: (() -> Unit)
 ) {
     Card(
         modifier = modifier
@@ -106,6 +108,12 @@ fun FoodInfoCard(
                 ) {
                     Icon(Icons.Filled.ArrowDropDownCircle, null, modifier = Modifier.size(64.dp))
                 }
+            }
+
+            IconButton(onClick = {
+                onDestroy.invoke()
+            }) {
+                Icon(Icons.Filled.Delete, null, modifier = Modifier.size(64.dp))
             }
         }
     }

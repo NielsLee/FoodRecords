@@ -161,6 +161,8 @@ fun IconButtonRow(
                         pictureUUID
                     )
                     Log.d("LLF", "IconButtonRow: $foodInfo")
+                    FoodInfoRepo.insert(foodInfo)
+                    showDialog = false
                 },
                 modifier = Modifier
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }

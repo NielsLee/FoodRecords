@@ -4,13 +4,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
@@ -39,6 +45,18 @@ fun FoodRecordsApp() {
 
     var foodInfoIndex = 0
 
+    LaunchedEffect(showDialog) {
+        if (!showDialog) {
+            // 更新列表
+            MainScope().launch {
+                val newList = withContext(Dispatchers.IO) {
+                    FoodInfoRepo.getAll()
+                }
+                homeViewModel.updateList(newList)
+            }
+        }
+    }
+
     FoodRecordsTheme {
         Scaffold(
             topBar = {
@@ -48,8 +66,8 @@ fun FoodRecordsApp() {
                 FoodRecordsBottomBar(
                     navController = navController,
                     fabOnClick = {
-//                        showDialog = true
-                        homeViewModel.updateList(foodInfoList[foodInfoIndex++])
+                        showDialog = true
+//                        homeViewModel.updateList(foodInfoList[foodInfoIndex++])
                     })
             }
         ) { paddingValues ->
