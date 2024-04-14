@@ -14,7 +14,7 @@ import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
 @Composable
 fun FoodRecordsNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
 
     val homeViewModel: HomeViewModel = viewModel()

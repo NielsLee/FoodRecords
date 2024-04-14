@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +42,10 @@ fun FoodInfoCard(
     onDestroy: (() -> Unit)
 ) {
     Card(
-        modifier = modifier
+        modifier = modifier.padding(5.dp).shadow(
+            elevation = 8.dp,
+            shape = RoundedCornerShape(12.dp),
+        )
     ) {
         Text(
             text = foodInfo.foodName,
