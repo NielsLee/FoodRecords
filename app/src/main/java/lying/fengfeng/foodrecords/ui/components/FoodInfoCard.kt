@@ -1,6 +1,7 @@
 package lying.fengfeng.foodrecords.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +49,7 @@ fun FoodInfoCard(
 
     Card(
         modifier = modifier
-            .padding(5.dp)
+            .padding(3.dp)
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(12.dp),
@@ -71,33 +74,20 @@ fun FoodInfoCard(
             val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
             val bitmap = ImageUtil.preProcessImage(foodPicturePath)
 
-            Image(
-                bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.6f)
                     .padding(start = 8.dp)
                     .clip(RoundedCornerShape(12.dp)),
-            )
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = DateUtil.getRemainingDays(foodInfo.productionDate, foodInfo.shelfLife)
-                        .let {
-                            if (it > 0) {
-                                it.toString()
-                            } else {
-                                mContext.getString(R.string.expired)
-                            }
-                        },
-                    modifier = Modifier,
-                    style = TextStyle(
-                        fontSize = 64.sp
-                    )
+                Image(
+                    bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
+
+            RemainingDaysWindow(productionDate = foodInfo.productionDate, shelfLife = foodInfo.shelfLife)
         }
 
         Row(
@@ -135,6 +125,73 @@ fun FoodInfoCard(
                 onDestroy.invoke()
             }) {
                 Icon(Icons.Filled.Delete, null, modifier = Modifier.size(64.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun RemainingDaysWindow(
+    productionDate: String,
+    shelfLife: String,
+) {
+    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife)
+    val mContext = LocalContext.current
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (remainingDays > 0) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .border(2.dp, Color.Green, shape = RoundedCornerShape(12.dp))
+                ) {
+                    Text(
+                        text = mContext.getString(R.string.best_before),
+                        modifier = Modifier.padding(4.dp),
+                        color = Color.Green,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Text(
+                    text = remainingDays.toString(),
+                    modifier = Modifier,
+                    style = TextStyle(
+                        fontSize = 48.sp,
+                        color = Color.Green
+                    )
+                )
+                Text(text = mContext.getString(R.string.shelf_life_day))
+            }
+        } else {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .border(2.dp, Color.Red, shape = RoundedCornerShape(12.dp))
+                ) {
+                    Text(
+                        text = mContext.getString(R.string.expired),
+                        modifier = Modifier.padding(4.dp),
+                        color = Color.Red,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Text(
+                    text = (-remainingDays).toString(),
+                    modifier = Modifier,
+                    style = TextStyle(
+                        fontSize = 48.sp,
+                        color = Color.Red
+                    )
+                )
+                
+                Text(text = mContext.getString(R.string.shelf_life_day))
             }
         }
     }

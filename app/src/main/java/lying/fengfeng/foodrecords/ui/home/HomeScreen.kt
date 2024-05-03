@@ -1,11 +1,13 @@
 package lying.fengfeng.foodrecords.ui.home
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ fun HomeScreen(
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
+        contentPadding = PaddingValues(3.dp)
     ) {
         items(foodInfoList.size) { index ->
             FoodInfoCard(foodInfo = foodInfoList[index], modifier = Modifier) {

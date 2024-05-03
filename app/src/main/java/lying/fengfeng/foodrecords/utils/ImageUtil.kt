@@ -2,11 +2,9 @@ package lying.fengfeng.foodrecords.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Matrix
-import androidx.compose.ui.graphics.toArgb
 import androidx.exifinterface.media.ExifInterface
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import java.io.FileNotFoundException
 
 
@@ -45,13 +43,8 @@ object ImageUtil {
                 )
             }
         } catch (e: FileNotFoundException) {
-            val bitmap = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            val paint = android.graphics.Paint().apply {
-                color = Color.argb(127, androidx.compose.ui.graphics.Color.Black.toArgb(), androidx.compose.ui.graphics.Color.Black.toArgb(), androidx.compose.ui.graphics.Color.Black.toArgb())
-            }
-            canvas.drawRect(0f, 0f, 300f, 400f, paint)
-            return bitmap
+//            // TODO 将拍照缓存阶段的缓冲图片和空图片的预览图片分开
+            return createBitmap()
         }
     }
 }

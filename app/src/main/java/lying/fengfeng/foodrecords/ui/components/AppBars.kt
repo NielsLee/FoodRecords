@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.components
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
@@ -73,6 +72,6 @@ fun FoodRecordsBottomBar(
                 Icon(Icons.Filled.Add, "Localized description")
             }
         },
-        modifier = Modifier.padding(0.dp)
+        modifier = Modifier
     )
 }

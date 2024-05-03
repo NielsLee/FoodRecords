@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">食材記錄</string>
-    <string name="shelf_life_day">日</string>
-    <string name="title_add_new">添加一條新的食物！</string>
+    <string name="shelf_life_day">天</string>
+    <string name="title_add_new">添加新食物！</string>
     <string name="title_production_date">生產日期</string>
     <string name="title_type">種類</string>
     <string name="title_shelf_life">保質期</string>
     <string name="title_name">名稱</string>
-    <string name="expired">過期了</string>
+    <string name="expired">過期</string>
+    <string name="best_before">保質</string>
 </resources>

@@ -147,12 +147,12 @@ fun FoodPreview(
 
 fun createBitmap(): Bitmap {
 
-    val bitmap = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888)
+    val bitmap = Bitmap.createBitmap(1200, 1600, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val paint = android.graphics.Paint().apply {
         color = Color.argb(127, Black.toArgb(), Black.toArgb(), Black.toArgb())
     }
-    canvas.drawRect(0f, 0f, 300f, 400f, paint)
+    canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
 
     return bitmap
 }
