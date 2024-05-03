@@ -4,10 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,22 +29,26 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
+import lying.fengfeng.foodrecords.utils.ImageUtil
 
 @Composable
 fun FoodInfoCard(
     @PreviewParameter(provider = FoodNamePreviewProvider::class)
     foodInfo: FoodInfo,
-    modifier: Modifier = Modifier
-        .width(300.dp)
-        .height(400.dp),
+    modifier: Modifier = Modifier,
     onDestroy: (() -> Unit)
 ) {
     Card(
-        modifier = modifier.padding(5.dp).shadow(
-            elevation = 8.dp,
-            shape = RoundedCornerShape(12.dp),
-        )
+        modifier = modifier
+//            .fillMaxWidth(0.5f)
+//            .fillMaxHeight(0.5f)
+            .padding(5.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(12.dp),
+            )
     ) {
         Text(
             text = foodInfo.foodName,
@@ -54,16 +57,20 @@ fun FoodInfoCard(
                 .padding(8.dp)
                 .align(Alignment.CenterHorizontally),
             style = TextStyle(
-                fontSize = 36.sp 
+                fontSize = 24.sp
             ),
             textAlign = TextAlign.Center
         )
 
         Row {
+            val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
+            val bitmap = ImageUtil.preProcessImage(foodPicturePath)
+
             Image(
-                bitmap = createBitmap().asImageBitmap(),
+                bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
+                    .fillMaxWidth(0.5f)
                     .padding(start = 8.dp, bottom = 8.dp)
                     .clip(RoundedCornerShape(12.dp)),
             )

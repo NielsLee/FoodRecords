@@ -20,8 +20,8 @@ object FoodInfoRepo {
         foodInfoDao = db.foodInfoDao()
     }
 
-    fun getAbsolutePictureDir(): String {
-        return app.filesDir.absolutePath + "/"
+    fun getPicturePath(uuid: String): String {
+        return app.filesDir.absolutePath + "/" + uuid
     }
 
     fun insert(foodInfo: FoodInfo) {

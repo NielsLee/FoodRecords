@@ -45,6 +45,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 
+/**
+ * 图片预览窗
+ */
 @Composable
 fun FoodPreview(
     context: Context,
@@ -89,15 +92,17 @@ fun FoodPreview(
                 InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
                     Log.d("LLF", "FoodPreview: status READY")
 
-                    val picturePath = FoodInfoRepo.getAbsolutePictureDir() + dialogViewModel.pictureUUID.value
+                    val picturePath = FoodInfoRepo.getPicturePath(dialogViewModel.pictureUUID.value)
                     var bitmap by remember { mutableStateOf(createBitmap()) }
                     val imageBitmap = bitmap.asImageBitmap()
                     val painter = BitmapPainter(imageBitmap)
 
                     LaunchedEffect(Unit) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            bitmap = Glide.with(context).asBitmap().load(picturePath)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+                            bitmap = Glide.with(context).asBitmap()
+                                .load(picturePath)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                .skipMemoryCache(true)
                                 .submit().get()
                         }
                     }

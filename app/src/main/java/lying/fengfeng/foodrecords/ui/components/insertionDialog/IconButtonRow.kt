@@ -32,14 +32,17 @@ import com.ujizin.camposer.state.CameraState
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import java.io.File
-import java.util.UUID
 
+/**
+ * 图片预览下方控制拍摄的按钮行
+ */
 @Composable
 fun IconButtonRow(
     modifier: Modifier,
-    cameraState: CameraState
+    cameraState: CameraState,
+    pictureUUID: String
 ) {
-    val pictureUUID = UUID.randomUUID().toString()
+
     val dialogViewModel: InsertionDialogViewModel = viewModel()
 
     var showDialog by remember { dialogViewModel.isDialogShown }
@@ -175,7 +178,7 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
-                    val file = File(FoodInfoRepo.getAbsolutePictureDir() + pictureUUID)
+                    val file = File(FoodInfoRepo.getPicturePath(pictureUUID))
                     dialogViewModel.pictureUUID.value = pictureUUID
                     cameraState.takePicture(file) {
                         Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")

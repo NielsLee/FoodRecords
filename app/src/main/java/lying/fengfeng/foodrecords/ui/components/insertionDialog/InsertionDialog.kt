@@ -58,10 +58,16 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
+import java.util.UUID
 
+/**
+ * 添加食物记录的弹窗
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertionDialog() {
+
+    val pictureUUID = UUID.randomUUID().toString()
 
     val configuration = LocalConfiguration.current
     val mContext = LocalContext.current
@@ -334,7 +340,8 @@ fun InsertionDialog() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(top = 4.dp),
-                        cameraState
+                        cameraState,
+                        pictureUUID
                     )
                 }
             }

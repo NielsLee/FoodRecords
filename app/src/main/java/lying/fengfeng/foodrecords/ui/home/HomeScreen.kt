@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
+import java.io.File
 
 @Composable
 fun HomeScreen(
@@ -29,6 +30,11 @@ fun HomeScreen(
                 CoroutineScope(Dispatchers.IO).launch {
                     FoodInfoRepo.remove(foodInfoList[index])
                     homeViewModel.updateList(FoodInfoRepo.getAll())
+                    File(FoodInfoRepo.getPicturePath(foodInfoList[index].pictureUUID)).also {
+                        if (it.exists()) {
+                            it.delete()
+                        }
+                    }
                 }
             }
         }

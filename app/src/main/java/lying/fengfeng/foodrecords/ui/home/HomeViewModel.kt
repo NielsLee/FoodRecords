@@ -8,8 +8,7 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 
 class HomeViewModel: ViewModel() {
 
-    var foodInfoList = mutableStateOf(listOf(FoodInfo("FoodName1", "2022-02-02", "CXasdfasdfasdfasdfaK", "7dayfs", "uuid"),
-    ))
+    var foodInfoList = mutableStateOf(listOf<FoodInfo>())
 
     fun updateList(value: FoodInfo) {
         foodInfoList.value = foodInfoList.value.toMutableList().apply { add(value) }
