@@ -24,15 +24,17 @@ class InsertionDialogViewModel: ViewModel() {
 
         val foodTypes = listOf("CXK", "FCC", "CLN", "MJQ")
         var shelfLifeList = listOf(
-            "1Day",
-            "1Day",
-            "1Day",
-            "7Days",
-            "15Days",
-            "30Days",
-            "60Days",
-            "90Days",
-            "180Days"
+            "1",
+            "2",
+            "3",
+            "5",
+            "7",
+            "10",
+            "14",
+            "21",
+            "30",
+            "60",
+            "90"
         )
     }
 

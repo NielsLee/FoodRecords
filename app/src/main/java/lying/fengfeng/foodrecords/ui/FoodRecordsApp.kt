@@ -9,13 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
@@ -33,17 +34,7 @@ fun FoodRecordsApp() {
     var showDialog by remember { dialogViewModel.isDialogShown }
 
     val navController = rememberNavController()
-
-    val foodInfoList = listOf(
-        FoodInfo("FoodName1", "2022-02-02", "CXasdfasdfasdfasdfaK", "7dayfs", "uuid"),
-        FoodInfo("FoodNamsdfe2asdfasdfasdfasdfasdfzxcvzxcvzxcvzxcvze", "2022-02-02", "CXK", "asdfasd7days", "uuid"),
-        FoodInfo("me3", "2022-02-02", "CXasdfasadfaK", "7days", "uuid"),
-        FoodInfo("Fooame4", "2022-02-02", "CXK", "7ys", "uuid"),
-        FoodInfo("FoodNamdgd", "2022-02-02", "CXKasd", "7days", "uuid"),
-        FoodInfo("FoodNamsdfe2asdfasdfasdfasdfasdfzxcvzxcvzxcvzxcvze", "2022-02-02", "CXK", "asdfasd7days", "uuid"),
-        )
-
-    var foodInfoIndex = 0
+    val mContext = LocalContext.current
 
     LaunchedEffect(showDialog) {
         if (!showDialog) {
@@ -60,7 +51,7 @@ fun FoodRecordsApp() {
     FoodRecordsTheme {
         Scaffold(
             topBar = {
-                FoodRecordsTopBar()
+                FoodRecordsTopBar(mContext.getString(R.string.app_name))
             },
             bottomBar = {
                 FoodRecordsBottomBar(

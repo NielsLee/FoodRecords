@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,28 +23,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
+import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 
 @Composable
 fun FoodInfoCard(
-    @PreviewParameter(provider = FoodNamePreviewProvider::class)
     foodInfo: FoodInfo,
     modifier: Modifier = Modifier,
     onDestroy: (() -> Unit)
 ) {
+
+    val mContext = LocalContext.current
+
     Card(
         modifier = modifier
-//            .fillMaxWidth(0.5f)
-//            .fillMaxHeight(0.5f)
             .padding(5.dp)
             .shadow(
                 elevation = 8.dp,
@@ -62,7 +64,10 @@ fun FoodInfoCard(
             textAlign = TextAlign.Center
         )
 
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
             val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
             val bitmap = ImageUtil.preProcessImage(foodPicturePath)
 
@@ -71,9 +76,35 @@ fun FoodInfoCard(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .padding(start = 8.dp, bottom = 8.dp)
+                    .padding(start = 8.dp)
                     .clip(RoundedCornerShape(12.dp)),
             )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = DateUtil.getRemainingDays(foodInfo.productionDate, foodInfo.shelfLife)
+                        .let {
+                            if (it > 0) {
+                                it.toString()
+                            } else {
+                                mContext.getString(R.string.expired)
+                            }
+                        },
+                    modifier = Modifier,
+                    style = TextStyle(
+                        fontSize = 64.sp
+                    )
+                )
+            }
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+
             Column(
                 Modifier.padding(horizontal = 8.dp)
             ) {
@@ -84,27 +115,6 @@ fun FoodInfoCard(
 
                 Text(
                     text = foodInfo.productionDate,
-                )
-
-                Text(
-                    text = foodInfo.shelfLife,
-                )
-            }
-        }
-
-        Row(
-
-        ) {
-            Box(
-                modifier = Modifier,
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "2",
-                    modifier = Modifier,
-                    style = TextStyle(
-                        fontSize = 64.sp
-                    )
                 )
             }
 
@@ -128,11 +138,4 @@ fun FoodInfoCard(
             }
         }
     }
-}
-
-class FoodNamePreviewProvider : PreviewParameterProvider<FoodInfo> {
-    // 提供预览参数值
-    override val values: Sequence<FoodInfo> = sequenceOf(
-        FoodInfo("FoodName", "2022-02-02", "CXK", "7days", "uuid",)
-    )
 }

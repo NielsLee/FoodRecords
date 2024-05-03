@@ -25,14 +25,14 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodRecordsTopBar() {
+fun FoodRecordsTopBar(title: String) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
-            Text(text = "FoodRecords")
+            Text(text = title)
         },
         modifier = Modifier.shadow(12.dp)
     )

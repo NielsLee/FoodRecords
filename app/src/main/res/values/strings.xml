@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FoodRecords</string>
+    <string name="shelf_life_day">Day(s)</string>
+    <string name="title_add_new">Add new food!</string>
+    <string name="title_production_date">Production Date</string>
+    <string name="title_type">Type</string>
+    <string name="title_shelf_life">Shelf Life</string>
+    <string name="title_name">Name</string>
+    <string name="expired">Expired</string>
 </resources>

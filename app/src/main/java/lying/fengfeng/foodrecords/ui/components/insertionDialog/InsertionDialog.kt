@@ -56,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import java.util.UUID
@@ -118,7 +119,7 @@ fun InsertionDialog() {
 
         ) {
             Text(
-                text = "Add new food!",
+                text = mContext.getString(R.string.title_add_new),
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -148,7 +149,7 @@ fun InsertionDialog() {
                             onValueChange = { newText ->
                                 foodName = newText
                             },
-                            label = { Text("Name") },
+                            label = { Text(text = mContext.getString(R.string.title_name)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .focusRequester(focusRequester)
@@ -172,7 +173,7 @@ fun InsertionDialog() {
                             onValueChange = { newValue ->
                                 productionDate = newValue
                             },
-                            label = { Text("Select Date") },
+                            label = { Text(text = mContext.getString(R.string.title_production_date)) },
                             trailingIcon = {
                                 IconButton(onClick = {
                                     MainScope().launch {
@@ -238,7 +239,7 @@ fun InsertionDialog() {
                             readOnly = true,
                             value = foodType,
                             onValueChange = { },
-                            label = { Text("Type") },
+                            label = { Text(text = mContext.getString(R.string.title_type)) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(
                                     expanded = typeSelectionExpanded
@@ -284,9 +285,9 @@ fun InsertionDialog() {
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = shelfLife,
+                            value = "$shelfLife ${mContext.getString(R.string.shelf_life_day)}",
                             onValueChange = { },
-                            label = { Text("Shelf Life") },
+                            label = { Text(text = mContext.getString(R.string.title_shelf_life)) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(
                                     expanded = shelfLifeExpanded
@@ -313,7 +314,7 @@ fun InsertionDialog() {
                                         shelfLifeExpanded = false
                                     },
                                     text = {
-                                        Text(text = selectionOption)
+                                        Text(text = "$selectionOption ${mContext.getString(R.string.shelf_life_day)}")
                                     }
                                 )
                             }

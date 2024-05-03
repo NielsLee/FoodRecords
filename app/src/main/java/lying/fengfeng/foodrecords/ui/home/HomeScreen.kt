@@ -28,13 +28,13 @@ fun HomeScreen(
         items(foodInfoList.size) { index ->
             FoodInfoCard(foodInfo = foodInfoList[index], modifier = Modifier) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    FoodInfoRepo.remove(foodInfoList[index])
-                    homeViewModel.updateList(FoodInfoRepo.getAll())
                     File(FoodInfoRepo.getPicturePath(foodInfoList[index].pictureUUID)).also {
                         if (it.exists()) {
                             it.delete()
                         }
                     }
+                    FoodInfoRepo.remove(foodInfoList[index])
+                    homeViewModel.updateList(FoodInfoRepo.getAll())
                 }
             }
         }
