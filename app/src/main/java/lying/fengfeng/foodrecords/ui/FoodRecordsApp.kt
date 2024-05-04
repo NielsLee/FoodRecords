@@ -58,7 +58,6 @@ fun FoodRecordsApp() {
                     navController = navController,
                     fabOnClick = {
                         showDialog = true
-//                        homeViewModel.updateList(foodInfoList[foodInfoIndex++])
                     })
             }
         ) { paddingValues ->

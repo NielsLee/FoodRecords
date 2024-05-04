@@ -32,7 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -96,256 +98,264 @@ fun InsertionDialog() {
 
     cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
 
-    Dialog(
-        onDismissRequest = {
-            isDialogShown = false
-            cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
-        },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnClickOutside = false
-        ),
-    ) {
-        Card(
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(4.dp),
-            modifier = Modifier
-                .padding(12.dp)
-                .wrapContentHeight()
-                .wrapContentWidth()
-                .aspectRatio(
-                    1f / 1f
-                )
+    CompositionLocalProvider(LocalUUID provides pictureUUID) {
 
+        Dialog(
+            onDismissRequest = {
+                isDialogShown = false
+                cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = false
+            ),
         ) {
-            Text(
-                text = mContext.getString(R.string.title_add_new),
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(12.dp)
                     .wrapContentHeight()
-                    .padding(start = 24.dp, top = 10.dp),
-                style = TextStyle(
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
+                    .wrapContentWidth()
+                    .aspectRatio(
+                        1f / 1f
+                    )
 
-            Row {
-                Column(
+            ) {
+                Text(
+                    text = mContext.getString(R.string.title_add_new),
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.Start
-                ) {
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(start = 24.dp, top = 10.dp),
+                    style = TextStyle(
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
 
-                    // 名称
-                    Box(
+                Row {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
                             .weight(1f)
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start
                     ) {
-                        OutlinedTextField(
-                            value = foodName,
-                            onValueChange = { newText ->
-                                foodName = newText
-                            },
-                            label = { Text(text = mContext.getString(R.string.title_name)) },
+
+                        // 名称
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .focusRequester(focusRequester)
-                                .onFocusChanged {
+                                .weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = foodName,
+                                onValueChange = { newText ->
+                                    foodName = newText
                                 },
-                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-                        )
-                    }
+                                label = { Text(text = mContext.getString(R.string.title_name)) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester)
+                                    .onFocusChanged {
+                                    },
+                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                            )
+                        }
 
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
-                    }
+                        LaunchedEffect(Unit) {
+                            focusRequester.requestFocus()
+                        }
 
-                    // 生产日期
-                    Box(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        OutlinedTextField(
-                            readOnly = false,
-                            value = productionDate,
-                            onValueChange = { newValue ->
-                                productionDate = newValue
-                            },
-                            label = { Text(text = mContext.getString(R.string.title_production_date)) },
-                            trailingIcon = {
-                                IconButton(onClick = {
-                                    MainScope().launch {
-                                        openDialog = true
-                                    }
-                                }) {
-                                    Icon(Icons.Filled.DateRange, null)
-                                }
-                            },
-                            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-
-                        if (openDialog) {
-                            DatePickerDialog(
-                                onDismissRequest = {
-                                    openDialog = false
+                        // 生产日期
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                readOnly = false,
+                                value = productionDate,
+                                onValueChange = { newValue ->
+                                    productionDate = newValue
                                 },
-                                confirmButton = {
-                                    TextButton(
-                                        onClick = {
-                                            openDialog = false
-                                            datePickerState.selectedDateMillis?.also {
-                                                productionDate = dateWithFormat(it, "YYYY-MM-dd")
-                                            }
-                                        },
-                                    ) {
-                                        Text("OK")
-                                    }
-                                },
-                                dismissButton = {
-                                    TextButton(
-                                        onClick = {
-                                            openDialog = false
+                                label = { Text(text = mContext.getString(R.string.title_production_date)) },
+                                trailingIcon = {
+                                    IconButton(onClick = {
+                                        MainScope().launch {
+                                            openDialog = true
                                         }
-                                    ) {
-                                        Text("Cancel")
+                                    }) {
+                                        Icon(Icons.Filled.DateRange, null)
                                     }
                                 },
-                                properties = DialogProperties(
-                                    dismissOnClickOutside = false
-                                ),
+                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+
+                            if (openDialog) {
+                                DatePickerDialog(
+                                    onDismissRequest = {
+                                        openDialog = false
+                                    },
+                                    confirmButton = {
+                                        TextButton(
+                                            onClick = {
+                                                openDialog = false
+                                                datePickerState.selectedDateMillis?.also {
+                                                    productionDate =
+                                                        dateWithFormat(it, "YYYY-MM-dd")
+                                                }
+                                            },
+                                        ) {
+                                            Text("OK")
+                                        }
+                                    },
+                                    dismissButton = {
+                                        TextButton(
+                                            onClick = {
+                                                openDialog = false
+                                            }
+                                        ) {
+                                            Text("Cancel")
+                                        }
+                                    },
+                                    properties = DialogProperties(
+                                        dismissOnClickOutside = false
+                                    ),
+                                ) {
+
+                                    DatePicker(state = datePickerState)
+                                }
+                            }
+
+                        }
+
+                        // 分类
+                        ExposedDropdownMenuBox(
+                            expanded = typeSelectionExpanded,
+                            onExpandedChange = { typeSelectionExpanded = !typeSelectionExpanded },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+
+                        ) {
+                            OutlinedTextField(
+                                readOnly = true,
+                                value = foodType,
+                                onValueChange = { },
+                                label = { Text(text = mContext.getString(R.string.title_type)) },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = typeSelectionExpanded
+                                    )
+                                },
+                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                                    .clickable(enabled = false) {
+                                    }
+                            )
+
+
+                            DropdownMenu(
+                                expanded = typeSelectionExpanded,
+                                onDismissRequest = { typeSelectionExpanded = false },
+                                modifier = Modifier.exposedDropdownSize()
+
                             ) {
 
-                                DatePicker(state = datePickerState)
+                                InsertionDialogViewModel.TempData.foodTypes.forEach { selectionOption ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            foodType = selectionOption
+                                            typeSelectionExpanded = false
+                                        },
+                                        text = {
+                                            Text(text = selectionOption)
+                                        }
+                                    )
+                                }
                             }
                         }
 
-                    }
-
-                    // 分类
-                    ExposedDropdownMenuBox(
-                        expanded = typeSelectionExpanded,
-                        onExpandedChange = { typeSelectionExpanded = !typeSelectionExpanded },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-
-                    ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = foodType,
-                            onValueChange = { },
-                            label = { Text(text = mContext.getString(R.string.title_type)) },
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(
-                                    expanded = typeSelectionExpanded
-                                )
-                            },
-                            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                                .clickable(enabled = false) {
-                                }
-                        )
-
-
-                        DropdownMenu(
-                            expanded = typeSelectionExpanded,
-                            onDismissRequest = { typeSelectionExpanded = false },
-                            modifier = Modifier.exposedDropdownSize()
-
-                        ) {
-
-                            InsertionDialogViewModel.TempData.foodTypes.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        foodType = selectionOption
-                                        typeSelectionExpanded = false
-                                    },
-                                    text = {
-                                        Text(text = selectionOption)
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    // 保质期
-                    ExposedDropdownMenuBox(
-                        expanded = shelfLifeExpanded,
-                        onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = "$shelfLife ${mContext.getString(R.string.shelf_life_day)}",
-                            onValueChange = { },
-                            label = { Text(text = mContext.getString(R.string.title_shelf_life)) },
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(
-                                    expanded = shelfLifeExpanded
-                                )
-                            },
-                            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                                .clickable(enabled = false) {
-                                }
-                        )
-
-                        DropdownMenu(
+                        // 保质期
+                        ExposedDropdownMenuBox(
                             expanded = shelfLifeExpanded,
-                            onDismissRequest = { shelfLifeExpanded = false },
-                            modifier = Modifier.exposedDropdownSize(),
+                            onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
                         ) {
-
-                            InsertionDialogViewModel.TempData.shelfLifeList.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        shelfLife = selectionOption
-                                        shelfLifeExpanded = false
-                                    },
-                                    text = {
-                                        Text(text = "$selectionOption ${mContext.getString(R.string.shelf_life_day)}")
+                            OutlinedTextField(
+                                readOnly = true,
+                                value = "$shelfLife ${mContext.getString(R.string.shelf_life_day)}",
+                                onValueChange = { },
+                                label = { Text(text = mContext.getString(R.string.title_shelf_life)) },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(
+                                        expanded = shelfLifeExpanded
+                                    )
+                                },
+                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                                    .clickable(enabled = false) {
                                     }
-                                )
+                            )
+
+                            DropdownMenu(
+                                expanded = shelfLifeExpanded,
+                                onDismissRequest = { shelfLifeExpanded = false },
+                                modifier = Modifier.exposedDropdownSize(),
+                            ) {
+
+                                InsertionDialogViewModel.TempData.shelfLifeList.forEach { selectionOption ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            shelfLife = selectionOption
+                                            shelfLifeExpanded = false
+                                        },
+                                        text = {
+                                            Text(text = "$selectionOption ${mContext.getString(R.string.shelf_life_day)}")
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .padding(top = 8.dp)
-                ) {
-
-                    OutlinedCard(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(3f / 4f)
+                            .weight(1f)
+                            .padding(8.dp)
+                            .padding(top = 8.dp)
                     ) {
-                        FoodPreview(mContext, cameraState)
-                    }
 
-                    IconButtonRow(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 4.dp),
-                        cameraState,
-                        pictureUUID
-                    )
+                        OutlinedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(3f / 4f)
+                        ) {
+                            FoodPreview(mContext, cameraState)
+                        }
+
+                        IconButtonRow(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 4.dp),
+                            cameraState,
+                        )
+                    }
                 }
             }
         }
     }
+}
+
+
+val LocalUUID = compositionLocalOf<String> {
+    error("No UUID provided")
 }

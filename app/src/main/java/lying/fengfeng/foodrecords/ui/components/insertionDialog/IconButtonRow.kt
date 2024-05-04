@@ -40,7 +40,6 @@ import java.io.File
 fun IconButtonRow(
     modifier: Modifier,
     cameraState: CameraState,
-    pictureUUID: String
 ) {
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
@@ -49,6 +48,7 @@ fun IconButtonRow(
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     val buttonsContracted = updateTransition(cameraStatus, label = "IconButtonsContracted")
+    val pictureUUID = LocalUUID.current
 
     val offsetXLeft by buttonsContracted.animateDp(
         label = "",
