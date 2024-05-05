@@ -37,6 +37,4 @@ object FoodInfoRepo {
     fun remove(foodInfo: FoodInfo) {
         foodInfoDao.remove(foodInfo)
     }
-
-
 }

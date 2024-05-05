@@ -9,43 +9,55 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDownCircle
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
+import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
+import java.io.File
 
 @Composable
 fun FoodInfoCard(
     foodInfo: FoodInfo,
-    modifier: Modifier = Modifier,
-    onDestroy: (() -> Unit)
+    homeViewModel: HomeViewModel,
+    modifier: Modifier = Modifier
 ) {
 
     val mContext = LocalContext.current
+    var dropDownMenuExpanded by remember { mutableStateOf(false) }
+
 
     Card(
         modifier = modifier
@@ -55,40 +67,58 @@ fun FoodInfoCard(
                 shape = RoundedCornerShape(12.dp),
             )
     ) {
-        Text(
-            text = foodInfo.foodName,
-            modifier = Modifier
-                .wrapContentHeight()
-                .padding(8.dp)
-                .align(Alignment.CenterHorizontally),
-            style = TextStyle(
-                fontSize = 24.sp
-            ),
-            textAlign = TextAlign.Center
-        )
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 8.dp)
         ) {
-            val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
-            val bitmap = ImageUtil.preProcessImage(foodPicturePath)
-
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .padding(start = 8.dp)
-                    .clip(RoundedCornerShape(12.dp)),
+                    .wrapContentSize(),
+                contentAlignment = Alignment.CenterStart
             ) {
-                Image(
-                    bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                // TODO 显示特别提醒/置顶
+            }
+            Text(
+                text = foodInfo.foodName,
+                modifier = Modifier
+                    .padding(6.dp),
+                style = TextStyle(
+                    fontSize = 24.sp
+                )
+            )
+        }
+
+        Card(
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .shadow(elevation = 12.dp, shape = RoundedCornerShape(12.dp))
+
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+
+            ) {
+                val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
+                val bitmap = ImageUtil.preProcessImage(foodPicturePath)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                ) {
+                    Image(
+                        bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+                RemainingDaysWindow(
+                    productionDate = foodInfo.productionDate,
+                    shelfLife = foodInfo.shelfLife
                 )
             }
-
-            RemainingDaysWindow(productionDate = foodInfo.productionDate, shelfLife = foodInfo.shelfLife)
         }
+
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -101,30 +131,54 @@ fun FoodInfoCard(
 
                 Text(
                     text = foodInfo.foodType,
+                    fontStyle = FontStyle.Italic
                 )
 
                 Text(
                     text = foodInfo.productionDate,
+                    fontWeight = FontWeight.ExtraBold
                 )
             }
 
             Box(
-                modifier = Modifier,
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.CenterEnd
             ) {
                 IconButton(
                     onClick = {
-
-                    }
+                        dropDownMenuExpanded = true
+                    },
+                    modifier = Modifier
                 ) {
-                    Icon(Icons.Filled.ArrowDropDownCircle, null, modifier = Modifier.size(64.dp))
+                    Icon(Icons.Outlined.MoreHoriz, null, modifier = Modifier.size(36.dp))
                 }
-            }
 
-            IconButton(onClick = {
-                onDestroy.invoke()
-            }) {
-                Icon(Icons.Filled.Delete, null, modifier = Modifier.size(64.dp))
+                DropdownMenu(
+                    expanded = dropDownMenuExpanded,
+                    onDismissRequest = { dropDownMenuExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                Modifier.fillMaxSize()
+                            ) {
+                                Icon(imageVector = Icons.Outlined.Delete, null)
+                                Text(text = mContext.getString(R.string.delete_record))
+                            }
+                        },
+                        onClick = {
+                            dropDownMenuExpanded = false
+                            CoroutineScope(Dispatchers.IO).launch {
+                                File(FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)).also {
+                                    if (it.exists()) {
+                                        it.delete()
+                                    }
+                                }
+                                FoodInfoRepo.remove(foodInfo)
+                                homeViewModel.updateList(FoodInfoRepo.getAll())
+                            }
+                        })
+                }
             }
         }
     }
@@ -190,7 +244,7 @@ fun RemainingDaysWindow(
                         color = Color.Red
                     )
                 )
-                
+
                 Text(text = mContext.getString(R.string.shelf_life_day))
             }
         }

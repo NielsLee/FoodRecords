@@ -9,4 +9,5 @@
     <string name="title_name">名称</string>
     <string name="expired">过期</string>
     <string name="best_before">保质</string>
+    <string name="delete_record">删除</string>
 </resources>

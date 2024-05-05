@@ -8,4 +8,5 @@
     <string name="title_name">Name</string>
     <string name="expired">Expired</string>
     <string name="best_before">Best before</string>
+    <string name="delete_record">Delete</string>
 </resources>

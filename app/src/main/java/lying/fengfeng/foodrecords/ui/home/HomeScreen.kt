@@ -29,17 +29,7 @@ fun HomeScreen(
         contentPadding = PaddingValues(3.dp)
     ) {
         items(foodInfoList.size) { index ->
-            FoodInfoCard(foodInfo = foodInfoList[index], modifier = Modifier) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    File(FoodInfoRepo.getPicturePath(foodInfoList[index].pictureUUID)).also {
-                        if (it.exists()) {
-                            it.delete()
-                        }
-                    }
-                    FoodInfoRepo.remove(foodInfoList[index])
-                    homeViewModel.updateList(FoodInfoRepo.getAll())
-                }
-            }
+            FoodInfoCard(foodInfo = foodInfoList[index], homeViewModel = homeViewModel, modifier = Modifier)
         }
     }
 }
