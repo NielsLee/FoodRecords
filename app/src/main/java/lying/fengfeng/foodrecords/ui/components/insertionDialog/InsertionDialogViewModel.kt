@@ -18,7 +18,7 @@ class InsertionDialogViewModel: ViewModel() {
     )
     var foodType = mutableStateOf(TempData.foodTypes[0])
     var shelfLife = mutableStateOf(TempData.shelfLifeList[0])
-    var pictureUUID = mutableStateOf("")
+    var uuid = mutableStateOf("")
 
     object TempData {
 

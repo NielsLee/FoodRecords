@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -57,6 +59,7 @@ fun FoodInfoCard(
 
     val mContext = LocalContext.current
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
+    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
 
     Card(
@@ -98,18 +101,26 @@ fun FoodInfoCard(
                 modifier = Modifier
 
             ) {
-                val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)
-                val bitmap = ImageUtil.preProcessImage(foodPicturePath)
+                val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.uuid)
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                 ) {
                     Image(
-                        bitmap = bitmap?.asImageBitmap() ?: createBitmap().asImageBitmap(),
+                        bitmap = imageBitmap ?: createBitmap().asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize()
                     )
+
+                    // 在IO线程中加载图片
+                    LaunchedEffect(Unit) {
+                        val bitmap = ImageUtil.preProcessImage(foodPicturePath)
+                        // 切换回主线程更新UI
+                        launch(Dispatchers.Main) {
+                            imageBitmap = bitmap?.asImageBitmap()
+                        }
+                    }
                 }
 
                 RemainingDaysWindow(
@@ -169,7 +180,7 @@ fun FoodInfoCard(
                         onClick = {
                             dropDownMenuExpanded = false
                             CoroutineScope(Dispatchers.IO).launch {
-                                File(FoodInfoRepo.getPicturePath(foodInfo.pictureUUID)).also {
+                                File(FoodInfoRepo.getPicturePath(foodInfo.uuid)).also {
                                     if (it.exists()) {
                                         it.delete()
                                     }

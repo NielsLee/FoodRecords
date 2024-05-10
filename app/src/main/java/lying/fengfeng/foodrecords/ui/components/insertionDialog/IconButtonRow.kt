@@ -179,7 +179,7 @@ fun IconButtonRow(
             IconButton(
                 onClick = {
                     val file = File(FoodInfoRepo.getPicturePath(pictureUUID))
-                    dialogViewModel.pictureUUID.value = pictureUUID
+                    dialogViewModel.uuid.value = pictureUUID
                     cameraState.takePicture(file) {
                         Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")
                         cameraStatus = InsertionDialogViewModel.CameraStatus.IMAGE_READY
