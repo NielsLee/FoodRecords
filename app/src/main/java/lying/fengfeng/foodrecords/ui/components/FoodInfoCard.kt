@@ -29,13 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +46,8 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
+import lying.fengfeng.foodrecords.ui.theme.GreenTrans80
+import lying.fengfeng.foodrecords.ui.theme.RedTrans80
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
@@ -208,17 +210,19 @@ fun RemainingDaysWindow(
     ) {
         if (remainingDays > 0) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 1.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .border(2.dp, Color.Green, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, GreenTrans80, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
-                        text = mContext.getString(R.string.best_before),
+                        text = mContext.getString(R.string.valid_in),
                         modifier = Modifier.padding(4.dp),
-                        color = Color.Green,
-                        fontWeight = FontWeight.Bold
+                        color = GreenTrans80,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
                     )
                 }
                 Text(
@@ -226,23 +230,24 @@ fun RemainingDaysWindow(
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = 48.sp,
-                        color = Color.Green
+                        color = GreenTrans80
                     )
                 )
                 Text(text = mContext.getString(R.string.shelf_life_day))
             }
         } else {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 1.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .border(2.dp, Color.Red, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, RedTrans80, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         text = mContext.getString(R.string.expired),
                         modifier = Modifier.padding(4.dp),
-                        color = Color.Red,
+                        color = RedTrans80,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -252,7 +257,7 @@ fun RemainingDaysWindow(
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = 48.sp,
-                        color = Color.Red
+                        color = RedTrans80
                     )
                 )
 

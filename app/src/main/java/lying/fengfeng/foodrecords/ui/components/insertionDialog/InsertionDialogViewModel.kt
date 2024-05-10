@@ -1,24 +1,37 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import lying.fengfeng.foodrecords.utils.DateUtil
 
-class InsertionDialogViewModel: ViewModel() {
+class InsertionDialogViewModel : ViewModel() {
 
-    var isDialogShown = mutableStateOf(false)
-    var cameraStatus = mutableStateOf(CameraStatus.IDLE)
+    var isDialogShown: MutableState<Boolean> = mutableStateOf(false)
+    var cameraStatus: MutableState<CameraStatus> = mutableStateOf(CameraStatus.IDLE)
 
-    var foodName = mutableStateOf("FoodName")
-    var productionDate = mutableStateOf(
-        DateUtil.dateWithFormat(
-            DateUtil.todayMillis(),
-            "YYYY-MM-dd"
+    lateinit var foodName: MutableState<String>
+    lateinit var productionDate: MutableState<String>
+    lateinit var foodType: MutableState<String>
+    lateinit var shelfLife: MutableState<String>
+    lateinit var uuid: MutableState<String>
+
+    init {
+        initParams()
+    }
+
+    fun initParams() {
+        foodName = mutableStateOf("FoodName")
+        productionDate = mutableStateOf(
+            DateUtil.dateWithFormat(
+                DateUtil.todayMillis(),
+                "YYYY-MM-dd"
+            )
         )
-    )
-    var foodType = mutableStateOf(TempData.foodTypes[0])
-    var shelfLife = mutableStateOf(TempData.shelfLifeList[0])
-    var uuid = mutableStateOf("")
+        foodType = mutableStateOf(TempData.foodTypes[0])
+        shelfLife = mutableStateOf(TempData.shelfLifeList[0])
+        uuid = mutableStateOf("")
+    }
 
     object TempData {
 

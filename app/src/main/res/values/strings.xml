@@ -7,6 +7,8 @@
     <string name="title_shelf_life">Shelf Life</string>
     <string name="title_name">Name</string>
     <string name="expired">Expired</string>
-    <string name="best_before">Best before</string>
+    <string name="valid_in">Valid in</string>
     <string name="delete_record">Delete</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

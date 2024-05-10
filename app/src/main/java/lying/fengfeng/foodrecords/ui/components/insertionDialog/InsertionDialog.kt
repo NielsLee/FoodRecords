@@ -90,7 +90,7 @@ fun InsertionDialog() {
     var foodType by remember { dialogViewModel.foodType }
     var shelfLife by remember { dialogViewModel.shelfLife }
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = todayMillis())
+    val datePickerState = rememberDatePickerState(todayMillis())
     var openDialog by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
@@ -158,6 +158,7 @@ fun InsertionDialog() {
                                     .fillMaxWidth()
                                     .focusRequester(focusRequester)
                                     .onFocusChanged {
+                                        foodName = ""
                                     },
                                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
                             )
@@ -208,7 +209,7 @@ fun InsertionDialog() {
                                                 }
                                             },
                                         ) {
-                                            Text("OK")
+                                            Text(mContext.getString(R.string.ok))
                                         }
                                     },
                                     dismissButton = {
@@ -217,7 +218,7 @@ fun InsertionDialog() {
                                                 openDialog = false
                                             }
                                         ) {
-                                            Text("Cancel")
+                                            Text(mContext.getString(R.string.cancel))
                                         }
                                     },
                                     properties = DialogProperties(
@@ -225,7 +226,12 @@ fun InsertionDialog() {
                                     ),
                                 ) {
 
-                                    DatePicker(state = datePickerState)
+                                    DatePicker(
+                                        state = datePickerState,
+                                        dateValidator = {
+                                            it <= todayMillis()
+                                        }
+                                    )
                                 }
                             }
 

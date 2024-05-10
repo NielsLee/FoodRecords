@@ -8,6 +8,8 @@
     <string name="title_shelf_life">保质期</string>
     <string name="title_name">名称</string>
     <string name="expired">过期</string>
-    <string name="best_before">保质</string>
+    <string name="valid_in">保质</string>
     <string name="delete_record">删除</string>
+    <string name="ok">确认</string>
+    <string name="cancel">取消</string>
 </resources>

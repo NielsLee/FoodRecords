@@ -144,6 +144,7 @@ fun IconButtonRow(
             IconButton(
                 onClick = {
                     showDialog = false
+                    dialogViewModel.initParams()
                 },
                 modifier = Modifier
                     .offset { IntOffset(offsetXLeft.roundToPx(), 0) }
@@ -166,6 +167,7 @@ fun IconButtonRow(
                     Log.d("LLF", "IconButtonRow: $foodInfo")
                     FoodInfoRepo.insert(foodInfo)
                     showDialog = false
+                    dialogViewModel.initParams()
                 },
                 modifier = Modifier
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }
