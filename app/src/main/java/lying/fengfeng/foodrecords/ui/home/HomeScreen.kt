@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 
 @Composable
@@ -24,7 +25,7 @@ fun HomeScreen(
     }
 
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
+        columns = StaggeredGridCells.Fixed(LocalScreenParams.current.listColumnNum),
         contentPadding = PaddingValues(3.dp),
         modifier = Modifier.background(
             Brush.verticalGradient(Pair(0.1f, MaterialTheme.colorScheme.primaryContainer), Pair(0.9f, Color.Transparent))

@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -17,6 +20,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.entities.ScreenParams
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
@@ -36,6 +40,22 @@ fun FoodRecordsApp() {
     val navController = rememberNavController()
     val mContext = LocalContext.current
 
+    val screenParams by remember { mutableStateOf(ScreenParams()) }
+
+    val widthPixels = LocalContext.current.resources.displayMetrics.widthPixels
+    val dpi = LocalContext.current.resources.displayMetrics.densityDpi
+    val widthDp = widthPixels / (dpi / 160f)
+    screenParams.listColumnNum = if (widthDp > 600) {
+        3
+    } else {
+        2
+    }
+    screenParams.insertDialogWidthPercent = if (widthDp > 600) {
+        0.6f
+    } else {
+        1f
+    }
+
     LaunchedEffect(showDialog) {
         if (!showDialog) {
             // 更新列表
@@ -49,28 +69,34 @@ fun FoodRecordsApp() {
     }
 
     FoodRecordsTheme {
-        Scaffold(
-            topBar = {
-                FoodRecordsTopBar(mContext.getString(R.string.app_name))
-            },
-            bottomBar = {
-                FoodRecordsBottomBar(
+        CompositionLocalProvider(LocalScreenParams provides screenParams) {
+            Scaffold(
+                topBar = {
+                    FoodRecordsTopBar(mContext.getString(R.string.app_name))
+                },
+                bottomBar = {
+                    FoodRecordsBottomBar(
+                        navController = navController,
+                        fabOnClick = {
+                            showDialog = true
+                        })
+                }
+            ) { paddingValues ->
+                FoodRecordsNavHost(
                     navController = navController,
-                    fabOnClick = {
-                        showDialog = true
-                    })
-            }
-        ) { paddingValues ->
-            FoodRecordsNavHost(
-                navController = navController,
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            )
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                )
 
-            if (showDialog) {
-                InsertionDialog()
+                if (showDialog) {
+                    InsertionDialog()
+                }
             }
         }
     }
+}
+
+val LocalScreenParams = compositionLocalOf<ScreenParams> {
+    error("No LocalScreenParams provided")
 }

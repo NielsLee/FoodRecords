@@ -59,6 +59,7 @@ import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import java.util.UUID
@@ -115,8 +116,7 @@ fun InsertionDialog() {
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier
                     .padding(12.dp)
-                    .wrapContentHeight()
-                    .wrapContentWidth()
+                    .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
                     .aspectRatio(
                         1f / 1f
                     )
