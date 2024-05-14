@@ -44,19 +44,31 @@ fun FoodRecordsBottomBar(
 ) {
     BottomAppBar(
         actions = {
-            IconButton(onClick = { navController.navigate("home") }) {
+            IconButton(onClick = {
+                if (navController.currentBackStackEntry?.destination?.route != "home") {
+                    navController.navigate("home")
+                }
+            }) {
                 Icon(
                     Icons.Filled.Home,
                     contentDescription = "Localized description"
                 )
             }
-            IconButton(onClick = { navController.navigate("list") }) {
+            IconButton(onClick = {
+                if (navController.currentBackStackEntry?.destination?.route != "list") {
+                    navController.navigate("list")
+                }
+            }) {
                 Icon(
                     Icons.AutoMirrored.Filled.List,
                     contentDescription = "Localized description",
                 )
             }
-            IconButton(onClick = { navController.navigate("settings") }) {
+            IconButton(onClick = {
+                if (navController.currentBackStackEntry?.destination?.route != "settings") {
+                    navController.navigate("settings")
+                }
+            }) {
                 Icon(
                     Icons.Filled.Settings,
                     contentDescription = "Localized description",

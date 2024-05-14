@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,6 +13,8 @@ import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.ui.list.ListScreen
 import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
+
+val routeList = listOf("home", "list", "settings")
 
 @Composable
 fun FoodRecordsNavHost(
@@ -25,19 +28,44 @@ fun FoodRecordsNavHost(
         navController = navController,
         startDestination = "home",
         modifier = modifier,
-        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
-        exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(400)) },
-        popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) },
-        popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(400)) }
-    ) {
-        composable("home") {
-            HomeScreen(homeViewModel)
+        enterTransition = {
+            slideIntoContainer(getSlideDirection(initialState, targetState), tween(400))
+        },
+        exitTransition = {
+            slideOutOfContainer(getSlideDirection(initialState, targetState), tween(400))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(400)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(400)
+            )
         }
-        composable("list") {
+    ) {
+        composable(routeList[0]) {
+            HomeScreen(homeViewModel) // TODO 单向数据流
+        }
+        composable(routeList[1]) {
             ListScreen()
         }
-        composable("settings") {
+        composable(routeList[2]) {
             SettingsScreen()
         }
+    }
+}
+
+fun getSlideDirection(initialState: NavBackStackEntry, targetState: NavBackStackEntry):
+        AnimatedContentTransitionScope.SlideDirection {
+    val sourceIndex = routeList.indexOf(initialState.destination.route)
+    val targetIndex = routeList.indexOf(targetState.destination.route)
+    return if (targetIndex > sourceIndex) {
+        AnimatedContentTransitionScope.SlideDirection.Start
+    } else {
+        AnimatedContentTransitionScope.SlideDirection.End
     }
 }
