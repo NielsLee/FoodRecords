@@ -50,6 +50,7 @@ fun IconButtonRow(
     val buttonsContracted = updateTransition(cameraStatus, label = "IconButtonsContracted")
     val pictureUUID = LocalUUID.current
 
+    /* TODO 将dp改为相对位置 */
     val offsetXLeft by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {
@@ -71,6 +72,7 @@ fun IconButtonRow(
         if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else (-54).dp
     }
 
+    /* TODO 将dp改为相对位置 */
     val offsetXRight by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {

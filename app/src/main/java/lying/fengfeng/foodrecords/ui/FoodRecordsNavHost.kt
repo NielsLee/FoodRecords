@@ -1,9 +1,14 @@
 package lying.fengfeng.foodrecords.ui
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -27,12 +32,14 @@ fun FoodRecordsNavHost(
     NavHost(
         navController = navController,
         startDestination = "home",
-        modifier = modifier,
+        modifier = modifier.background(
+            Brush.verticalGradient(Pair(0.1f, MaterialTheme.colorScheme.primaryContainer), Pair(0.9f, Color.Transparent))
+        ),
         enterTransition = {
-            slideIntoContainer(getSlideDirection(initialState, targetState), tween(400))
+            slideIntoContainer(getSlideDirection(initialState, targetState), spring())
         },
         exitTransition = {
-            slideOutOfContainer(getSlideDirection(initialState, targetState), tween(400))
+            slideOutOfContainer(getSlideDirection(initialState, targetState), spring())
         },
         popEnterTransition = {
             slideIntoContainer(

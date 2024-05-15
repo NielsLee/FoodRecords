@@ -27,9 +27,7 @@ fun HomeScreen(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(LocalScreenParams.current.listColumnNum),
         contentPadding = PaddingValues(3.dp),
-        modifier = Modifier.background(
-            Brush.verticalGradient(Pair(0.1f, MaterialTheme.colorScheme.primaryContainer), Pair(0.9f, Color.Transparent))
-        )
+        modifier = Modifier
     ) {
 
         items(
