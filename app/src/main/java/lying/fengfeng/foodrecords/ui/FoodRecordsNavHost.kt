@@ -6,6 +6,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -14,6 +16,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.ui.list.ListScreen
@@ -28,6 +31,7 @@ fun FoodRecordsNavHost(
 ) {
 
     val homeViewModel: HomeViewModel = viewModel()
+    val foodInfoList by remember { homeViewModel.foodInfoList }
 
     NavHost(
         navController = navController,
@@ -55,7 +59,7 @@ fun FoodRecordsNavHost(
         }
     ) {
         composable(routeList[0]) {
-            HomeScreen(homeViewModel) // TODO 单向数据流
+            HomeScreen(foodInfoList = foodInfoList, onRefresh = { homeViewModel.updateList(FoodInfoRepo.getAll()) } )
         }
         composable(routeList[1]) {
             ListScreen()

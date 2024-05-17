@@ -55,9 +55,9 @@ import java.io.File
 @Composable
 fun FoodInfoCard(
     foodInfo: FoodInfo,
-    homeViewModel: HomeViewModel,
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    onDelete: (() -> Unit)? = null
+    ) {
 
     val mContext = LocalContext.current
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
@@ -188,7 +188,8 @@ fun FoodInfoCard(
                                     }
                                 }
                                 FoodInfoRepo.remove(foodInfo)
-                                homeViewModel.updateList(FoodInfoRepo.getAll())
+                                onDelete?.invoke()
+//                                homeViewModel.updateList(FoodInfoRepo.getAll())
                             }
                         })
                 }
