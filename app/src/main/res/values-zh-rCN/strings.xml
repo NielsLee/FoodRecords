@@ -12,4 +12,6 @@
     <string name="delete_record">删除</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
+    <string name="roll_title_primary">拿不定主意了吗</string>
+    <string name="roll_title_secondary">随机一下试试看</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -45,7 +46,6 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
-import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.ui.theme.GreenTrans80
 import lying.fengfeng.foodrecords.ui.theme.RedTrans80
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -59,7 +59,7 @@ fun FoodInfoCard(
     onDelete: (() -> Unit)? = null
     ) {
 
-    val mContext = LocalContext.current
+    val context = LocalContext.current
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
@@ -96,12 +96,9 @@ fun FoodInfoCard(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp)
                 .shadow(elevation = 12.dp, shape = RoundedCornerShape(12.dp))
-
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.uuid)
 
@@ -112,7 +109,7 @@ fun FoodInfoCard(
                     Image(
                         bitmap = imageBitmap ?: createBitmap().asImageBitmap(),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
                     )
 
                     // 在IO线程中加载图片
@@ -154,7 +151,7 @@ fun FoodInfoCard(
             }
 
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(), // 设置为最大宽度 按钮才会显示在最右
                 contentAlignment = Alignment.CenterEnd
             ) {
                 IconButton(
@@ -176,7 +173,7 @@ fun FoodInfoCard(
                                 Modifier.fillMaxSize()
                             ) {
                                 Icon(imageVector = Icons.Outlined.Delete, null)
-                                Text(text = mContext.getString(R.string.delete_record))
+                                Text(text = context.getString(R.string.delete_record))
                             }
                         },
                         onClick = {
@@ -204,9 +201,9 @@ fun RemainingDaysWindow(
     shelfLife: String,
 ) {
     val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife)
-    val mContext = LocalContext.current
+    val context = LocalContext.current
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.wrapContentHeight().fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         if (remainingDays > 0) {
@@ -219,7 +216,7 @@ fun RemainingDaysWindow(
                         .border(2.dp, GreenTrans80, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
-                        text = mContext.getString(R.string.valid_in),
+                        text = context.getString(R.string.valid_in),
                         modifier = Modifier.padding(4.dp),
                         color = GreenTrans80,
                         fontWeight = FontWeight.Bold,
@@ -234,7 +231,7 @@ fun RemainingDaysWindow(
                         color = GreenTrans80
                     )
                 )
-                Text(text = mContext.getString(R.string.shelf_life_day))
+                Text(text = context.getString(R.string.shelf_life_day))
             }
         } else {
             Column(
@@ -246,7 +243,7 @@ fun RemainingDaysWindow(
                         .border(2.dp, RedTrans80, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
-                        text = mContext.getString(R.string.expired),
+                        text = context.getString(R.string.expired),
                         modifier = Modifier.padding(4.dp),
                         color = RedTrans80,
                         fontWeight = FontWeight.Bold
@@ -262,7 +259,7 @@ fun RemainingDaysWindow(
                     )
                 )
 
-                Text(text = mContext.getString(R.string.shelf_life_day))
+                Text(text = context.getString(R.string.shelf_life_day))
             }
         }
     }

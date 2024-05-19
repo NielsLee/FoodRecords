@@ -1,6 +1,10 @@
 package lying.fengfeng.foodrecords.utils
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
 import java.util.Locale
 
 object DateUtil {
@@ -16,9 +20,11 @@ object DateUtil {
     }
 
     fun todayMillis(): Long {
-        return System.currentTimeMillis().let {
-            (it - it % 86400000)
-        }
+        val localDate = LocalDate.now()
+        val startTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT)
+        val startInstant = startTime.toInstant(ZoneOffset.UTC)
+        val startTimestamp = startInstant.toEpochMilli()
+        return startTimestamp
     }
 
     fun getRemainingDays(dateString: String, shelfLife: String): Int {

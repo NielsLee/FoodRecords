@@ -25,12 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.CameraState
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
 
 /**
@@ -42,6 +44,7 @@ fun IconButtonRow(
     cameraState: CameraState,
 ) {
 
+    val context = LocalContext.current
     val dialogViewModel: InsertionDialogViewModel = viewModel()
 
     var showDialog by remember { dialogViewModel.isDialogShown }
@@ -145,6 +148,7 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
+                    EffectUtil.playSoundEffect(context)
                     showDialog = false
                     dialogViewModel.initParams()
                 },
@@ -159,6 +163,7 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
+                    EffectUtil.playSoundEffect(context)
                     val foodInfo = FoodInfo(
                         dialogViewModel.foodName.value,
                         dialogViewModel.productionDate.value,
@@ -182,6 +187,7 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
+                    EffectUtil.playVibrationEffect(context)
                     val file = File(FoodInfoRepo.getPicturePath(pictureUUID))
                     dialogViewModel.uuid.value = pictureUUID
                     cameraState.takePicture(file) {

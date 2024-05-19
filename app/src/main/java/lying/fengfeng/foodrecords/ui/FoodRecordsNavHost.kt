@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -19,10 +20,10 @@ import androidx.navigation.compose.composable
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
-import lying.fengfeng.foodrecords.ui.list.ListScreen
+import lying.fengfeng.foodrecords.ui.dice.RollScreen
 import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
 
-val routeList = listOf("home", "list", "settings")
+val routeList = listOf("home", "dice", "settings")
 
 @Composable
 fun FoodRecordsNavHost(
@@ -32,6 +33,7 @@ fun FoodRecordsNavHost(
 
     val homeViewModel: HomeViewModel = viewModel()
     val foodInfoList by remember { homeViewModel.foodInfoList }
+    val context = LocalContext.current
 
     NavHost(
         navController = navController,
@@ -59,10 +61,13 @@ fun FoodRecordsNavHost(
         }
     ) {
         composable(routeList[0]) {
-            HomeScreen(foodInfoList = foodInfoList, onRefresh = { homeViewModel.updateList(FoodInfoRepo.getAll()) } )
+            HomeScreen(
+                foodInfoList = foodInfoList,
+                onRefresh = { homeViewModel.updateList(FoodInfoRepo.getAll()) }
+            )
         }
         composable(routeList[1]) {
-            ListScreen()
+            RollScreen()
         }
         composable(routeList[2]) {
             SettingsScreen()

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -74,7 +73,7 @@ fun InsertionDialog() {
     val pictureUUID = UUID.randomUUID().toString()
 
     val configuration = LocalConfiguration.current
-    val mContext = LocalContext.current
+    val context = LocalContext.current
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
     var isDialogShown by remember { dialogViewModel.isDialogShown }
@@ -123,7 +122,7 @@ fun InsertionDialog() {
 
             ) {
                 Text(
-                    text = mContext.getString(R.string.title_add_new),
+                    text = context.getString(R.string.title_add_new),
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
@@ -153,7 +152,7 @@ fun InsertionDialog() {
                                 onValueChange = { newText ->
                                     foodName = newText
                                 },
-                                label = { Text(text = mContext.getString(R.string.title_name)) },
+                                label = { Text(text = context.getString(R.string.title_name)) },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .focusRequester(focusRequester)
@@ -178,7 +177,7 @@ fun InsertionDialog() {
                                 onValueChange = { newValue ->
                                     productionDate = newValue
                                 },
-                                label = { Text(text = mContext.getString(R.string.title_production_date)) },
+                                label = { Text(text = context.getString(R.string.title_production_date)) },
                                 trailingIcon = {
                                     IconButton(onClick = {
                                         MainScope().launch {
@@ -209,7 +208,7 @@ fun InsertionDialog() {
                                                 }
                                             },
                                         ) {
-                                            Text(mContext.getString(R.string.ok))
+                                            Text(context.getString(R.string.ok))
                                         }
                                     },
                                     dismissButton = {
@@ -218,7 +217,7 @@ fun InsertionDialog() {
                                                 openDialog = false
                                             }
                                         ) {
-                                            Text(mContext.getString(R.string.cancel))
+                                            Text(context.getString(R.string.cancel))
                                         }
                                     },
                                     properties = DialogProperties(
@@ -250,7 +249,7 @@ fun InsertionDialog() {
                                 readOnly = true,
                                 value = foodType,
                                 onValueChange = { },
-                                label = { Text(text = mContext.getString(R.string.title_type)) },
+                                label = { Text(text = context.getString(R.string.title_type)) },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(
                                         expanded = typeSelectionExpanded
@@ -296,9 +295,9 @@ fun InsertionDialog() {
                         ) {
                             OutlinedTextField(
                                 readOnly = true,
-                                value = "$shelfLife ${mContext.getString(R.string.shelf_life_day)}",
+                                value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
                                 onValueChange = { },
-                                label = { Text(text = mContext.getString(R.string.title_shelf_life)) },
+                                label = { Text(text = context.getString(R.string.title_shelf_life)) },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(
                                         expanded = shelfLifeExpanded
@@ -325,7 +324,7 @@ fun InsertionDialog() {
                                             shelfLifeExpanded = false
                                         },
                                         text = {
-                                            Text(text = "$selectionOption ${mContext.getString(R.string.shelf_life_day)}")
+                                            Text(text = "$selectionOption ${context.getString(R.string.shelf_life_day)}")
                                         }
                                     )
                                 }
@@ -345,7 +344,7 @@ fun InsertionDialog() {
                                 .fillMaxWidth()
                                 .aspectRatio(3f / 4f)
                         ) {
-                            FoodPreview(mContext, cameraState)
+                            FoodPreview(context, cameraState)
                         }
 
                         IconButtonRow(

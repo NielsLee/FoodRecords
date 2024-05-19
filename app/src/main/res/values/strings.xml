@@ -11,4 +11,6 @@
     <string name="delete_record">Delete</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="roll_title_primary">Can\'t Decide?</string>
+    <string name="roll_title_secondary">Try Randomizing</string>
 </resources>

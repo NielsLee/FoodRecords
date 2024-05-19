@@ -28,6 +28,7 @@ import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.ui.theme.FoodRecordsTheme
+import lying.fengfeng.foodrecords.utils.EffectUtil
 
 @Composable
 fun FoodRecordsApp() {
@@ -38,7 +39,7 @@ fun FoodRecordsApp() {
     var showDialog by remember { dialogViewModel.isDialogShown }
 
     val navController = rememberNavController()
-    val mContext = LocalContext.current
+    val context = LocalContext.current
 
     val screenParams by remember { mutableStateOf(ScreenParams()) }
 
@@ -72,13 +73,15 @@ fun FoodRecordsApp() {
         CompositionLocalProvider(LocalScreenParams provides screenParams) {
             Scaffold(
                 topBar = {
-                    FoodRecordsTopBar(mContext.getString(R.string.app_name))
+                    FoodRecordsTopBar(context.getString(R.string.app_name))
                 },
                 bottomBar = {
                     FoodRecordsBottomBar(
                         navController = navController,
                         fabOnClick = {
                             showDialog = true
+                            EffectUtil.playSoundEffect(context)
+                            EffectUtil.playVibrationEffect(context)
                         })
                 }
             ) { paddingValues ->

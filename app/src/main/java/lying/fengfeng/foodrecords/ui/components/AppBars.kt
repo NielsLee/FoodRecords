@@ -1,9 +1,13 @@
 package lying.fengfeng.foodrecords.ui.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -19,8 +23,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.utils.EffectUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,36 +50,44 @@ fun FoodRecordsBottomBar(
     navController: NavController,
     fabOnClick: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
     BottomAppBar(
         actions = {
             IconButton(onClick = {
                 if (navController.currentBackStackEntry?.destination?.route != "home") {
                     navController.navigate("home")
+                    EffectUtil.playSoundEffect(context)
+                    EffectUtil.playVibrationEffect(context)
                 }
             }) {
                 Icon(
                     Icons.Filled.Home,
-                    contentDescription = "Localized description"
+                    contentDescription = "Icon navigate to Home page"
                 )
             }
             IconButton(onClick = {
-                if (navController.currentBackStackEntry?.destination?.route != "list") {
-                    navController.navigate("list")
+                if (navController.currentBackStackEntry?.destination?.route != "dice") {
+                    navController.navigate("dice")
+                    EffectUtil.playSoundEffect(context)
+                    EffectUtil.playVibrationEffect(context)
                 }
             }) {
                 Icon(
-                    Icons.AutoMirrored.Filled.List,
-                    contentDescription = "Localized description",
-                )
+                    painter = painterResource(id = R.drawable.dice3_svg),
+                    "Icon navigate to Dice page")
             }
             IconButton(onClick = {
                 if (navController.currentBackStackEntry?.destination?.route != "settings") {
                     navController.navigate("settings")
+                    EffectUtil.playSoundEffect(context)
+                    EffectUtil.playVibrationEffect(context)
                 }
             }) {
                 Icon(
                     Icons.Filled.Settings,
-                    contentDescription = "Localized description",
+                    contentDescription = "Icon navigate to Settings Page",
                 )
             }
         },
