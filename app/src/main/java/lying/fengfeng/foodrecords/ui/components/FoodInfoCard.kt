@@ -46,8 +46,8 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.FoodInfoRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
-import lying.fengfeng.foodrecords.ui.theme.GreenTrans80
-import lying.fengfeng.foodrecords.ui.theme.RedTrans80
+import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
+import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
@@ -213,12 +213,12 @@ fun RemainingDaysWindow(
             ) {
                 Box(
                     modifier = Modifier
-                        .border(2.dp, GreenTrans80, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, ExpiredGreen, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         text = context.getString(R.string.valid_in),
                         modifier = Modifier.padding(4.dp),
-                        color = GreenTrans80,
+                        color = ExpiredGreen,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
@@ -228,7 +228,7 @@ fun RemainingDaysWindow(
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = 48.sp,
-                        color = GreenTrans80
+                        color = ExpiredGreen
                     )
                 )
                 Text(text = context.getString(R.string.shelf_life_day))
@@ -240,12 +240,12 @@ fun RemainingDaysWindow(
             ) {
                 Box(
                     modifier = Modifier
-                        .border(2.dp, RedTrans80, shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, ExpiredRed, shape = RoundedCornerShape(12.dp))
                 ) {
                     Text(
                         text = context.getString(R.string.expired),
                         modifier = Modifier.padding(4.dp),
-                        color = RedTrans80,
+                        color = ExpiredRed,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -255,7 +255,7 @@ fun RemainingDaysWindow(
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = 48.sp,
-                        color = RedTrans80
+                        color = ExpiredRed
                     )
                 )
 
