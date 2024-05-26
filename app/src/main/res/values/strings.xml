@@ -13,4 +13,12 @@
     <string name="cancel">Cancel</string>
     <string name="roll_title_primary">Can\'t Decide?</string>
     <string name="roll_title_secondary">Try Randomizing</string>
+    <string name="food_type_option">Food Type Settings</string>
+    <string name="shelf_life_option">Shelf Life Settings</string>
+    <string name="notification_option">Notification Settings</string>
+    <string name="enable_notification">Enable Notification</string>
+    <string name="days_of_advance_notice">Days of advance</string>
+    <string name="about_app">About</string>
+    <string name="source_code_repo">Source code repository</string>
+    <string name="contact_author">Contact author</string>
 </resources>

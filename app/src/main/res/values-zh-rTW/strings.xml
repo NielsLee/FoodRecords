@@ -14,4 +14,12 @@
     <string name="cancel">取消</string>
     <string name="roll_title_primary">拿不定主意了嗎</string>
     <string name="roll_title_secondary">隨機一下看看</string>
+    <string name="food_type_option">種類設定</string>
+    <string name="shelf_life_option">保質期設定</string>
+    <string name="notification_option">提醒設定</string>
+    <string name="enable_notification">開啟提醒</string>
+    <string name="days_of_advance_notice">提前通知天數</string>
+    <string name="about_app">關於應用</string>
+    <string name="source_code_repo">原始碼倉庫</string>
+    <string name="contact_author">聯繫作者</string>
 </resources>

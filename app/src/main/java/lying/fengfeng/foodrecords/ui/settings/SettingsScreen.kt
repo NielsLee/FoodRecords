@@ -1,7 +1,6 @@
 package lying.fengfeng.foodrecords.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,51 +8,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ChipColors
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,7 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import lying.fengfeng.foodrecords.R
@@ -76,7 +51,6 @@ fun SettingsScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
     ) {
-        // TODO 文字资源
         // TODO chip的增删和持久化
 
         val iconSize = 36.dp
@@ -105,7 +79,7 @@ fun SettingsScreen() {
                     contentDescription = null,
                     modifier = Modifier.size(36.dp)
                 )
-                Text(text = "食物种类", fontSize = 24.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(text = stringResource(id = R.string.food_type_option), fontSize = 24.sp, modifier = Modifier.padding(start = 8.dp))
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -170,7 +144,7 @@ fun SettingsScreen() {
                     modifier = Modifier.size(iconSize)
                 )
                 Text(
-                    text = "保质期选项",
+                    text = stringResource(id = R.string.shelf_life_option),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
@@ -236,7 +210,7 @@ fun SettingsScreen() {
                 )
 
                 Text(
-                    text = "提醒设置",
+                    text = stringResource(id = R.string.notification_option),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
@@ -263,7 +237,7 @@ fun SettingsScreen() {
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
-                            text = "开启提醒",
+                            text = stringResource(id = R.string.enable_notification),
                             fontSize = 24.sp,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
@@ -282,7 +256,7 @@ fun SettingsScreen() {
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
-                            text = "提醒提前天数：",
+                            text = stringResource(id = R.string.days_of_advance_notice),
                             fontSize = 24.sp,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
@@ -311,7 +285,7 @@ fun SettingsScreen() {
                 )
 
                 Text(
-                    text = "关于应用",
+                    text = stringResource(id = R.string.about_app),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
@@ -338,7 +312,7 @@ fun SettingsScreen() {
                         Spacer(modifier = Modifier.size(iconSize))
 
                         Text(
-                            text = "代码仓库",
+                            text = stringResource(id = R.string.source_code_repo),
                             fontSize = 24.sp,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
@@ -363,7 +337,7 @@ fun SettingsScreen() {
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
-                            text = "联系作者",
+                            text = stringResource(id = R.string.contact_author),
                             fontSize = 24.sp,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
@@ -448,7 +422,6 @@ fun NumberPickerWithButtons(
             modifier = Modifier.size(40.dp)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-            // TODO 提醒设置也改为下拉菜单
         }
     }
 }
