@@ -3,6 +3,11 @@ package lying.fengfeng.foodrecords.ui.components.insertionDialog
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
 
 class InsertionDialogViewModel : ViewModel() {
@@ -16,39 +21,32 @@ class InsertionDialogViewModel : ViewModel() {
     lateinit var shelfLife: MutableState<String>
     lateinit var uuid: MutableState<String>
 
+    lateinit var foodTypes: List<String>
+    lateinit var shelfLifeList: List<String>
+
     init {
         initParams()
     }
 
     fun initParams() {
-        foodName = mutableStateOf("FoodName")
-        productionDate = mutableStateOf(
-            DateUtil.dateWithFormat(
-                DateUtil.todayMillis(),
-                "YYYY-MM-dd"
+        CoroutineScope(Dispatchers.IO).launch {
+
+            runBlocking {
+                foodTypes = AppRepo.getAllTypeInfo().map { it.type }
+                shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
+            }
+
+            foodName = mutableStateOf("FoodName")
+            productionDate = mutableStateOf(
+                DateUtil.dateWithFormat(
+                    DateUtil.todayMillis(),
+                    "YYYY-MM-dd"
+                )
             )
-        )
-        foodType = mutableStateOf(TempData.foodTypes[0])
-        shelfLife = mutableStateOf(TempData.shelfLifeList[0])
-        uuid = mutableStateOf("")
-    }
-
-    object TempData {
-
-        val foodTypes = listOf("CXK", "FCC", "CLN", "MJQ")
-        var shelfLifeList = listOf(
-            "1",
-            "2",
-            "3",
-            "5",
-            "7",
-            "10",
-            "14",
-            "21",
-            "30",
-            "60",
-            "90"
-        )
+            foodType = mutableStateOf(foodTypes[0])
+            shelfLife = mutableStateOf(shelfLifeList[0])
+            uuid = mutableStateOf("")
+        }
     }
 
     enum class CameraStatus {

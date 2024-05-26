@@ -21,4 +21,11 @@
     <string name="about_app">About</string>
     <string name="source_code_repo">Source code repository</string>
     <string name="contact_author">Contact author</string>
+    <string name="type_fruits_or_vegetables">Fruits or Vegetables</string>
+    <string name="type_meat">Meat</string>
+    <string name="type_milk">Milk</string>
+    <string name="type_seafood">Seafood</string>
+    <string name="type_cereal">Cereal</string>
+    <string name="type_can">Canned Food</string>
+    <string name="type_condiment">Condiment</string>
 </resources>

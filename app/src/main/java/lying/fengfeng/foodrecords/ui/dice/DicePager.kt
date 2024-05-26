@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import kotlin.random.Random
@@ -51,7 +51,7 @@ fun DicePager(
 
     LaunchedEffect(key1 = cardDataList) {
         withContext(Dispatchers.IO) {
-            cardDataList = FoodInfoRepo.getAll()
+            cardDataList = AppRepo.getAllFoodInfo()
         }
     }
 

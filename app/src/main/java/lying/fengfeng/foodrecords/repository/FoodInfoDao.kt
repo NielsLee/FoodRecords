@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import lying.fengfeng.foodrecords.Constants.TB_FOOD_INFO
 import lying.fengfeng.foodrecords.entities.FoodInfo
 
 @Dao
@@ -14,7 +13,7 @@ interface FoodInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(foodInfo: FoodInfo)
 
-    @Query(" SELECT * FROM $TB_FOOD_INFO ")
+    @Query(" SELECT * FROM FOODINFO ")
     fun getAll(): List<FoodInfo>
 
     @Delete

@@ -43,7 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 
 /**
  * 图片预览窗
@@ -92,7 +92,7 @@ fun FoodPreview(
                 InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
                     Log.d("LLF", "FoodPreview: status READY")
 
-                    val picturePath = FoodInfoRepo.getPicturePath(dialogViewModel.uuid.value)
+                    val picturePath = AppRepo.getPicturePath(dialogViewModel.uuid.value)
                     var bitmap by remember { mutableStateOf(createBitmap()) }
                     val imageBitmap = bitmap.asImageBitmap()
                     val painter = BitmapPainter(imageBitmap)

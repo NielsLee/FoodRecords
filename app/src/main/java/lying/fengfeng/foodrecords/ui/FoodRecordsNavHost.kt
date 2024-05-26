@@ -17,7 +17,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.home.HomeViewModel
 import lying.fengfeng.foodrecords.ui.dice.RollScreen
@@ -63,7 +63,7 @@ fun FoodRecordsNavHost(
         composable(routeList[0]) {
             HomeScreen(
                 foodInfoList = foodInfoList,
-                onRefresh = { homeViewModel.updateList(FoodInfoRepo.getAll()) }
+                onRefresh = { homeViewModel.updateList(AppRepo.getAllFoodInfo()) }
             )
         }
         composable(routeList[1]) {

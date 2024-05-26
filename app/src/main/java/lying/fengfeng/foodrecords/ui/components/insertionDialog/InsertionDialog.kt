@@ -152,6 +152,7 @@ fun InsertionDialog() {
                                 onValueChange = { newText ->
                                     foodName = newText
                                 },
+                                maxLines = 1,
                                 label = { Text(text = context.getString(R.string.title_name)) },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -174,6 +175,7 @@ fun InsertionDialog() {
                             OutlinedTextField(
                                 readOnly = false,
                                 value = productionDate,
+                                maxLines = 1,
                                 onValueChange = { newValue ->
                                     productionDate = newValue
                                 },
@@ -248,6 +250,7 @@ fun InsertionDialog() {
                             OutlinedTextField(
                                 readOnly = true,
                                 value = foodType,
+                                maxLines = 1,
                                 onValueChange = { },
                                 label = { Text(text = context.getString(R.string.title_type)) },
                                 trailingIcon = {
@@ -271,7 +274,7 @@ fun InsertionDialog() {
 
                             ) {
 
-                                InsertionDialogViewModel.TempData.foodTypes.forEach { selectionOption ->
+                                dialogViewModel.foodTypes.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
                                             foodType = selectionOption
@@ -296,6 +299,7 @@ fun InsertionDialog() {
                             OutlinedTextField(
                                 readOnly = true,
                                 value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
+                                maxLines = 1,
                                 onValueChange = { },
                                 label = { Text(text = context.getString(R.string.title_shelf_life)) },
                                 trailingIcon = {
@@ -317,7 +321,7 @@ fun InsertionDialog() {
                                 modifier = Modifier.exposedDropdownSize(),
                             ) {
 
-                                InsertionDialogViewModel.TempData.shelfLifeList.forEach { selectionOption ->
+                                dialogViewModel.shelfLifeList.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
                                             shelfLife = selectionOption

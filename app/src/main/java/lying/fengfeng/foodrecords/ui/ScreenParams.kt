@@ -1,4 +1,4 @@
-package lying.fengfeng.foodrecords.entities
+package lying.fengfeng.foodrecords.ui
 
 data class ScreenParams(
     var listColumnNum: Int = 2,

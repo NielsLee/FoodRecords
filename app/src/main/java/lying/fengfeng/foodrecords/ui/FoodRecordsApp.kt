@@ -20,8 +20,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.R
-import lying.fengfeng.foodrecords.entities.ScreenParams
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
@@ -62,7 +61,7 @@ fun FoodRecordsApp() {
             // 更新列表
             MainScope().launch {
                 val newList = withContext(Dispatchers.IO) {
-                    FoodInfoRepo.getAll()
+                    AppRepo.getAllFoodInfo()
                 }
                 homeViewModel.updateList(newList)
             }

@@ -22,4 +22,11 @@
     <string name="about_app">關於應用</string>
     <string name="source_code_repo">原始碼倉庫</string>
     <string name="contact_author">聯繫作者</string>
+    <string name="type_fruits_or_vegetables">蔬果</string>
+    <string name="type_meat">肉類</string>
+    <string name="type_milk">乳製品</string>
+    <string name="type_seafood">海鮮</string>
+    <string name="type_cereal">穀物</string>
+    <string name="type_can">罐頭食品</string>
+    <string name="type_condiment">調味品</string>
 </resources>

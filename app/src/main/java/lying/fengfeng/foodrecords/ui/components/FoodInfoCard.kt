@@ -44,7 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
@@ -100,7 +100,7 @@ fun FoodInfoCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val foodPicturePath = FoodInfoRepo.getPicturePath(foodInfo.uuid)
+                val foodPicturePath = AppRepo.getPicturePath(foodInfo.uuid)
 
                 Box(
                     modifier = Modifier
@@ -179,12 +179,12 @@ fun FoodInfoCard(
                         onClick = {
                             dropDownMenuExpanded = false
                             CoroutineScope(Dispatchers.IO).launch {
-                                File(FoodInfoRepo.getPicturePath(foodInfo.uuid)).also {
+                                File(AppRepo.getPicturePath(foodInfo.uuid)).also {
                                     if (it.exists()) {
                                         it.delete()
                                     }
                                 }
-                                FoodInfoRepo.remove(foodInfo)
+                                AppRepo.removeFoodInfo(foodInfo)
                                 onDelete?.invoke()
 //                                homeViewModel.updateList(FoodInfoRepo.getAll())
                             }

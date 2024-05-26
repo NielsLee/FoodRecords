@@ -11,5 +11,4 @@ data class FoodInfo(
     @ColumnInfo val foodType: String,
     @ColumnInfo val shelfLife: String,
     @PrimaryKey val uuid: String
-) {
-}
+)

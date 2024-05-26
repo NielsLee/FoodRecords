@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.CameraState
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.FoodInfoRepo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
 
@@ -172,7 +172,7 @@ fun IconButtonRow(
                         pictureUUID
                     )
                     Log.d("LLF", "IconButtonRow: $foodInfo")
-                    FoodInfoRepo.insert(foodInfo)
+                    AppRepo.addFoodInfo(foodInfo)
                     showDialog = false
                     dialogViewModel.initParams()
                 },
@@ -188,7 +188,7 @@ fun IconButtonRow(
             IconButton(
                 onClick = {
                     EffectUtil.playVibrationEffect(context)
-                    val file = File(FoodInfoRepo.getPicturePath(pictureUUID))
+                    val file = File(AppRepo.getPicturePath(pictureUUID))
                     dialogViewModel.uuid.value = pictureUUID
                     cameraState.takePicture(file) {
                         Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")
