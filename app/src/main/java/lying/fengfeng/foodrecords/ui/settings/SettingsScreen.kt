@@ -1,6 +1,11 @@
 package lying.fengfeng.foodrecords.ui.settings
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,13 +13,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -22,6 +33,8 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,18 +44,23 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +80,11 @@ fun SettingsScreen() {
         var notificationOptionExpanded by remember { mutableStateOf(false) }
         var notificationEnabled by remember { mutableStateOf(false) }
         var infoExpanded by remember { mutableStateOf(false) }
+        var wechatInfoExpanded by remember { mutableStateOf(false) }
 
-        val list = (0..20).toList()
+        val appViewModel: FoodRecordsAppViewModel = viewModel()
+        val foodTypeList = remember { appViewModel.foodTypeList }
+        val shelfLifeList = remember { appViewModel.shelfLifeList }
 
         Column(
             modifier = Modifier
@@ -79,7 +100,11 @@ fun SettingsScreen() {
                     contentDescription = null,
                     modifier = Modifier.size(36.dp)
                 )
-                Text(text = stringResource(id = R.string.food_type_option), fontSize = 24.sp, modifier = Modifier.padding(start = 8.dp))
+                Text(
+                    text = stringResource(id = R.string.food_type_option),
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -98,13 +123,13 @@ fun SettingsScreen() {
 
             AnimatedVisibility(visible = foodTypeOptionExpanded) {
                 Row {
-                    LazyHorizontalGrid(
-                        rows = GridCells.Fixed(2),
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(2),
                         modifier = Modifier.heightIn(max = 96.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
                         items(
-                            count = list.size
+                            count = foodTypeList.size
                         ) { it ->
                             Box(
                                 modifier = Modifier
@@ -114,7 +139,12 @@ fun SettingsScreen() {
                                 InputChip(
                                     selected = false,
                                     onClick = { },
-                                    label = { Text(text = "这是Chip $it", fontSize = 18.sp) },
+                                    label = {
+                                        Text(
+                                            text = foodTypeList[it].type,
+                                            fontSize = 18.sp
+                                        )
+                                    },
                                     colors = InputChipDefaults.inputChipColors(
                                         containerColor = Color.Cyan
                                     ),
@@ -165,13 +195,13 @@ fun SettingsScreen() {
 
             AnimatedVisibility(visible = shelfOptionExpanded) {
                 Row {
-                    LazyHorizontalGrid(
-                        rows = GridCells.Fixed(2),
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(2),
                         modifier = Modifier.heightIn(max = 96.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
                         items(
-                            count = list.size
+                            count = shelfLifeList.size
                         ) { it ->
                             Box(
                                 modifier = Modifier
@@ -181,7 +211,12 @@ fun SettingsScreen() {
                                 InputChip(
                                     selected = false,
                                     onClick = { },
-                                    label = { Text(text = "这是Chip $it", fontSize = 18.sp) },
+                                    label = {
+                                        Text(
+                                            text = shelfLifeList[it].life + stringResource(id = R.string.shelf_life_day),
+                                            fontSize = 18.sp
+                                        )
+                                    },
                                     colors = InputChipDefaults.inputChipColors(
                                         containerColor = Color.Cyan
                                     ),
@@ -319,16 +354,10 @@ fun SettingsScreen() {
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        IconButton(
-                            onClick = {
-                                // TODO Github链接
-                            },
+                        Box(
                             modifier = Modifier.size(iconSize)
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.github_mark_svg),
-                                contentDescription = null
-                            )
+                            GitHubButton()
                         }
                     }
 
@@ -346,7 +375,7 @@ fun SettingsScreen() {
 
                         IconButton(
                             onClick = {
-                                // TODO 微信信息
+                                wechatInfoExpanded = !wechatInfoExpanded
                             },
                             modifier = Modifier.size(iconSize)
                         ) {
@@ -356,19 +385,42 @@ fun SettingsScreen() {
                             )
                         }
 
-
                         Spacer(modifier = Modifier.padding(horizontal = 6.dp))
 
-                        IconButton(
-                            onClick = {
-                                // TODO 邮件跳转
-                            },
+                        Box(
                             modifier = Modifier.size(iconSize)
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Mail,
-                                contentDescription = null,
-                            )
+                            EmailButton()
+                        }
+                    }
+                }
+            }
+        }
+
+        AnimatedVisibility(visible = wechatInfoExpanded) {
+            Card(
+                modifier = Modifier.fillMaxSize(0.9f),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.img_wechat),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "(✿´‿`)")
+                            Text(text = "添加请注明来意哦")
                         }
                     }
                 }
@@ -384,7 +436,7 @@ fun NumberPickerWithButtons(
     maxNumber: Int = Int.MAX_VALUE,
     onNumberChange: (Int) -> Unit = {}
 ) {
-    var number by remember { mutableStateOf(initialNumber) }
+    var number by remember { mutableIntStateOf(initialNumber) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -423,5 +475,76 @@ fun NumberPickerWithButtons(
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = null)
         }
+    }
+}
+
+@Composable
+fun EmailButton() {
+
+    val context = LocalContext.current
+
+    IconButton(onClick = {
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("Niels_Lee@outlook.com"))
+        }
+
+        if (emailIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(emailIntent)
+            Toast.makeText(context, context.getString(R.string.thanks_when_email), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, context.getString(R.string.no_email_app), Toast.LENGTH_SHORT).show()
+        }
+    }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Mail,
+            contentDescription = null,
+        )
+    }
+}
+
+@Composable
+fun GitHubButton() {
+
+    val context = LocalContext.current
+
+    IconButton(
+        onClick = {
+            val githubPackageName = "com.github.android"
+            val githubRepoUrl = "https://github.com/NielsLee/FoodRecords"
+            val githubAppUri = Uri.parse("github://github.com/NielsLee/FoodRecords")
+            val webUri = Uri.parse(githubRepoUrl)
+
+            val githubIntent = Intent(Intent.ACTION_VIEW, githubAppUri).apply {
+                setPackage(githubPackageName)
+            }
+
+            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+
+            if (isAppInstalled(context.packageManager, githubPackageName)) {
+                try {
+                    context.startActivity(githubIntent)
+                } catch (e: Exception) {
+                    context.startActivity(webIntent)
+                }
+            } else {
+                context.startActivity(webIntent)
+            }
+        }
+        ) {
+        Icon(
+            painter = painterResource(id = R.drawable.github_mark_svg),
+            contentDescription = null
+        )
+    }
+}
+
+fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
+    return try {
+        packageManager.getPackageInfo(packageName, 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
     }
 }

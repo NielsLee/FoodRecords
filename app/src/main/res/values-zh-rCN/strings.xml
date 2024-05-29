@@ -29,4 +29,7 @@
     <string name="type_cereal">谷物</string>
     <string name="type_can">罐头食品</string>
     <string name="type_condiment">调味品</string>
+    <string name="dice_view_empty_title">还没有任何食物记录哦～</string>
+    <string name="thanks_when_email">感谢分享您对此应用的意见和建议</string>
+    <string name="no_email_app">没有找到邮件应用</string>
 </resources>
