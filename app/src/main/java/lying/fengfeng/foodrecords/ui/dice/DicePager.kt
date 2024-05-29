@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -42,7 +46,7 @@ fun DicePager(
 
 ) {
 
-    val context = LocalContext.current
+    var isCardListEmpty by remember { mutableStateOf(false) }
 
     // TODO 全局用一套cardDataList
     var cardDataList: List<FoodInfo> by remember {
@@ -53,14 +57,36 @@ fun DicePager(
         withContext(Dispatchers.IO) {
             cardDataList = AppRepo.getAllFoodInfo()
         }
+        isCardListEmpty = cardDataList.isEmpty()
     }
+    
+    if (isCardListEmpty) {
+        EmptyView()
+    } else {
+        DiceView(cardDataList = cardDataList)
+    }
+}
 
+@Composable
+fun EmptyView() {
+    Text(
+        text = stringResource(id = R.string.dice_view_empty_title),
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DiceView(cardDataList: List<FoodInfo>) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
+        val context = LocalContext.current
         val pagerState = rememberPagerState(pageCount = {
             cardDataList.size
         })
