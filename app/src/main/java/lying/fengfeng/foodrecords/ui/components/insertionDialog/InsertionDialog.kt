@@ -57,7 +57,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
@@ -76,6 +78,7 @@ fun InsertionDialog() {
     val context = LocalContext.current
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
     var isDialogShown by remember { dialogViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
@@ -274,14 +277,14 @@ fun InsertionDialog() {
 
                             ) {
 
-                                dialogViewModel.foodTypes.forEach { selectionOption ->
+                                appViewModel.foodTypeList.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
-                                            foodType = selectionOption
+                                            foodType = selectionOption.type
                                             typeSelectionExpanded = false
                                         },
                                         text = {
-                                            Text(text = selectionOption)
+                                            Text(text = selectionOption.type)
                                         }
                                     )
                                 }
@@ -321,14 +324,14 @@ fun InsertionDialog() {
                                 modifier = Modifier.exposedDropdownSize(),
                             ) {
 
-                                dialogViewModel.shelfLifeList.forEach { selectionOption ->
+                                appViewModel.shelfLifeList.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
-                                            shelfLife = selectionOption
+                                            shelfLife = selectionOption.life
                                             shelfLifeExpanded = false
                                         },
                                         text = {
-                                            Text(text = "$selectionOption ${context.getString(R.string.shelf_life_day)}")
+                                            Text(text = "${selectionOption.life} ${context.getString(R.string.shelf_life_day)}")
                                         }
                                     )
                                 }

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,11 +28,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,8 +41,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,14 +56,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.entities.FoodTypeInfo
+import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +77,8 @@ fun SettingsScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
     ) {
-        // TODO chip的增删和持久化
+
+        val context = LocalContext.current
 
         val iconSize = 36.dp
         val subIconSize = 24.dp
@@ -82,7 +91,11 @@ fun SettingsScreen() {
         var infoExpanded by remember { mutableStateOf(false) }
         var wechatInfoExpanded by remember { mutableStateOf(false) }
 
-        val appViewModel: FoodRecordsAppViewModel = viewModel()
+        var foodTypeDialogShown by remember { mutableStateOf(false) }
+        var shelfLifeDialogShown by remember { mutableStateOf(false) }
+        val focusRequester = remember { FocusRequester() }
+
+        val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
         val foodTypeList = remember { appViewModel.foodTypeList }
         val shelfLifeList = remember { appViewModel.shelfLifeList }
 
@@ -98,7 +111,7 @@ fun SettingsScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.food_drumstick_svg),
                     contentDescription = null,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(iconSize)
                 )
                 Text(
                     text = stringResource(id = R.string.food_type_option),
@@ -108,45 +121,76 @@ fun SettingsScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                AnimatedVisibility(visible = foodTypeOptionExpanded, enter = scaleIn()) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(iconSize)
+                            .clickable {
+                                foodTypeDialogShown = true
+                            }
+                    )
+                }
 
                 Icon(
                     imageVector = Icons.Filled.ArrowDropDown,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(iconSize)
                         .rotate(if (foodTypeOptionExpanded) 180f else 0f)
                         .clickable {
                             foodTypeOptionExpanded = !foodTypeOptionExpanded
+                            shelfOptionExpanded = false
+                            notificationOptionExpanded = false
+                            infoExpanded = false
+                            wechatInfoExpanded = false
                         }
                 )
             }
 
             AnimatedVisibility(visible = foodTypeOptionExpanded) {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     LazyHorizontalStaggeredGrid(
                         rows = StaggeredGridCells.Fixed(2),
                         modifier = Modifier.heightIn(max = 96.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
                         items(
+                            key = { foodTypeList[it].type },
                             count = foodTypeList.size
-                        ) { it ->
+                        ) { index ->
+                            var selected by remember { mutableStateOf(false) }
+                            val foodTypeInfo = foodTypeList[index]
                             Box(
                                 modifier = Modifier
                                     .wrapContentSize()
                                     .padding(2.dp)
                             ) {
                                 InputChip(
-                                    selected = false,
-                                    onClick = { },
+                                    selected = selected,
+                                    onClick = {
+                                        selected = !selected
+                                    },
                                     label = {
                                         Text(
-                                            text = foodTypeList[it].type,
+                                            text = foodTypeInfo.type,
                                             fontSize = 18.sp
                                         )
+                                        if (selected) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Close,
+                                                contentDescription = null,
+                                                modifier = Modifier.clickable {
+                                                    appViewModel.removeFoodTypeInfo(foodTypeInfo)
+                                                }
+                                            )
+                                        }
                                     },
                                     colors = InputChipDefaults.inputChipColors(
-                                        containerColor = Color.Cyan
+                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
                                     ),
                                     border = null
                                 )
@@ -157,7 +201,6 @@ fun SettingsScreen() {
                 }
             }
         }
-
 
         Column(
             modifier = Modifier
@@ -181,6 +224,18 @@ fun SettingsScreen() {
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                AnimatedVisibility(visible = shelfOptionExpanded, enter = scaleIn()) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(iconSize)
+                            .clickable {
+                                shelfLifeDialogShown = true
+                            }
+                    )
+                }
+
                 Icon(
                     imageVector = Icons.Filled.ArrowDropDown,
                     contentDescription = null,
@@ -188,7 +243,11 @@ fun SettingsScreen() {
                         .size(iconSize)
                         .rotate(if (shelfOptionExpanded) 180f else 0f)
                         .clickable {
+                            foodTypeOptionExpanded = false
                             shelfOptionExpanded = !shelfOptionExpanded
+                            notificationOptionExpanded = false
+                            infoExpanded = false
+                            wechatInfoExpanded = false
                         }
                 )
             }
@@ -201,26 +260,38 @@ fun SettingsScreen() {
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
                         items(
+                            key = { shelfLifeList[it].life },
                             count = shelfLifeList.size
-                        ) { it ->
+                        ) { index ->
+                            var selected by remember { mutableStateOf(false) }
+                            val shelfLifeInfo = shelfLifeList[index]
                             Box(
                                 modifier = Modifier
                                     .wrapContentSize()
                                     .padding(2.dp)
                             ) {
                                 InputChip(
-                                    selected = false,
-                                    onClick = { },
+                                    selected = selected,
                                     label = {
                                         Text(
-                                            text = shelfLifeList[it].life + stringResource(id = R.string.shelf_life_day),
+                                            text = shelfLifeInfo.life + stringResource(id = R.string.shelf_life_day),
                                             fontSize = 18.sp
                                         )
+                                        if (selected) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Close,
+                                                contentDescription = null,
+                                                modifier = Modifier.clickable {
+                                                    appViewModel.removeShelfLifeInfo(shelfLifeInfo)
+                                                }
+                                            )
+                                        }
                                     },
+                                    onClick = { selected = !selected },
                                     colors = InputChipDefaults.inputChipColors(
-                                        containerColor = Color.Cyan
+                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
                                     ),
-                                    border = null
+                                    border = null,
                                 )
 
                             }
@@ -259,7 +330,11 @@ fun SettingsScreen() {
                         .size(iconSize)
                         .rotate(if (notificationOptionExpanded) 180f else 0f)
                         .clickable {
+                            foodTypeOptionExpanded = false
+                            shelfOptionExpanded = false
                             notificationOptionExpanded = !notificationOptionExpanded
+                            infoExpanded = false
+                            wechatInfoExpanded = false
                         }
                 )
             }
@@ -334,7 +409,11 @@ fun SettingsScreen() {
                         .size(iconSize)
                         .rotate(if (infoExpanded) 180f else 0f)
                         .clickable {
+                            foodTypeOptionExpanded = false
+                            shelfOptionExpanded = false
+                            notificationOptionExpanded = false
                             infoExpanded = !infoExpanded
+                            wechatInfoExpanded = false
                         }
                 )
             }
@@ -426,13 +505,112 @@ fun SettingsScreen() {
                 }
             }
         }
+
+        if (foodTypeDialogShown) {
+            var input by remember { mutableStateOf("") }
+            AlertDialog(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.food_drumstick_svg),
+                        contentDescription = null,
+                        modifier = Modifier.size(iconSize)
+                    )
+                },
+                title = {
+                    Text(text = "${stringResource(id = R.string.add)} ${stringResource(id = R.string.title_type)}")
+                },
+                text = {
+                    OutlinedTextField(
+                        value = input,
+                        onValueChange = { input = it },
+                        modifier = Modifier.focusRequester(focusRequester)
+                    )
+                },
+                onDismissRequest = {
+                    foodTypeDialogShown = false
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            appViewModel.addFoodTypeInfo(FoodTypeInfo(type = input))
+                            foodTypeDialogShown = false
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            foodTypeDialogShown = false
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.dismiss))
+                    }
+                }
+            )
+            LaunchedEffect(key1 = Unit) {
+                focusRequester.requestFocus()
+            }
+        }
+
+        if (shelfLifeDialogShown) {
+            var input by remember { mutableStateOf("") }
+            AlertDialog(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.calendar_range_svg),
+                        contentDescription = null,
+                        modifier = Modifier.size(iconSize)
+                    )
+                },
+                title = {
+                    Text(text = "${stringResource(id = R.string.add)} ${stringResource(id = R.string.title_shelf_life)}")
+                },
+                text = {
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+                        NumberPickerWithButtons(
+                            onNumberChange = {
+                                input = it.toString()
+                            }
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                },
+                onDismissRequest = {
+                    shelfLifeDialogShown = false
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            appViewModel.addShelfLifeInfo(ShelfLifeInfo(life = input))
+                            shelfLifeDialogShown = false
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            shelfLifeDialogShown = false
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.dismiss))
+                    }
+                }
+            )
+        }
+
+
     }
 }
 
 @Composable
 fun NumberPickerWithButtons(
     initialNumber: Int = 0,
-    minNumber: Int = Int.MIN_VALUE,
+    minNumber: Int = 0,
     maxNumber: Int = Int.MAX_VALUE,
     onNumberChange: (Int) -> Unit = {}
 ) {
@@ -491,9 +669,14 @@ fun EmailButton() {
 
         if (emailIntent.resolveActivity(context.packageManager) != null) {
             context.startActivity(emailIntent)
-            Toast.makeText(context, context.getString(R.string.thanks_when_email), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.thanks_when_email),
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
-            Toast.makeText(context, context.getString(R.string.no_email_app), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.no_email_app), Toast.LENGTH_SHORT)
+                .show()
         }
     }
     ) {
@@ -532,7 +715,7 @@ fun GitHubButton() {
                 context.startActivity(webIntent)
             }
         }
-        ) {
+    ) {
         Icon(
             painter = painterResource(id = R.drawable.github_mark_svg),
             contentDescription = null

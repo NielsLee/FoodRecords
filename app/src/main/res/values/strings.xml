@@ -21,7 +21,7 @@
     <string name="about_app">About</string>
     <string name="source_code_repo">Source code repository</string>
     <string name="contact_author">Contact author</string>
-    <string name="type_fruits_or_vegetables">Fruits or Vegetables</string>
+    <string name="type_fruits_or_vegetables">Produce</string>
     <string name="type_meat">Meat</string>
     <string name="type_milk">Milk</string>
     <string name="type_seafood">Seafood</string>
@@ -31,4 +31,7 @@
     <string name="dice_view_empty_title">Uh... No food records yet.</string>
     <string name="thanks_when_email">Thank you for sharing your opinions and suggestions about this app</string>
     <string name="no_email_app">No email application found</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="add">Add</string>
 </resources>

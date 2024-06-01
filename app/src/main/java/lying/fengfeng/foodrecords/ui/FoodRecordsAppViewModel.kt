@@ -38,4 +38,29 @@ class FoodRecordsAppViewModel: ViewModel() {
         return shelfLifeList
     }
 
+    fun addFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {
+        AppRepo.addTypeInfo(foodTypeInfo)
+        CoroutineScope(Dispatchers.IO).launch {
+            foodTypeList.clear()
+            foodTypeList.addAll(AppRepo.getAllTypeInfo())
+        }
+    }
+
+    fun addShelfLifeInfo(shelfLifeInfo: ShelfLifeInfo) {
+        AppRepo.addShelfLifeInfo(shelfLifeInfo)
+        CoroutineScope(Dispatchers.IO).launch {
+            shelfLifeList.clear()
+            shelfLifeList.addAll(AppRepo.getAllShelfLifeInfo())
+        }
+    }
+
+    fun removeFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {
+        foodTypeList.remove(foodTypeInfo)
+        AppRepo.removeTypeInfo(foodTypeInfo)
+    }
+
+    fun removeShelfLifeInfo(shelfLifeInfo: ShelfLifeInfo) {
+        shelfLifeList.remove(shelfLifeInfo)
+        AppRepo.removeShelfLifeInfo(shelfLifeInfo)
+    }
 }

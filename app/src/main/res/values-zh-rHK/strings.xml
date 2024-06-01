@@ -32,4 +32,7 @@
     <string name="dice_view_empty_title">仲未有任何食物記錄哦～</string>
     <string name="thanks_when_email">多謝你分享對此應用嘅意見同建議</string>
     <string name="no_email_app">搵唔到電郵應用程式</string>
+    <string name="confirm">確認</string>
+    <string name="dismiss">取消</string>
+    <string name="add">添加</string>
 </resources>
