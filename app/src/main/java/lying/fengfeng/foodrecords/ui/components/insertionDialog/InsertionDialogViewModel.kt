@@ -52,7 +52,6 @@ class InsertionDialogViewModel : ViewModel() {
     enum class CameraStatus {
         IDLE,
         PREVIEWING,
-        CAPTURED,
         IMAGE_READY
     }
 }

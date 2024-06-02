@@ -65,7 +65,6 @@ fun FoodPreview(
         if (cameraPermissionGranted) {
             when(cameraStatus) {
                 InsertionDialogViewModel.CameraStatus.IDLE -> {
-                    Log.d("LLF", "FoodPreview: status IDLE")
                     IconButton(
                         onClick = {
                             cameraStatus = InsertionDialogViewModel.CameraStatus.PREVIEWING
@@ -76,7 +75,6 @@ fun FoodPreview(
                     }
                 }
                 InsertionDialogViewModel.CameraStatus.PREVIEWING -> {
-                    Log.d("LLF", "FoodPreview: status PREVIEWING")
 
                     CameraPreview(
                         cameraState = cameraState,
@@ -90,7 +88,6 @@ fun FoodPreview(
                     }
                 }
                 InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
-                    Log.d("LLF", "FoodPreview: status READY")
 
                     val picturePath = AppRepo.getPicturePath(dialogViewModel.uuid.value)
                     var bitmap by remember { mutableStateOf(createBitmap()) }
@@ -112,9 +109,6 @@ fun FoodPreview(
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize()
                     )
-                }
-                else -> {
-                    Log.d("LLF", "FoodPreview: status ELSE")
                 }
             }
         } else {
