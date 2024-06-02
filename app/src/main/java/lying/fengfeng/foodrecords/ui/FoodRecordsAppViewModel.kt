@@ -51,10 +51,7 @@ class FoodRecordsAppViewModel: ViewModel() {
 
     fun addFoodInfo(foodInfo: FoodInfo) {
         AppRepo.addFoodInfo(foodInfo)
-        CoroutineScope(Dispatchers.IO).launch {
-            foodInfoList.clear()
-            foodInfoList.addAll(AppRepo.getAllFoodInfo())
-        }
+        foodInfoList.add(foodInfo)
     }
 
     fun addFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {

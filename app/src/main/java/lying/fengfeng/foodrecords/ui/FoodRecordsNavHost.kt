@@ -5,6 +5,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ val routeList = listOf("home", "dice", "settings")
 @Composable
 fun FoodRecordsNavHost(
     navController: NavHostController,
+    snackBarHostState: SnackbarHostState,
     modifier: Modifier
 ) {
 
@@ -67,7 +69,7 @@ fun FoodRecordsNavHost(
             RollScreen()
         }
         composable(routeList[2]) {
-            SettingsScreen()
+            SettingsScreen(snackBarHostState)
         }
     }
 }

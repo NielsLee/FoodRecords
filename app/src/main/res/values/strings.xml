@@ -35,4 +35,6 @@
     <string name="dismiss">Dismiss</string>
     <string name="add">Add</string>
     <string name="pick_it">Just pick it!</string>
+    <string name="removed">Removed</string>
+    <string name="undo">Undo</string>
 </resources>

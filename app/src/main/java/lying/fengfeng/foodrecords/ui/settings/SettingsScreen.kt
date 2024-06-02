@@ -43,6 +43,9 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,6 +67,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
@@ -72,7 +78,9 @@ import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    snackBarHostState: SnackbarHostState
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -185,6 +193,21 @@ fun SettingsScreen() {
                                                 contentDescription = null,
                                                 modifier = Modifier.clickable {
                                                     appViewModel.removeFoodTypeInfo(foodTypeInfo)
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        val result = snackBarHostState.showSnackbar(
+                                                            message = "${context.getString(R.string.removed)} ${foodTypeInfo.type}",
+                                                            actionLabel = context.getString(R.string.undo),
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                        when (result) {
+                                                            SnackbarResult.ActionPerformed -> {
+                                                                appViewModel.addFoodTypeInfo(foodTypeInfo)
+                                                            }
+                                                            SnackbarResult.Dismissed -> {
+
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             )
                                         }
@@ -283,6 +306,21 @@ fun SettingsScreen() {
                                                 contentDescription = null,
                                                 modifier = Modifier.clickable {
                                                     appViewModel.removeShelfLifeInfo(shelfLifeInfo)
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        val result = snackBarHostState.showSnackbar(
+                                                            message = "${context.getString(R.string.removed)} ${shelfLifeInfo.life}${context.getString(R.string.shelf_life_day)}",
+                                                            actionLabel = context.getString(R.string.undo),
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                        when (result) {
+                                                            SnackbarResult.ActionPerformed -> {
+                                                                appViewModel.addShelfLifeInfo(shelfLifeInfo)
+                                                            }
+                                                            SnackbarResult.Dismissed -> {
+
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             )
                                         }

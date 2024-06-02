@@ -36,4 +36,6 @@
     <string name="dismiss">取消</string>
     <string name="add">添加</string>
     <string name="pick_it">就係佢啦！</string>
+    <string name="removed">移除</string>
+    <string name="undo">撤銷</string>
 </resources>

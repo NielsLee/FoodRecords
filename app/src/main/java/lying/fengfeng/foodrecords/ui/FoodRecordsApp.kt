@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -34,6 +36,7 @@ fun FoodRecordsApp() {
     val context = LocalContext.current
 
     val screenParams by remember { mutableStateOf(ScreenParams()) }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val widthPixels = LocalContext.current.resources.displayMetrics.widthPixels
     val dpi = LocalContext.current.resources.displayMetrics.densityDpi
@@ -49,22 +52,13 @@ fun FoodRecordsApp() {
         1f
     }
 
-//    LaunchedEffect(showDialog) {
-//        if (!showDialog) {
-//            // 更新列表
-//            MainScope().launch {
-//                val newList = withContext(Dispatchers.IO) {
-//                    AppRepo.getAllFoodInfo()
-//                }
-//                homeViewModel.updateList(newList)
-//            }
-//        }
-//    }
-
     FoodRecordsTheme {
         CompositionLocalProvider(LocalScreenParams provides screenParams) {
             CompositionLocalProvider(LocalActivityContext provides context) {
                 Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackBarHostState)
+                    },
                     topBar = {
                         FoodRecordsTopBar(context.getString(R.string.app_name))
                     },
@@ -80,6 +74,7 @@ fun FoodRecordsApp() {
                 ) { paddingValues ->
                     FoodRecordsNavHost(
                         navController = navController,
+                        snackBarHostState = snackBarHostState,
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxSize()
