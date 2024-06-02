@@ -99,6 +99,22 @@ object AppRepo {
         }
     }
 
+    fun isNotificationEnabled(): Boolean {
+        return sp.getBoolean("notification_enabled", false)
+    }
+
+    fun setNotificationEnabled(boolean: Boolean) {
+        sp.edit().putBoolean("notification_enabled", boolean).apply()
+    }
+
+    fun getDaysBeforeNotification(): Int {
+        return sp.getInt("days_before_notification", 3)
+    }
+
+    fun setDaysBeforeNotification(days: Int) {
+        sp.edit().putInt("days_before_notification", days).apply()
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 

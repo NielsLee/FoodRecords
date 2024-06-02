@@ -37,4 +37,6 @@
     <string name="pick_it">Just pick it!</string>
     <string name="removed">Removed</string>
     <string name="undo">Undo</string>
+    <string name="expire_notification_title">About to expire!</string>
+    <string name="expire_notification_content">items about to expire, please take care of them!</string>
 </resources>

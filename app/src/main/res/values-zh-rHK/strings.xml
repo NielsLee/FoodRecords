@@ -38,4 +38,6 @@
     <string name="pick_it">就係佢啦！</string>
     <string name="removed">移除</string>
     <string name="undo">撤銷</string>
+    <string name="expire_notification_title">就嚟過期啦！</string>
+    <string name="expire_notification_content">種嘢食就嚟過期啦，快啲處理下啦！</string>
 </resources>

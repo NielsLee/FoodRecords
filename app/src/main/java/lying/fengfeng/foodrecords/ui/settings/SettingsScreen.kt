@@ -75,6 +75,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalActivityContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,6 +88,9 @@ fun SettingsScreen(
     ) {
 
         val context = LocalContext.current
+        val activityContext = LocalActivityContext.current
+        val appViewModel: FoodRecordsAppViewModel =
+            viewModel(viewModelStoreOwner = (activityContext as MainActivity))
 
         val iconSize = 36.dp
         val subIconSize = 24.dp
@@ -95,7 +99,6 @@ fun SettingsScreen(
         var foodTypeOptionExpanded by remember { mutableStateOf(false) }
         var shelfOptionExpanded by remember { mutableStateOf(false) }
         var notificationOptionExpanded by remember { mutableStateOf(false) }
-        var notificationEnabled by remember { mutableStateOf(false) }
         var infoExpanded by remember { mutableStateOf(false) }
         var wechatInfoExpanded by remember { mutableStateOf(false) }
 
@@ -103,9 +106,10 @@ fun SettingsScreen(
         var shelfLifeDialogShown by remember { mutableStateOf(false) }
         val focusRequester = remember { FocusRequester() }
 
-        val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
         val foodTypeList = remember { appViewModel.foodTypeList }
         val shelfLifeList = remember { appViewModel.shelfLifeList }
+        var notificationEnabled by remember { appViewModel.isNotificationEnabled }
+        var daysBeforeNotification by remember { appViewModel.daysBeforeNotification }
 
         Column(
             modifier = Modifier
@@ -201,8 +205,11 @@ fun SettingsScreen(
                                                         )
                                                         when (result) {
                                                             SnackbarResult.ActionPerformed -> {
-                                                                appViewModel.addFoodTypeInfo(foodTypeInfo)
+                                                                appViewModel.addFoodTypeInfo(
+                                                                    foodTypeInfo
+                                                                )
                                                             }
+
                                                             SnackbarResult.Dismissed -> {
 
                                                             }
@@ -308,14 +315,21 @@ fun SettingsScreen(
                                                     appViewModel.removeShelfLifeInfo(shelfLifeInfo)
                                                     CoroutineScope(Dispatchers.Main).launch {
                                                         val result = snackBarHostState.showSnackbar(
-                                                            message = "${context.getString(R.string.removed)} ${shelfLifeInfo.life}${context.getString(R.string.shelf_life_day)}",
+                                                            message = "${context.getString(R.string.removed)} ${shelfLifeInfo.life}${
+                                                                context.getString(
+                                                                    R.string.shelf_life_day
+                                                                )
+                                                            }",
                                                             actionLabel = context.getString(R.string.undo),
                                                             duration = SnackbarDuration.Short
                                                         )
                                                         when (result) {
                                                             SnackbarResult.ActionPerformed -> {
-                                                                appViewModel.addShelfLifeInfo(shelfLifeInfo)
+                                                                appViewModel.addShelfLifeInfo(
+                                                                    shelfLifeInfo
+                                                                )
                                                             }
+
                                                             SnackbarResult.Dismissed -> {
 
                                                             }
@@ -394,7 +408,14 @@ fun SettingsScreen(
 
                         Checkbox(
                             checked = notificationEnabled,
-                            onCheckedChange = { notificationEnabled = !notificationEnabled },
+                            onCheckedChange = {
+                                notificationEnabled = !notificationEnabled
+                                if (notificationEnabled) {
+                                    appViewModel.enableNotification(activityContext)
+                                } else {
+                                    appViewModel.disableNotification(activityContext)
+                                }
+                            },
                             modifier = Modifier.size(iconSize)
                         )
                     }
@@ -411,7 +432,12 @@ fun SettingsScreen(
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        NumberPickerWithButtons()
+                        NumberPickerWithButtons(
+                            initialNumber = daysBeforeNotification,
+                            onNumberChange = {
+                                appViewModel.updateDaysBeforeNotification(it)
+                            }
+                        )
                     }
                 }
 
