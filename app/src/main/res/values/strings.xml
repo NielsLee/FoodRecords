@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FoodRecords</string>
+    <string name="app_name">Fridgey</string>
     <string name="shelf_life_day">Day(s)</string>
     <string name="title_add_new">Add new food!</string>
     <string name="title_production_date">Production Date</string>

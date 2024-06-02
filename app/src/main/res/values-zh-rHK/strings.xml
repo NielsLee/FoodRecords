@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">食材記錄</string>
+    <string name="app_name">細雪櫃</string>
     <string name="shelf_life_day">日</string>
     <string name="title_add_new">添加新食物！</string>
     <string name="title_production_date">生產日期</string>
