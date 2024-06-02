@@ -28,10 +28,11 @@
     <string name="type_cereal">Cereal</string>
     <string name="type_can">Canned Food</string>
     <string name="type_condiment">Condiment</string>
-    <string name="dice_view_empty_title">Uh... No food records yet.</string>
+    <string name="dice_view_empty_title">Uh… No food records yet.</string>
     <string name="thanks_when_email">Thank you for sharing your opinions and suggestions about this app</string>
     <string name="no_email_app">No email application found</string>
     <string name="confirm">Confirm</string>
     <string name="dismiss">Dismiss</string>
     <string name="add">Add</string>
+    <string name="pick_it">Just pick it!</string>
 </resources>

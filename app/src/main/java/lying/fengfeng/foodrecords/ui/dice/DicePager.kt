@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.dice
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,41 +30,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import kotlin.random.Random
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DicePager(
 
 ) {
 
+    val activityContext = LocalActivityContext.current
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
     var isCardListEmpty by remember { mutableStateOf(false) }
 
-    // TODO 全局用一套cardDataList
-    var cardDataList: List<FoodInfo> by remember {
-        mutableStateOf(listOf())
-    }
+    var foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }
 
-    LaunchedEffect(key1 = cardDataList) {
+    LaunchedEffect(key1 = foodInfoList) {
         withContext(Dispatchers.IO) {
-            cardDataList = AppRepo.getAllFoodInfo()
+            foodInfoList = AppRepo.getAllFoodInfo()
         }
-        isCardListEmpty = cardDataList.isEmpty()
+        isCardListEmpty = foodInfoList.isEmpty()
     }
     
     if (isCardListEmpty) {
         EmptyView()
     } else {
-        DiceView(cardDataList = cardDataList)
+        DiceView(cardDataList = foodInfoList)
     }
 }
 
@@ -131,6 +134,7 @@ fun DiceView(cardDataList: List<FoodInfo>) {
                     }
                     isRollButtonEnabled = true
                     EffectUtil.playNotification(context)
+                    Toast.makeText(context, context.getString(R.string.pick_it), Toast.LENGTH_SHORT).show()
                 }
 
             },

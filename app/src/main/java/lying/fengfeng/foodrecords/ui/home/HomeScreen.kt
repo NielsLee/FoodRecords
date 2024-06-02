@@ -12,8 +12,7 @@ import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 
 @Composable
 fun HomeScreen(
-    foodInfoList: List<FoodInfo>,
-    onRefresh: () -> Unit
+    foodInfoList: List<FoodInfo>
 ) {
 
     LazyVerticalStaggeredGrid(
@@ -28,7 +27,7 @@ fun HomeScreen(
                 foodInfoList[it].uuid
             }
         ) { index ->
-            FoodInfoCard(foodInfo = foodInfoList[index], modifier = Modifier, onDelete = onRefresh)
+            FoodInfoCard(foodInfo = foodInfoList[index], modifier = Modifier)
         }
     }
 }

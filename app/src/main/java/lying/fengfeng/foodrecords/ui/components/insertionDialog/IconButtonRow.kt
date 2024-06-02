@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.util.Log
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
@@ -30,8 +29,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.CameraState
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
 
@@ -45,7 +47,9 @@ fun IconButtonRow(
 ) {
 
     val context = LocalContext.current
+    val activityContext = LocalActivityContext.current
     val dialogViewModel: InsertionDialogViewModel = viewModel()
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
 
     var showDialog by remember { dialogViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
@@ -171,8 +175,7 @@ fun IconButtonRow(
                         dialogViewModel.shelfLife.value,
                         pictureUUID
                     )
-                    Log.d("LLF", "IconButtonRow: $foodInfo")
-                    AppRepo.addFoodInfo(foodInfo)
+                    appViewModel.addFoodInfo(foodInfo)
                     showDialog = false
                     dialogViewModel.initParams()
                 },
@@ -191,7 +194,6 @@ fun IconButtonRow(
                     val file = File(AppRepo.getPicturePath(pictureUUID))
                     dialogViewModel.uuid.value = pictureUUID
                     cameraState.takePicture(file) {
-                        Log.d("LLF", "IconButtonRow: $it, file = ${file.path}")
                         cameraStatus = InsertionDialogViewModel.CameraStatus.IMAGE_READY
                     }
                 },

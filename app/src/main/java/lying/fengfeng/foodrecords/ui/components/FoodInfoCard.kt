@@ -39,12 +39,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
@@ -55,11 +58,11 @@ import java.io.File
 @Composable
 fun FoodInfoCard(
     foodInfo: FoodInfo,
-    modifier: Modifier = Modifier,
-    onDelete: (() -> Unit)? = null
+    modifier: Modifier = Modifier
     ) {
 
     val context = LocalContext.current
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
@@ -184,9 +187,7 @@ fun FoodInfoCard(
                                         it.delete()
                                     }
                                 }
-                                AppRepo.removeFoodInfo(foodInfo)
-                                onDelete?.invoke()
-//                                homeViewModel.updateList(FoodInfoRepo.getAll())
+                                appViewModel.removeFoodInfo(foodInfo)
                             }
                         })
                 }
@@ -203,7 +204,9 @@ fun RemainingDaysWindow(
     val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife)
     val context = LocalContext.current
     Box(
-        modifier = Modifier.wrapContentHeight().fillMaxWidth(),
+        modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         if (remainingDays > 0) {

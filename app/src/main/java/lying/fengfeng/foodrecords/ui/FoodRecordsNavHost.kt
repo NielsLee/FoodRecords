@@ -6,22 +6,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import lying.fengfeng.foodrecords.repository.AppRepo
-import lying.fengfeng.foodrecords.ui.home.HomeScreen
-import lying.fengfeng.foodrecords.ui.home.HomeViewModel
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.ui.dice.RollScreen
+import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
+import lying.fengfeng.foodrecords.utils.DateUtil
 
 val routeList = listOf("home", "dice", "settings")
 
@@ -31,9 +29,9 @@ fun FoodRecordsNavHost(
     modifier: Modifier
 ) {
 
-    val homeViewModel: HomeViewModel = viewModel()
-    val foodInfoList by remember { homeViewModel.foodInfoList }
-    val context = LocalContext.current
+    val activityContext = LocalActivityContext.current
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
+    val foodInfoList = remember { appViewModel.foodInfoList }.sortedBy { DateUtil.getRemainingDays(it.productionDate, it.shelfLife) }
 
     NavHost(
         navController = navController,
@@ -62,8 +60,7 @@ fun FoodRecordsNavHost(
     ) {
         composable(routeList[0]) {
             HomeScreen(
-                foodInfoList = foodInfoList,
-                onRefresh = { homeViewModel.updateList(AppRepo.getAllFoodInfo()) }
+                foodInfoList = foodInfoList
             )
         }
         composable(routeList[1]) {
