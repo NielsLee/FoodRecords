@@ -1,0 +1,1 @@
+An app for recording foods, which allows you to easily enter the photos, names, production dates and shelf life of foods; the app will help you sort the foods according to when they are about to expire, and will send you notifications to remind you to deal with them when the foods are about to expire (if you need)
