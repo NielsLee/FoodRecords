@@ -59,10 +59,11 @@ import java.io.File
 fun FoodInfoCard(
     foodInfo: FoodInfo,
     modifier: Modifier = Modifier
-    ) {
+) {
 
     val context = LocalContext.current
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel =
+        viewModel(viewModelStoreOwner = (context as MainActivity))
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
@@ -226,11 +227,18 @@ fun RemainingDaysWindow(
                         textAlign = TextAlign.Center
                     )
                 }
+
+                val fontSize = if (remainingDays >= 100) {
+                    36.sp
+                } else {
+                    48.sp
+                }
+
                 Text(
                     text = remainingDays.toString(),
                     modifier = Modifier,
                     style = TextStyle(
-                        fontSize = 48.sp,
+                        fontSize = fontSize,
                         color = ExpiredGreen
                     )
                 )
