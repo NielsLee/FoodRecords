@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -635,6 +636,7 @@ fun SettingsScreen(
                     Row {
                         Spacer(modifier = Modifier.weight(1f))
                         NumberPickerWithButtons(
+                            expanded = true,
                             onNumberChange = {
                                 input = it.toString()
                             }
@@ -676,6 +678,7 @@ fun NumberPickerWithButtons(
     initialNumber: Int = 0,
     minNumber: Int = 0,
     maxNumber: Int = Int.MAX_VALUE,
+    expanded: Boolean = false,
     onNumberChange: (Int) -> Unit = {}
 ) {
     var number by remember { mutableIntStateOf(initialNumber) }
@@ -685,12 +688,30 @@ fun NumberPickerWithButtons(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
     ) {
+        if (expanded) {
+            IconButton(
+                onClick = {
+                    number -= 20
+                    if (number <= minNumber) {
+                        number = 0
+                        onNumberChange(number)
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Remove,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
+
         IconButton(
             onClick = {
                 if (number > minNumber) {
                     number--
-                    onNumberChange(number)
                 }
+                onNumberChange(number)
             },
             modifier = Modifier.size(40.dp)
         ) {
@@ -716,6 +737,24 @@ fun NumberPickerWithButtons(
             modifier = Modifier.size(40.dp)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+        }
+
+        if (expanded) {
+            IconButton(
+                onClick = {
+                    number += 20
+                    if (number >= maxNumber) {
+                        number = maxNumber
+                    }
+                    onNumberChange(number)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         }
     }
 }
