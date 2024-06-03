@@ -210,6 +210,8 @@ fun RemainingDaysWindow(
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
+        val fontSize = 36.sp
+
         if (remainingDays > 0) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -226,12 +228,6 @@ fun RemainingDaysWindow(
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                }
-
-                val fontSize = if (remainingDays >= 100) {
-                    36.sp
-                } else {
-                    48.sp
                 }
 
                 Text(
@@ -265,7 +261,7 @@ fun RemainingDaysWindow(
                     text = (-remainingDays).toString(),
                     modifier = Modifier,
                     style = TextStyle(
-                        fontSize = 48.sp,
+                        fontSize = fontSize,
                         color = ExpiredRed
                     )
                 )
