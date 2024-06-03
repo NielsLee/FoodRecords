@@ -1,0 +1,10 @@
+package lying.fengfeng.foodrecords
+
+object Constants {
+
+    const val SP_NAME = "FoodInfoSP"
+    const val DB_NAME_FOOD_INFO = "FoodInfoDatabase"
+    const val DB_NAME_FOOD_TYPE_INFO = "FoodTypeInfoDatabase"
+    const val DB_NAME_SHELF_LIFE_INFO = "ShelfLifeInfoDatabase"
+    const val DB_VERSION = 1
+}

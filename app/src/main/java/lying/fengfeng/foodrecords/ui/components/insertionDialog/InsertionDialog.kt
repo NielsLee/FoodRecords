@@ -1,18 +1,15 @@
-package lying.fengfeng.foodrecords.ui.compose
+package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import androidx.compose.foundation.border
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -34,22 +31,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.currentRecomposeScope
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -58,65 +53,79 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
-import java.text.SimpleDateFormat
-import java.util.Locale
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
+import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
+import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
+import java.util.UUID
 
-object InsertionDialogCompose {
+/**
+ * 添加食物记录的弹窗
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InsertionDialog() {
 
-    val foodTypes = listOf("CXK", "FCC", "CLN", "MJQ")
-    var shelfLifeList = listOf(
-        "1Day",
-        "1Day",
-        "1Day",
-        "7Days",
-        "15Days",
-        "30Days",
-        "60Days",
-        "90Days",
-        "180Days"
-    )
+    val pictureUUID = UUID.randomUUID().toString()
 
-    val currentMillis = System.currentTimeMillis()
-    val todayMillis = (currentMillis - currentMillis % 86400000)
-    val dateFormatter = SimpleDateFormat("YYYY-MM-dd", Locale.getDefault())
-    val today = dateFormatter.format(todayMillis)
+    val configuration = LocalConfiguration.current
+    val context = LocalContext.current
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
-    @Composable
-    fun InsertionDialog(onDismiss: () -> Unit) {
+    val dialogViewModel: InsertionDialogViewModel = viewModel()
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
+    var isDialogShown by remember { dialogViewModel.isDialogShown }
+    var cameraStatus by remember { dialogViewModel.cameraStatus }
 
-        var typeSelectionExpanded by remember { mutableStateOf(false) }
-        var selectedTypeText by remember { mutableStateOf(foodTypes[0]) }
+    var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
 
-        var shelfLifeExpanded by remember { mutableStateOf(false) }
-        var shelfLifeValue by remember { mutableStateOf(shelfLifeList[0]) }
+    var typeSelectionExpanded by remember { mutableStateOf(false) }
 
-        var foodName by remember { mutableStateOf("foodNameValue") }
+    var shelfLifeExpanded by remember { mutableStateOf(false) }
 
-        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = todayMillis)
-        var openDialog by remember { mutableStateOf(false) }
-        var date by remember { mutableStateOf(today) }
+    var foodName by remember { dialogViewModel.foodName }
+    var productionDate by remember { dialogViewModel.productionDate }
+    var foodType by remember { dialogViewModel.foodType }
+    var shelfLife by remember { dialogViewModel.shelfLife }
 
-        val focusRequester = remember { FocusRequester() }
+    val datePickerState = rememberDatePickerState(todayMillis())
+    var openDialog by remember { mutableStateOf(false) }
+
+    val focusRequester = remember { FocusRequester() }
+    val cameraState = rememberCameraState()
+
+    cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+
+    CompositionLocalProvider(LocalUUID provides pictureUUID) {
 
         Dialog(
-            onDismissRequest = onDismiss,
-            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = {
+                isDialogShown = false
+                cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = false
+            ),
         ) {
             Card(
                 shape = RoundedCornerShape(12.dp),
                 elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier
-                    .padding(20.dp)
-                    .wrapContentHeight()
-                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
+                    .aspectRatio(
+                        1f / 1f
+                    )
 
             ) {
                 Text(
-                    text = "Add new food!",
+                    text = context.getString(R.string.title_add_new),
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
@@ -131,38 +140,49 @@ object InsertionDialogCompose {
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(10.dp),
+                            .padding(8.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
 
                         // 名称
-                        OutlinedTextField(
-                            value = foodName,
-                            onValueChange = { newText ->
-                                foodName = newText
-                            },
-                            label = { Text("Name") },
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .focusRequester(focusRequester)
-                                .onFocusChanged {
+                                .weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = foodName,
+                                onValueChange = { newText ->
+                                    foodName = newText
                                 },
-                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-                        )
+                                maxLines = 1,
+                                label = { Text(text = context.getString(R.string.title_name)) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester)
+                                    .onFocusChanged {
+                                        foodName = ""
+                                    },
+                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                            )
+                        }
 
                         LaunchedEffect(Unit) {
                             focusRequester.requestFocus()
                         }
 
                         // 生产日期
-                        Box {
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
                             OutlinedTextField(
                                 readOnly = false,
-                                value = date,
+                                value = productionDate,
+                                maxLines = 1,
                                 onValueChange = { newValue ->
-                                    date = newValue
+                                    productionDate = newValue
                                 },
-                                label = { Text("Select Date") },
+                                label = { Text(text = context.getString(R.string.title_production_date)) },
                                 trailingIcon = {
                                     IconButton(onClick = {
                                         MainScope().launch {
@@ -175,7 +195,7 @@ object InsertionDialogCompose {
                                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                 modifier = Modifier
-                                    .wrapContentWidth()
+                                    .fillMaxWidth()
                             )
 
                             if (openDialog) {
@@ -188,11 +208,12 @@ object InsertionDialogCompose {
                                             onClick = {
                                                 openDialog = false
                                                 datePickerState.selectedDateMillis?.also {
-                                                    date = dateFormatter.format(it)
+                                                    productionDate =
+                                                        dateWithFormat(it, "YYYY-MM-dd")
                                                 }
                                             },
                                         ) {
-                                            Text("OK")
+                                            Text(context.getString(R.string.ok))
                                         }
                                     },
                                     dismissButton = {
@@ -201,12 +222,20 @@ object InsertionDialogCompose {
                                                 openDialog = false
                                             }
                                         ) {
-                                            Text("Cancel")
+                                            Text(context.getString(R.string.cancel))
                                         }
-                                    }
+                                    },
+                                    properties = DialogProperties(
+                                        dismissOnClickOutside = false
+                                    ),
                                 ) {
 
-                                    DatePicker(state = datePickerState)
+                                    DatePicker(
+                                        state = datePickerState,
+                                        dateValidator = {
+                                            it <= todayMillis()
+                                        }
+                                    )
                                 }
                             }
 
@@ -218,13 +247,15 @@ object InsertionDialogCompose {
                             onExpandedChange = { typeSelectionExpanded = !typeSelectionExpanded },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .weight(1f)
 
                         ) {
                             OutlinedTextField(
                                 readOnly = true,
-                                value = selectedTypeText,
+                                value = foodType,
+                                maxLines = 1,
                                 onValueChange = { },
-                                label = { Text("Type") },
+                                label = { Text(text = context.getString(R.string.title_type)) },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(
                                         expanded = typeSelectionExpanded
@@ -233,7 +264,7 @@ object InsertionDialogCompose {
                                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 modifier = Modifier
                                     .menuAnchor()
-                                    .wrapContentWidth()
+                                    .fillMaxWidth()
                                     .clickable(enabled = false) {
                                     }
                             )
@@ -246,14 +277,14 @@ object InsertionDialogCompose {
 
                             ) {
 
-                                foodTypes.forEach { selectionOption ->
+                                appViewModel.foodTypeList.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
-                                            selectedTypeText = selectionOption
+                                            foodType = selectionOption.type
                                             typeSelectionExpanded = false
                                         },
                                         text = {
-                                            Text(text = selectionOption)
+                                            Text(text = selectionOption.type)
                                         }
                                     )
                                 }
@@ -266,12 +297,14 @@ object InsertionDialogCompose {
                             onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .weight(1f)
                         ) {
                             OutlinedTextField(
                                 readOnly = true,
-                                value = shelfLifeValue,
+                                value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
+                                maxLines = 1,
                                 onValueChange = { },
-                                label = { Text("Shelf Life") },
+                                label = { Text(text = context.getString(R.string.title_shelf_life)) },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(
                                         expanded = shelfLifeExpanded
@@ -280,7 +313,7 @@ object InsertionDialogCompose {
                                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
                                 modifier = Modifier
                                     .menuAnchor()
-                                    .wrapContentWidth()
+                                    .fillMaxWidth()
                                     .clickable(enabled = false) {
                                     }
                             )
@@ -291,14 +324,14 @@ object InsertionDialogCompose {
                                 modifier = Modifier.exposedDropdownSize(),
                             ) {
 
-                                shelfLifeList.forEach { selectionOption ->
+                                appViewModel.shelfLifeList.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         onClick = {
-                                            shelfLifeValue = selectionOption
+                                            shelfLife = selectionOption.life
                                             shelfLifeExpanded = false
                                         },
                                         text = {
-                                            Text(text = selectionOption)
+                                            Text(text = "${selectionOption.life} ${context.getString(R.string.shelf_life_day)}")
                                         }
                                     )
                                 }
@@ -307,37 +340,34 @@ object InsertionDialogCompose {
                     }
 
                     Column(
-                        modifier = Modifier.weight(1f).padding(10.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .padding(top = 8.dp)
                     ) {
 
                         OutlinedCard(
-                            modifier = Modifier.height(80.dp).fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(3f / 4f)
                         ) {
+                            FoodPreview(context, cameraState)
+                        }
 
-                        }
-                        Row {
-                            IconButton(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier.size(80.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icsvg_camera),
-                                    contentDescription = null,
-                                )
-                            }
-                            IconButton(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier.size(80.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icsvg_album),
-                                    contentDescription = null,
-                                )
-                            }
-                        }
+                        IconButtonRow(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 4.dp),
+                            cameraState,
+                        )
                     }
                 }
             }
         }
     }
+}
+
+
+val LocalUUID = compositionLocalOf<String> {
+    error("No UUID provided")
 }
