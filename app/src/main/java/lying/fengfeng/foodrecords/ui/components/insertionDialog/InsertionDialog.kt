@@ -209,7 +209,7 @@ fun InsertionDialog() {
                                                 openDialog = false
                                                 datePickerState.selectedDateMillis?.also {
                                                     productionDate =
-                                                        dateWithFormat(it, "YYYY-MM-dd")
+                                                        dateWithFormat(it, "YY-MM-dd")
                                                 }
                                             },
                                         ) {
