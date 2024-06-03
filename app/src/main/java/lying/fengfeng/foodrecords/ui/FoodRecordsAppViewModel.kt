@@ -77,18 +77,12 @@ class FoodRecordsAppViewModel: ViewModel() {
 
     fun addFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {
         AppRepo.addTypeInfo(foodTypeInfo)
-        CoroutineScope(Dispatchers.IO).launch {
-            foodTypeList.clear()
-            foodTypeList.addAll(AppRepo.getAllTypeInfo())
-        }
+        foodTypeList.add(foodTypeInfo)
     }
 
     fun addShelfLifeInfo(shelfLifeInfo: ShelfLifeInfo) {
         AppRepo.addShelfLifeInfo(shelfLifeInfo)
-        CoroutineScope(Dispatchers.IO).launch {
-            shelfLifeList.clear()
-            shelfLifeList.addAll(AppRepo.getAllShelfLifeInfo())
-        }
+        shelfLifeList.add(shelfLifeInfo)
     }
 
     fun removeFoodInfo(foodInfo: FoodInfo) {
