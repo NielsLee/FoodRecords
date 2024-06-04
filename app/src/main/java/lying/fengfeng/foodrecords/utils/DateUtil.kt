@@ -15,7 +15,7 @@ object DateUtil {
     }
 
     fun dateTimeStamp(dateString: String): Long {
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
         return dateFormatter.parse(dateString)?.time ?: 0
     }
 

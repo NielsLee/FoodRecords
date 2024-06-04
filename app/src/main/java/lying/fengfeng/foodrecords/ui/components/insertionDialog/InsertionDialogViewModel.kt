@@ -40,7 +40,7 @@ class InsertionDialogViewModel : ViewModel() {
             productionDate = mutableStateOf(
                 DateUtil.dateWithFormat(
                     DateUtil.todayMillis(),
-                    "YYYY-MM-dd"
+                    "YY-MM-dd"
                 )
             )
             foodType = mutableStateOf(foodTypes[0])
