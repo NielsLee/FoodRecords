@@ -3,3 +3,9 @@
 
 # Fridgey
 A simple recording app for keeping track of the ingredients at home; with just a few simple setup steps, you can start recording. The app will notify you when ingredients are nearing their expiration, so you no longer have to worry about food spoilage at home!
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/lying.fengfeng.foodrecords/)
+
+Or download the latest APK from the [Releases Section](https://github.com/NielsLee/FoodRecords/releases/latest).
