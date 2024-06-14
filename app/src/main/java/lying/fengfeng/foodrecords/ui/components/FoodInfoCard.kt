@@ -63,6 +63,7 @@ import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
+import kotlin.math.absoluteValue
 
 @Composable
 fun FoodInfoCard(
@@ -290,7 +291,13 @@ fun RemainingDaysWindow(
                 }
 
                 Text(
-                    text = remainingDays.toString(),
+                    text = remainingDays.let {
+                        if (it.absoluteValue > 99) {
+                            "99+"
+                        } else {
+                            it.toString()
+                        }
+                    },
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = fontSize,
@@ -317,7 +324,13 @@ fun RemainingDaysWindow(
                 }
 
                 Text(
-                    text = (-remainingDays).toString(),
+                    text = remainingDays.let {
+                        if (it.absoluteValue > 99) {
+                            "99+"
+                        } else {
+                            (-it).toString()
+                        }
+                    },
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = fontSize,
