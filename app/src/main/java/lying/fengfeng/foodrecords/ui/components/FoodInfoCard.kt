@@ -76,6 +76,7 @@ fun FoodInfoCard(
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 
+    val tipsButtonShown by remember { mutableStateOf(foodInfo.tips.isNotEmpty()) }
     var tipsShown by remember { mutableStateOf(false) }
 
 
@@ -95,18 +96,22 @@ fun FoodInfoCard(
                     .wrapContentSize(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                // TODO 显示特别提醒/置顶
-                IconButton(
-                    onClick = {
-                        tipsShown = !tipsShown
-                    }
-                ) {
-                    Icon(imageVector = Icons.Filled.Info, contentDescription = null)
+                if (tipsButtonShown) {
+                    // TODO 显示特别提醒/置顶
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable {
+                            tipsShown = !tipsShown
+                        }
+                    )
                 }
             }
             Text(
                 text = foodInfo.foodName,
-                modifier = Modifier,
+                modifier = Modifier.padding(8.dp),
                 style = TextStyle(
                     fontSize = 24.sp
                 )
@@ -240,7 +245,11 @@ fun FoodInfoCard(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Text("Tip Card", fontSize = 24.sp, color = Color.White)
+                    Text(
+                        text = foodInfo.tips,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
             }
         }

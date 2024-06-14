@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,12 +32,20 @@ object AppRepo {
     private lateinit var shelfLifeDB: ShelfLifeInfoDatabase
     private lateinit var shelfLifeDao: ShelfLifeInfoDao
 
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE FoodInfo ADD COLUMN tips TEXT NOT NULL DEFAULT '' ")
+        }
+    }
+
     fun init(application: Application) {
 
         app = application
         sp = application.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
 
-        foodInfoDB = Room.databaseBuilder(app, FoodInfoDatabase::class.java, DB_NAME_FOOD_INFO).build()
+        foodInfoDB = Room.databaseBuilder(app, FoodInfoDatabase::class.java, DB_NAME_FOOD_INFO)
+            .addMigrations(MIGRATION_1_2)
+            .build()
         foodInfoDao = foodInfoDB.foodInfoDao()
 
         typeInfoDB = Room.databaseBuilder(app, FoodTypeInfoDatabase::class.java, DB_NAME_FOOD_TYPE_INFO).build()
