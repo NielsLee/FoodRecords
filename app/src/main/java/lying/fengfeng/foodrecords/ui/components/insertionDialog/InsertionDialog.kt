@@ -231,7 +231,7 @@ fun InsertionDialog() {
 
                                 OutlinedTextField(
                                     readOnly = false,
-                                    value = if (isExpireDate) "" else productionDate,
+                                    value = if (isExpireDate) "YY-MM-dd" else productionDate,
                                     maxLines = 1,
                                     onValueChange = { newValue ->
                                         if (isExpireDate) {
@@ -301,10 +301,7 @@ fun InsertionDialog() {
                                 ) {
 
                                     DatePicker(
-                                        state = datePickerState,
-                                        dateValidator = {
-                                            it <= todayMillis()
-                                        }
+                                        state = datePickerState
                                     )
                                 }
                             }

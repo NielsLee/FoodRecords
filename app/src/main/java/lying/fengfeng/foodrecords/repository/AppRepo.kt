@@ -137,8 +137,6 @@ object AppRepo {
             typeInfoDao.insert(FoodTypeInfo(type = app.getString(R.string.type_can)))
             typeInfoDao.insert(FoodTypeInfo(type = app.getString(R.string.type_condiment)))
 
-            shelfLifeDao.insert(ShelfLifeInfo(life = "1"))
-            shelfLifeDao.insert(ShelfLifeInfo(life = "2"))
             shelfLifeDao.insert(ShelfLifeInfo(life = "3"))
             shelfLifeDao.insert(ShelfLifeInfo(life = "7"))
             shelfLifeDao.insert(ShelfLifeInfo(life = "14"))

@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.util.Log
 import android.util.Size
 import androidx.camera.view.CameraController
 import androidx.compose.foundation.Image
@@ -25,10 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -90,7 +87,7 @@ fun FoodPreview(
                 InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
 
                     val picturePath = AppRepo.getPicturePath(dialogViewModel.uuid.value)
-                    var bitmap by remember { mutableStateOf(createBitmap()) }
+                    var bitmap by remember { mutableStateOf(createPreviewBitmap()) }
                     val imageBitmap = bitmap.asImageBitmap()
                     val painter = BitmapPainter(imageBitmap)
 
@@ -139,13 +136,12 @@ fun FoodPreview(
     }
 }
 
-fun createBitmap(): Bitmap {
+fun createPreviewBitmap(): Bitmap {
 
     val bitmap = Bitmap.createBitmap(1200, 1600, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val paint = android.graphics.Paint().apply {
-        color = Color.argb(0, White.toArgb(), White.toArgb(), White.toArgb())
-        // TODO 没有显示图片的时候生成一个空白遮罩
+        color = Color.argb(0, 0, 0, 0)
     }
     canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
 

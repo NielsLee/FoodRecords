@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
@@ -59,7 +60,6 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -135,11 +135,19 @@ fun FoodInfoCard(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                 ) {
-                    Image(
-                        bitmap = imageBitmap ?: createBitmap().asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                    )
+                    if (imageBitmap == null) {
+                        Image(
+                            imageVector = Icons.Filled.Fastfood,
+                            contentDescription = null,
+                            modifier = Modifier.aspectRatio(3f/4f)
+                        )
+                    } else {
+                        Image(
+                            bitmap = imageBitmap!!,
+                            contentDescription = null,
+                            modifier = Modifier
+                        )
+                    }
 
                     // 在IO线程中加载图片
                     LaunchedEffect(Unit) {
