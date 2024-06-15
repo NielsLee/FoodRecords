@@ -40,4 +40,5 @@
     <string name="undo">撤销</string>
     <string name="expire_notification_title">要过期啦！</string>
     <string name="expire_notification_content">种吃的要过期了，快处理一下吧</string>
+    <string name="title_expiration_date">过保质期</string>
 </resources>

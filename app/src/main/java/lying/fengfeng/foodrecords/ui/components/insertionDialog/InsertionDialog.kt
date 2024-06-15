@@ -1,19 +1,24 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -25,8 +30,11 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -43,7 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -74,15 +82,15 @@ fun InsertionDialog() {
 
     val pictureUUID = UUID.randomUUID().toString()
 
-    val configuration = LocalConfiguration.current
     val context = LocalContext.current
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel =
+        viewModel(viewModelStoreOwner = (context as MainActivity))
     var isDialogShown by remember { dialogViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
-    var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
+    var isExpireDate by remember { mutableStateOf(false) }
 
     var typeSelectionExpanded by remember { mutableStateOf(false) }
 
@@ -90,6 +98,7 @@ fun InsertionDialog() {
 
     var foodName by remember { dialogViewModel.foodName }
     var productionDate by remember { dialogViewModel.productionDate }
+    var expirationDate by remember { dialogViewModel.expirationDate }
     var foodType by remember { dialogViewModel.foodType }
     var shelfLife by remember { dialogViewModel.shelfLife }
 
@@ -148,7 +157,8 @@ fun InsertionDialog() {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f)
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
                         ) {
                             OutlinedTextField(
                                 value = foodName,
@@ -173,30 +183,87 @@ fun InsertionDialog() {
 
                         // 生产日期
                         Box(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1.8f),
+                            contentAlignment = Alignment.Center
                         ) {
-                            OutlinedTextField(
-                                readOnly = false,
-                                value = productionDate,
-                                maxLines = 1,
-                                onValueChange = { newValue ->
-                                    productionDate = newValue
-                                },
-                                label = { Text(text = context.getString(R.string.title_production_date)) },
-                                trailingIcon = {
-                                    IconButton(onClick = {
-                                        MainScope().launch {
-                                            openDialog = true
+
+                            Column {
+
+                                // 切换生产日期和保质期
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                ) {
+
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = context.getString(R.string.title_production_date),
+                                        fontSize = 12.sp
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+
+                                    Switch(
+                                        checked = isExpireDate,
+                                        onCheckedChange = { isExpireDate = it },
+                                        thumbContent = {
+                                            Icon(
+                                                imageVector = if (isExpireDate) Icons.Filled.DeleteForever else Icons.Filled.CalendarMonth,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(SwitchDefaults.IconSize)
+                                            )
+                                        },
+                                        colors = SwitchDefaults.colors(
+                                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                            checkedTrackColor = Color.Transparent,
+                                            checkedBorderColor = MaterialTheme.colorScheme.primary,
+                                            uncheckedThumbColor = MaterialTheme.colorScheme.primary,
+                                        )
+                                    )
+
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = context.getString(R.string.title_expiration_date),
+                                        fontSize = 12.sp
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+
+                                }
+
+                                OutlinedTextField(
+                                    readOnly = false,
+                                    value = if (isExpireDate) "" else productionDate,
+                                    maxLines = 1,
+                                    onValueChange = { newValue ->
+                                        if (isExpireDate) {
+                                            expirationDate = newValue
+                                        } else {
+                                            productionDate = newValue
                                         }
-                                    }) {
-                                        Icon(Icons.Filled.DateRange, null)
-                                    }
-                                },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
+                                    },
+                                    label = {
+                                        Icon(
+                                            imageVector = if (isExpireDate) {
+                                                Icons.Filled.DeleteForever
+                                            } else {
+                                                Icons.Filled.CalendarMonth
+                                            }, contentDescription = null
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        IconButton(onClick = {
+                                            MainScope().launch {
+                                                openDialog = true
+                                            }
+                                        }) {
+                                            Icon(Icons.Filled.EditCalendar, null)
+                                        }
+                                    },
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                )
+                            }
 
                             if (openDialog) {
                                 DatePickerDialog(
@@ -208,8 +275,11 @@ fun InsertionDialog() {
                                             onClick = {
                                                 openDialog = false
                                                 datePickerState.selectedDateMillis?.also {
-                                                    productionDate =
-                                                        dateWithFormat(it, "YY-MM-dd")
+                                                    if (isExpireDate) {
+                                                        expirationDate = dateWithFormat(it, "YY-MM-dd")
+                                                    } else {
+                                                        productionDate = dateWithFormat(it, "YY-MM-dd")
+                                                    }
                                                 }
                                             },
                                         ) {
@@ -240,6 +310,62 @@ fun InsertionDialog() {
                             }
 
                         }
+
+                        // 保质期
+                        AnimatedVisibility(visible = !isExpireDate) {
+                            ExposedDropdownMenuBox(
+                                expanded = shelfLifeExpanded,
+                                onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                            ) {
+                                OutlinedTextField(
+                                    readOnly = true,
+                                    value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
+                                    maxLines = 1,
+                                    onValueChange = { },
+                                    label = { Text(text = context.getString(R.string.title_shelf_life)) },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                            expanded = shelfLifeExpanded
+                                        )
+                                    },
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth()
+                                        .clickable(enabled = false) {
+                                        }
+                                )
+
+                                DropdownMenu(
+                                    expanded = shelfLifeExpanded,
+                                    onDismissRequest = { shelfLifeExpanded = false },
+                                    modifier = Modifier.exposedDropdownSize(),
+                                ) {
+
+                                    appViewModel.shelfLifeList.forEach { selectionOption ->
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                shelfLife = selectionOption.life
+                                                shelfLifeExpanded = false
+                                            },
+                                            text = {
+                                                Text(
+                                                    text = "${selectionOption.life} ${
+                                                        context.getString(
+                                                            R.string.shelf_life_day
+                                                        )
+                                                    }"
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
 
                         // 分类
                         ExposedDropdownMenuBox(
@@ -285,53 +411,6 @@ fun InsertionDialog() {
                                         },
                                         text = {
                                             Text(text = selectionOption.type)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                        // 保质期
-                        ExposedDropdownMenuBox(
-                            expanded = shelfLifeExpanded,
-                            onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            OutlinedTextField(
-                                readOnly = true,
-                                value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
-                                maxLines = 1,
-                                onValueChange = { },
-                                label = { Text(text = context.getString(R.string.title_shelf_life)) },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = shelfLifeExpanded
-                                    )
-                                },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth()
-                                    .clickable(enabled = false) {
-                                    }
-                            )
-
-                            DropdownMenu(
-                                expanded = shelfLifeExpanded,
-                                onDismissRequest = { shelfLifeExpanded = false },
-                                modifier = Modifier.exposedDropdownSize(),
-                            ) {
-
-                                appViewModel.shelfLifeList.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            shelfLife = selectionOption.life
-                                            shelfLifeExpanded = false
-                                        },
-                                        text = {
-                                            Text(text = "${selectionOption.life} ${context.getString(R.string.shelf_life_day)}")
                                         }
                                     )
                                 }

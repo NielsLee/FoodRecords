@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 import java.util.Locale
 
 object DateUtil {
@@ -27,9 +28,31 @@ object DateUtil {
         return startTimestamp
     }
 
-    fun getRemainingDays(dateString: String, shelfLife: String): Int {
-        val passedDays = ((System.currentTimeMillis() - dateTimeStamp(dateString)) / (24 * 60 * 60 * 1000)).toInt()
-        val shelfDays = shelfLife.toInt()
-        return shelfDays - passedDays
+    fun getRemainingDays(dateString: String, shelfLife: String, expirationDate: String): Int {
+        if (expirationDate.isEmpty()) {
+            val passedDays =
+                ((System.currentTimeMillis() - dateTimeStamp(dateString)) / (24 * 60 * 60 * 1000)).toInt()
+            val shelfDays = shelfLife.toInt()
+            return shelfDays - passedDays
+        } else {
+            val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+            val parsedExpirationDate = dateFormatter.parse(expirationDate)?.time ?: 0
+            val remainingMillis = parsedExpirationDate - System.currentTimeMillis()
+            return (remainingMillis / (24 * 60 * 60 * 1000)).toInt()
+        }
+    }
+
+    fun getExpirationDate(productionDate: String, shelfLife: String): String {
+        return try {
+            val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+            val parsedProductionDate = dateFormatter.parse(productionDate)?.time ?: 0
+            val shelfLifeDays = shelfLife.toLong() * (24 * 60 * 60 * 1000)
+            val expirationDate = parsedProductionDate + shelfLifeDays
+            dateFormatter.format(expirationDate)
+        } catch (e: DateTimeParseException) {
+            "Invalid date format"
+        } catch (e: NumberFormatException) {
+            "Invalid shelf life"
+        }
     }
 }

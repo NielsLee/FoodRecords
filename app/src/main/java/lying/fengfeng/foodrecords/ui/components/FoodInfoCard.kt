@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Card
@@ -105,8 +107,8 @@ fun FoodInfoCard(
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .clickable {
-                            tipsShown = !tipsShown
-                        }
+                                tipsShown = !tipsShown
+                            }
                     )
                 }
             }
@@ -151,7 +153,8 @@ fun FoodInfoCard(
 
                 RemainingDaysWindow(
                     productionDate = foodInfo.productionDate,
-                    shelfLife = foodInfo.shelfLife
+                    shelfLife = foodInfo.shelfLife,
+                    expirationDate = foodInfo.expirationDate
                 )
             }
         }
@@ -159,22 +162,32 @@ fun FoodInfoCard(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         ) {
 
             Column(
                 Modifier.padding(horizontal = 8.dp)
             ) {
 
-                Text(
-                    text = foodInfo.foodType,
-                    fontStyle = FontStyle.Italic
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.TypeSpecimen, contentDescription = null)
+                    Text(
+                        text = foodInfo.foodType,
+                        fontStyle = FontStyle.Italic
+                    )
+                }
 
-                Text(
-                    text = foodInfo.productionDate,
-                    fontWeight = FontWeight.ExtraBold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null)
+                    Text(
+                        text = foodInfo.expirationDate,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
             }
 
             Box(
@@ -237,7 +250,7 @@ fun FoodInfoCard(
             Card(
                 modifier = Modifier
                     .fillMaxSize()
-                    .aspectRatio(1f/1f)
+                    .aspectRatio(1f / 1f)
                     .animateContentSize()
                     .clickable { tipsShown = false },
                 shape = RoundedCornerShape(12.dp)
@@ -261,8 +274,9 @@ fun FoodInfoCard(
 fun RemainingDaysWindow(
     productionDate: String,
     shelfLife: String,
+    expirationDate: String
 ) {
-    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife)
+    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
     val context = LocalContext.current
     Box(
         modifier = Modifier
