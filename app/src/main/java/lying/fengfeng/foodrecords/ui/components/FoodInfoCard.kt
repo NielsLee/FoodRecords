@@ -2,6 +2,8 @@ package lying.fengfeng.foodrecords.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
@@ -243,11 +245,11 @@ fun FoodInfoCard(
     AnimatedVisibility(
         visible = tipsShown,
         enter = slideInVertically(
-            initialOffsetY = { -it }
-        ),
+            initialOffsetY = { it }
+        ) + fadeIn(),
         exit = slideOutVertically(
             targetOffsetY = { -it }
-        )
+        ) + fadeOut()
         ) {
         Box(
             modifier = Modifier
