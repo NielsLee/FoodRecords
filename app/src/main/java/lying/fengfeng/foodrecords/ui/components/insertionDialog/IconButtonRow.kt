@@ -181,7 +181,8 @@ fun IconButtonRow(
                                 dialogViewModel.shelfLife.value
                             )
                         },
-                        uuid = pictureUUID
+                        uuid = pictureUUID,
+                        tips = dialogViewModel.tips.value
                     )
                     appViewModel.addFoodInfo(foodInfo)
                     showDialog = false

@@ -21,6 +21,7 @@ class InsertionDialogViewModel : ViewModel() {
     lateinit var shelfLife: MutableState<String>
     lateinit var expirationDate: MutableState<String>
     lateinit var uuid: MutableState<String>
+    lateinit var tips: MutableState<String>
 
     lateinit var foodTypes: List<String>
     lateinit var shelfLifeList: List<String>
@@ -48,6 +49,7 @@ class InsertionDialogViewModel : ViewModel() {
             shelfLife = mutableStateOf(shelfLifeList[0])
             expirationDate = mutableStateOf("")
             uuid = mutableStateOf("")
+            tips = mutableStateOf("")
         }
     }
 
