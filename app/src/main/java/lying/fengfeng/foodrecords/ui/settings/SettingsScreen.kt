@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -95,6 +97,7 @@ fun SettingsScreen(
 
         val iconSize = 36.dp
         val subIconSize = 24.dp
+        val titleFontSize = 18.sp
         val titlePadding = PaddingValues(start = 8.dp)
 
         var foodTypeOptionExpanded by remember { mutableStateOf(false) }
@@ -128,7 +131,7 @@ fun SettingsScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.food_type_option),
-                    fontSize = 24.sp,
+                    fontSize = titleFontSize,
                     modifier = Modifier.padding(start = 8.dp)
                 )
 
@@ -249,7 +252,7 @@ fun SettingsScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.shelf_life_option),
-                    fontSize = 24.sp,
+                    fontSize = titleFontSize,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
 
@@ -370,7 +373,7 @@ fun SettingsScreen(
 
                 Text(
                     text = stringResource(id = R.string.notification_option),
-                    fontSize = 24.sp,
+                    fontSize = titleFontSize,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
 
@@ -401,7 +404,7 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
                             text = stringResource(id = R.string.enable_notification),
-                            fontSize = 24.sp,
+                            fontSize = titleFontSize,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
 
@@ -427,7 +430,7 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
                             text = stringResource(id = R.string.days_of_advance_notice),
-                            fontSize = 24.sp,
+                            fontSize = titleFontSize,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
 
@@ -461,7 +464,7 @@ fun SettingsScreen(
 
                 Text(
                     text = stringResource(id = R.string.about_app),
-                    fontSize = 24.sp,
+                    fontSize = titleFontSize,
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
 
@@ -492,7 +495,7 @@ fun SettingsScreen(
 
                         Text(
                             text = stringResource(id = R.string.source_code_repo),
-                            fontSize = 24.sp,
+                            fontSize = titleFontSize,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
 
@@ -511,7 +514,7 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
                             text = stringResource(id = R.string.contact_author),
-                            fontSize = 24.sp,
+                            fontSize = titleFontSize,
                             modifier = Modifier.padding(paddingValues = titlePadding)
                         )
 
@@ -714,6 +717,8 @@ fun NumberPickerWithButtons(
                 onNumberChange(number)
             },
             modifier = Modifier.size(40.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Icon(imageVector = Icons.Filled.Remove, contentDescription = null)
         }
@@ -735,6 +740,8 @@ fun NumberPickerWithButtons(
                 }
             },
             modifier = Modifier.size(40.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = null)
         }
