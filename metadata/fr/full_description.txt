@@ -1,0 +1,1 @@
+Une application d'enregistrement des aliments qui vous permet de saisir facilement la photo, le nom, la date de production et la durée de conservation de l'aliment. L'application vous aidera à trier les aliments selon leur date de péremption et à les envoyer lorsqu'ils sont sur le point de le faire. expirer (si vous en avez besoin) Les notifications vous rappellent de les gérer.
