@@ -1,0 +1,6 @@
+Added French translation
+The card display page now shows the expiration date instead of the production date
+When adding food, it now supports setting the shelf life directly
+Added a tips feature for food cards. You can enter tips when adding food, and later display the tips by clicking the tips button on the display page
+Added an area in the top app bar to display the current date
+Slightly adjusted some styles and fixed some display issues

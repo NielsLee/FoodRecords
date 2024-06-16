@@ -1,0 +1,6 @@
+Ajout de la traduction française
+La page d'affichage de la carte affichera désormais la date d'expiration au lieu de la date de production
+Lors de l'ajout de nourriture, il est désormais possible de définir directement la durée de conservation
+Ajout d'une fonctionnalité de conseils pour les cartes alimentaires. Vous pouvez entrer des conseils lors de l'ajout de nourriture et les afficher ensuite en cliquant sur le bouton des conseils sur la page d'affichage
+Ajout d'une zone dans la barre d'application supérieure pour afficher la date actuelle
+Légèrement ajusté certains styles et corrigé quelques problèmes d'affichage

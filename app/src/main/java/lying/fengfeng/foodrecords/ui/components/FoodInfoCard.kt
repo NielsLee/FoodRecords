@@ -1,10 +1,19 @@
 package lying.fengfeng.foodrecords.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +22,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Card
@@ -30,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -48,12 +62,12 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
+import kotlin.math.absoluteValue
 
 @Composable
 fun FoodInfoCard(
@@ -66,6 +80,9 @@ fun FoodInfoCard(
         viewModel(viewModelStoreOwner = (context as MainActivity))
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    val tipsButtonShown by remember { mutableStateOf(foodInfo.tips.isNotEmpty()) }
+    var tipsShown by remember { mutableStateOf(false) }
 
 
     Card(
@@ -84,12 +101,22 @@ fun FoodInfoCard(
                     .wrapContentSize(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                // TODO 显示特别提醒/置顶
+                if (tipsButtonShown) {
+                    // TODO 显示特别提醒/置顶
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable {
+                                tipsShown = !tipsShown
+                            }
+                    )
+                }
             }
             Text(
                 text = foodInfo.foodName,
-                modifier = Modifier
-                    .padding(6.dp),
+                modifier = Modifier.padding(8.dp),
                 style = TextStyle(
                     fontSize = 24.sp
                 )
@@ -110,11 +137,19 @@ fun FoodInfoCard(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                 ) {
-                    Image(
-                        bitmap = imageBitmap ?: createBitmap().asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                    )
+                    if (imageBitmap == null) {
+                        Image(
+                            imageVector = Icons.Filled.Fastfood,
+                            contentDescription = null,
+                            modifier = Modifier.aspectRatio(3f/4f)
+                        )
+                    } else {
+                        Image(
+                            bitmap = imageBitmap!!,
+                            contentDescription = null,
+                            modifier = Modifier
+                        )
+                    }
 
                     // 在IO线程中加载图片
                     LaunchedEffect(Unit) {
@@ -128,7 +163,8 @@ fun FoodInfoCard(
 
                 RemainingDaysWindow(
                     productionDate = foodInfo.productionDate,
-                    shelfLife = foodInfo.shelfLife
+                    shelfLife = foodInfo.shelfLife,
+                    expirationDate = foodInfo.expirationDate
                 )
             }
         }
@@ -136,22 +172,32 @@ fun FoodInfoCard(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 4.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         ) {
 
             Column(
                 Modifier.padding(horizontal = 8.dp)
             ) {
 
-                Text(
-                    text = foodInfo.foodType,
-                    fontStyle = FontStyle.Italic
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.TypeSpecimen, contentDescription = null)
+                    Text(
+                        text = foodInfo.foodType,
+                        fontStyle = FontStyle.Italic
+                    )
+                }
 
-                Text(
-                    text = foodInfo.productionDate,
-                    fontWeight = FontWeight.ExtraBold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null)
+                    Text(
+                        text = DateUtil.getExpirationDate(foodInfo),
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
             }
 
             Box(
@@ -195,14 +241,52 @@ fun FoodInfoCard(
             }
         }
     }
+    
+    AnimatedVisibility(
+        visible = tipsShown,
+        enter = slideInVertically(
+            initialOffsetY = { it }
+        ) + fadeIn(),
+        exit = slideOutVertically(
+            targetOffsetY = { -it }
+        ) + fadeOut()
+        ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f / 1f)
+                    .animateContentSize()
+                    .clickable { tipsShown = false },
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = foodInfo.tips,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun RemainingDaysWindow(
     productionDate: String,
     shelfLife: String,
+    expirationDate: String
 ) {
-    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife)
+    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
     val context = LocalContext.current
     Box(
         modifier = Modifier
@@ -231,7 +315,13 @@ fun RemainingDaysWindow(
                 }
 
                 Text(
-                    text = remainingDays.toString(),
+                    text = remainingDays.let {
+                        if (it.absoluteValue > 99) {
+                            "99+"
+                        } else {
+                            it.toString()
+                        }
+                    },
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = fontSize,
@@ -258,7 +348,13 @@ fun RemainingDaysWindow(
                 }
 
                 Text(
-                    text = (-remainingDays).toString(),
+                    text = remainingDays.let {
+                        if (it.absoluteValue > 99) {
+                            "99+"
+                        } else {
+                            (-it).toString()
+                        }
+                    },
                     modifier = Modifier,
                     style = TextStyle(
                         fontSize = fontSize,

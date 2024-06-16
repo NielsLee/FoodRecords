@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import lying.fengfeng.foodrecords.R
@@ -32,7 +33,9 @@ fun RollScreen() {
                 text = context.getString(R.string.roll_title_primary),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                lineHeight = 48.sp,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.padding(6.dp))
@@ -41,7 +44,9 @@ fun RollScreen() {
                 text = context.getString(R.string.roll_title_secondary),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                lineHeight = 36.sp,
+                textAlign = TextAlign.Center
             )
         }
 

@@ -1,19 +1,32 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -25,8 +38,11 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -40,10 +56,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -74,15 +91,15 @@ fun InsertionDialog() {
 
     val pictureUUID = UUID.randomUUID().toString()
 
-    val configuration = LocalConfiguration.current
     val context = LocalContext.current
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (context as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel =
+        viewModel(viewModelStoreOwner = (context as MainActivity))
     var isDialogShown by remember { dialogViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
-    var isLandScape by remember { mutableStateOf(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) }
+    var isExpireDate by remember { mutableStateOf(false) }
 
     var typeSelectionExpanded by remember { mutableStateOf(false) }
 
@@ -90,11 +107,14 @@ fun InsertionDialog() {
 
     var foodName by remember { dialogViewModel.foodName }
     var productionDate by remember { dialogViewModel.productionDate }
+    var expirationDate by remember { dialogViewModel.expirationDate }
     var foodType by remember { dialogViewModel.foodType }
     var shelfLife by remember { dialogViewModel.shelfLife }
+    var tips by remember { dialogViewModel.tips }
 
     val datePickerState = rememberDatePickerState(todayMillis())
     var openDialog by remember { mutableStateOf(false) }
+    var tipsInputShown by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
     val cameraState = rememberCameraState()
@@ -113,253 +133,391 @@ fun InsertionDialog() {
                 dismissOnClickOutside = false
             ),
         ) {
-            Card(
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(4.dp),
-                modifier = Modifier
-                    .padding(12.dp)
-                    .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
-                    .aspectRatio(
-                        1f / 1f
-                    )
-
-            ) {
-                Text(
-                    text = context.getString(R.string.title_add_new),
+            Column {
+                Card(
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(4.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = 24.dp, top = 10.dp),
-                    style = TextStyle(
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
+                        .padding(12.dp)
+                        .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
+                        .aspectRatio(
+                            1f / 1.1f
+                        )
 
-                Row {
-                    Column(
+                ) {
+                    Text(
+                        text = context.getString(R.string.title_add_new),
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 24.dp, top = 10.dp),
+                        style = TextStyle(
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
 
-                        // 名称
-                        Box(
+                    Row {
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .weight(1f)
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.Start
                         ) {
-                            OutlinedTextField(
-                                value = foodName,
-                                onValueChange = { newText ->
-                                    foodName = newText
-                                },
-                                maxLines = 1,
-                                label = { Text(text = context.getString(R.string.title_name)) },
+
+                            // 名称
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .focusRequester(focusRequester)
-                                    .onFocusChanged {
-                                        foodName = ""
+                                    .weight(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                OutlinedTextField(
+                                    value = foodName,
+                                    onValueChange = { newText ->
+                                        foodName = newText
                                     },
-                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
-                            )
-                        }
+                                    maxLines = 1,
+                                    label = { Text(text = context.getString(R.string.title_name)) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .focusRequester(focusRequester),
+                                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                                )
+                            }
 
-                        LaunchedEffect(Unit) {
-                            focusRequester.requestFocus()
-                        }
+                            LaunchedEffect(Unit) {
+                                focusRequester.requestFocus()
+                            }
 
-                        // 生产日期
-                        Box(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            OutlinedTextField(
-                                readOnly = false,
-                                value = productionDate,
-                                maxLines = 1,
-                                onValueChange = { newValue ->
-                                    productionDate = newValue
-                                },
-                                label = { Text(text = context.getString(R.string.title_production_date)) },
-                                trailingIcon = {
-                                    IconButton(onClick = {
-                                        MainScope().launch {
-                                            openDialog = true
-                                        }
-                                    }) {
-                                        Icon(Icons.Filled.DateRange, null)
-                                    }
-                                },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
+                            // 生产日期
+                            Box(
+                                modifier = Modifier.weight(1.8f),
+                                contentAlignment = Alignment.Center
+                            ) {
 
-                            if (openDialog) {
-                                DatePickerDialog(
-                                    onDismissRequest = {
-                                        openDialog = false
-                                    },
-                                    confirmButton = {
-                                        TextButton(
-                                            onClick = {
-                                                openDialog = false
-                                                datePickerState.selectedDateMillis?.also {
-                                                    productionDate =
-                                                        dateWithFormat(it, "YY-MM-dd")
-                                                }
+                                Column {
+
+                                    // 切换生产日期和保质期
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                    ) {
+
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Text(
+                                            text = context.getString(R.string.title_production_date),
+                                            fontSize = 10.sp
+                                        )
+                                        Spacer(modifier = Modifier.weight(1f))
+
+                                        Switch(
+                                            checked = isExpireDate,
+                                            onCheckedChange = { isExpireDate = it },
+                                            thumbContent = {
+                                                Icon(
+                                                    imageVector = if (isExpireDate) Icons.Filled.DeleteForever else Icons.Filled.CalendarMonth,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                                )
                                             },
-                                        ) {
-                                            Text(context.getString(R.string.ok))
-                                        }
-                                    },
-                                    dismissButton = {
-                                        TextButton(
-                                            onClick = {
-                                                openDialog = false
+                                            colors = SwitchDefaults.colors(
+                                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                                checkedTrackColor = Color.Transparent,
+                                                checkedBorderColor = MaterialTheme.colorScheme.primary,
+                                                uncheckedThumbColor = MaterialTheme.colorScheme.primary,
+                                            )
+                                        )
+
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Text(
+                                            text = context.getString(R.string.title_expiration_date),
+                                            fontSize = 10.sp
+                                        )
+                                        Spacer(modifier = Modifier.weight(1f))
+
+                                    }
+
+                                    OutlinedTextField(
+                                        readOnly = false,
+                                        value = if (isExpireDate) expirationDate else productionDate,
+                                        maxLines = 1,
+                                        onValueChange = { newValue ->
+                                            if (isExpireDate) {
+                                                expirationDate = newValue
+                                            } else {
+                                                productionDate = newValue
                                             }
-                                        ) {
-                                            Text(context.getString(R.string.cancel))
+                                        },
+                                        label = {
+                                            Icon(
+                                                imageVector = if (isExpireDate) {
+                                                    Icons.Filled.DeleteForever
+                                                } else {
+                                                    Icons.Filled.CalendarMonth
+                                                }, contentDescription = null
+                                            )
+                                        },
+                                        trailingIcon = {
+                                            IconButton(onClick = {
+                                                MainScope().launch {
+                                                    openDialog = true
+                                                }
+                                            }) {
+                                                Icon(Icons.Filled.EditCalendar, null)
+                                            }
+                                        },
+                                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+                                }
+
+                                if (openDialog) {
+                                    DatePickerDialog(
+                                        onDismissRequest = {
+                                            openDialog = false
+                                        },
+                                        confirmButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    openDialog = false
+                                                    datePickerState.selectedDateMillis?.also {
+                                                        if (isExpireDate) {
+                                                            expirationDate =
+                                                                dateWithFormat(it, "YY-MM-dd")
+                                                        } else {
+                                                            productionDate =
+                                                                dateWithFormat(it, "YY-MM-dd")
+                                                        }
+                                                    }
+                                                },
+                                            ) {
+                                                Text(context.getString(R.string.ok))
+                                            }
+                                        },
+                                        dismissButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    openDialog = false
+                                                }
+                                            ) {
+                                                Text(context.getString(R.string.cancel))
+                                            }
+                                        },
+                                        properties = DialogProperties(
+                                            dismissOnClickOutside = false
+                                        ),
+                                    ) {
+
+                                        DatePicker(
+                                            state = datePickerState
+                                        )
+                                    }
+                                }
+
+                            }
+
+                            // 保质期
+                            AnimatedVisibility(visible = !isExpireDate) {
+                                ExposedDropdownMenuBox(
+                                    expanded = shelfLifeExpanded,
+                                    onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f),
+                                ) {
+                                    OutlinedTextField(
+                                        readOnly = true,
+                                        value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
+                                        maxLines = 1,
+                                        onValueChange = { },
+                                        label = { Text(text = context.getString(R.string.title_shelf_life)) },
+                                        trailingIcon = {
+                                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                                expanded = shelfLifeExpanded
+                                            )
+                                        },
+                                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                        modifier = Modifier
+                                            .menuAnchor()
+                                            .fillMaxWidth()
+                                            .clickable(enabled = false) {
+                                            }
+                                    )
+
+                                    DropdownMenu(
+                                        expanded = shelfLifeExpanded,
+                                        onDismissRequest = { shelfLifeExpanded = false },
+                                        modifier = Modifier.exposedDropdownSize(),
+                                    ) {
+
+                                        appViewModel.shelfLifeList.forEach { selectionOption ->
+                                            DropdownMenuItem(
+                                                onClick = {
+                                                    shelfLife = selectionOption.life
+                                                    shelfLifeExpanded = false
+                                                },
+                                                text = {
+                                                    Text(
+                                                        text = "${selectionOption.life} ${
+                                                            context.getString(
+                                                                R.string.shelf_life_day
+                                                            )
+                                                        }"
+                                                    )
+                                                }
+                                            )
                                         }
+                                    }
+                                }
+                            }
+
+
+                            // 分类
+                            ExposedDropdownMenuBox(
+                                expanded = typeSelectionExpanded,
+                                onExpandedChange = {
+                                    typeSelectionExpanded = !typeSelectionExpanded
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+
+                            ) {
+                                OutlinedTextField(
+                                    readOnly = true,
+                                    value = foodType,
+                                    maxLines = 1,
+                                    onValueChange = { },
+                                    label = { Text(text = context.getString(R.string.title_type)) },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                            expanded = typeSelectionExpanded
+                                        )
                                     },
-                                    properties = DialogProperties(
-                                        dismissOnClickOutside = false
-                                    ),
+                                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth()
+                                        .clickable(enabled = false) {
+                                        }
+                                )
+
+
+                                DropdownMenu(
+                                    expanded = typeSelectionExpanded,
+                                    onDismissRequest = { typeSelectionExpanded = false },
+                                    modifier = Modifier.exposedDropdownSize()
+
                                 ) {
 
-                                    DatePicker(
-                                        state = datePickerState,
-                                        dateValidator = {
-                                            it <= todayMillis()
-                                        }
-                                    )
-                                }
-                            }
-
-                        }
-
-                        // 分类
-                        ExposedDropdownMenuBox(
-                            expanded = typeSelectionExpanded,
-                            onExpandedChange = { typeSelectionExpanded = !typeSelectionExpanded },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-
-                        ) {
-                            OutlinedTextField(
-                                readOnly = true,
-                                value = foodType,
-                                maxLines = 1,
-                                onValueChange = { },
-                                label = { Text(text = context.getString(R.string.title_type)) },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = typeSelectionExpanded
-                                    )
-                                },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth()
-                                    .clickable(enabled = false) {
+                                    appViewModel.foodTypeList.forEach { selectionOption ->
+                                        DropdownMenuItem(
+                                            onClick = {
+                                                foodType = selectionOption.type
+                                                typeSelectionExpanded = false
+                                            },
+                                            text = {
+                                                Text(text = selectionOption.type)
+                                            }
+                                        )
                                     }
-                            )
-
-
-                            DropdownMenu(
-                                expanded = typeSelectionExpanded,
-                                onDismissRequest = { typeSelectionExpanded = false },
-                                modifier = Modifier.exposedDropdownSize()
-
-                            ) {
-
-                                appViewModel.foodTypeList.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            foodType = selectionOption.type
-                                            typeSelectionExpanded = false
-                                        },
-                                        text = {
-                                            Text(text = selectionOption.type)
-                                        }
-                                    )
                                 }
                             }
                         }
 
-                        // 保质期
-                        ExposedDropdownMenuBox(
-                            expanded = shelfLifeExpanded,
-                            onExpandedChange = { shelfLifeExpanded = !shelfLifeExpanded },
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .weight(1f)
+                                .padding(8.dp)
+                                .padding(top = 8.dp)
                         ) {
-                            OutlinedTextField(
-                                readOnly = true,
-                                value = "$shelfLife ${context.getString(R.string.shelf_life_day)}",
-                                maxLines = 1,
-                                onValueChange = { },
-                                label = { Text(text = context.getString(R.string.title_shelf_life)) },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(
-                                        expanded = shelfLifeExpanded
-                                    )
-                                },
-                                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+
+                            OutlinedCard(
                                 modifier = Modifier
-                                    .menuAnchor()
                                     .fillMaxWidth()
-                                    .clickable(enabled = false) {
-                                    }
-                            )
-
-                            DropdownMenu(
-                                expanded = shelfLifeExpanded,
-                                onDismissRequest = { shelfLifeExpanded = false },
-                                modifier = Modifier.exposedDropdownSize(),
+                                    .aspectRatio(3f / 4f)
                             ) {
-
-                                appViewModel.shelfLifeList.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            shelfLife = selectionOption.life
-                                            shelfLifeExpanded = false
-                                        },
-                                        text = {
-                                            Text(text = "${selectionOption.life} ${context.getString(R.string.shelf_life_day)}")
-                                        }
-                                    )
-                                }
+                                FoodPreview(context, cameraState)
                             }
+
+                            IconButtonRow(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 4.dp),
+                                cameraState,
+                            )
                         }
                     }
+                }
 
-                    Column(
+                Row(
+                    modifier = Modifier.padding(12.dp)
+                ) {
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    IconButton(
+                        onClick = {
+                            tipsInputShown = true
+                        },
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp)
-                            .padding(top = 8.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
                     ) {
-
-                        OutlinedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(3f / 4f)
-                        ) {
-                            FoodPreview(context, cameraState)
-                        }
-
-                        IconButtonRow(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 4.dp),
-                            cameraState,
+                        Icon(
+                            imageVector = if (tips.isEmpty()) Icons.Filled.Edit else Icons.Filled.EditNote,
+                            contentDescription = null
                         )
+                    }
+                }
+
+                AnimatedVisibility(visible = tipsInputShown) {
+                    AlertDialog(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Filled.Info,
+                                contentDescription = null
+                            )
+                        },
+                        title = {
+                            Text(text = context.getString(R.string.tips_title))
+                        },
+                        text = {
+                            OutlinedTextField(
+                                value = tips,
+                                onValueChange = { tips = it },
+                                modifier = Modifier.focusRequester(focusRequester)
+                            )
+                        },
+                        onDismissRequest = {
+                            tipsInputShown = false
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    tipsInputShown = false
+                                }
+                            ) {
+                                Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    tips = ""
+                                    tipsInputShown = false
+                                }
+                            ) {
+                                Icon(imageVector = Icons.Filled.Close, contentDescription = null)
+                            }
+                        }
+                    )
+
+                    LaunchedEffect(key1 = Unit) {
+                        focusRequester.requestFocus()
                     }
                 }
             }

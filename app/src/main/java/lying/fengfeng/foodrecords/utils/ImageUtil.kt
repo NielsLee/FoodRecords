@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
-import lying.fengfeng.foodrecords.ui.components.insertionDialog.createBitmap
 import java.io.FileNotFoundException
 
 
@@ -43,8 +42,7 @@ object ImageUtil {
                 )
             }
         } catch (e: FileNotFoundException) {
-//            // TODO 将拍照缓存阶段的缓冲图片和空图片的预览图片分开
-            return createBitmap()
+            return null
         }
     }
 }

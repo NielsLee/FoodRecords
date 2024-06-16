@@ -1,5 +1,7 @@
 package lying.fengfeng.foodrecords.utils
 
+import lying.fengfeng.foodrecords.entities.FoodInfo
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,9 +29,50 @@ object DateUtil {
         return startTimestamp
     }
 
-    fun getRemainingDays(dateString: String, shelfLife: String): Int {
-        val passedDays = ((System.currentTimeMillis() - dateTimeStamp(dateString)) / (24 * 60 * 60 * 1000)).toInt()
-        val shelfDays = shelfLife.toInt()
-        return shelfDays - passedDays
+    fun getRemainingDays(productionDate: String, shelfLife: String, expirationDate: String): Int {
+        val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+        return try {
+            dateFormatter.parse(expirationDate)
+            val expirationTimeMillis = dateFormatter.parse(expirationDate).time
+            val remainingMillis = expirationTimeMillis - System.currentTimeMillis()
+            (remainingMillis / (24 * 60 * 60 * 1000)).toInt()
+        } catch (e: ParseException) {
+            try {
+                val productionTimeMillis = dateFormatter.parse(productionDate).time
+                val expirationTimeMillis = productionTimeMillis + shelfLife.toInt() * (24 * 60 * 60 * 1000)
+                ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
+            } catch (e: ParseException) {
+                0
+            }
+        }
+    }
+
+    fun getExpirationDate(foodInfo: FoodInfo): String {
+        val productionDate = foodInfo.productionDate
+        val shelfLife = foodInfo.shelfLife
+        val expirationDate = foodInfo.expirationDate
+        val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+        return try {
+            dateFormatter.parse(expirationDate)
+            expirationDate
+        } catch (e: ParseException) {
+            try {
+                val productionTimeMillis = dateFormatter.parse(productionDate).time
+                val expirationTimeMillis = productionTimeMillis + shelfLife.toInt() * 24 * 60 * 60 * 1000
+                dateFormatter.format(expirationTimeMillis)
+            } catch (e: ParseException) {
+                "--"
+            }
+        }
+    }
+
+    fun validateDateFormat(date: String): String {
+        val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+        return try {
+            dateFormatter.parse(date)
+            date
+        } catch (e: ParseException) {
+            "--"
+        }
     }
 }

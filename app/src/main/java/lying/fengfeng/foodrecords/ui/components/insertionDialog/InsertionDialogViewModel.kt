@@ -19,7 +19,9 @@ class InsertionDialogViewModel : ViewModel() {
     lateinit var productionDate: MutableState<String>
     lateinit var foodType: MutableState<String>
     lateinit var shelfLife: MutableState<String>
+    lateinit var expirationDate: MutableState<String>
     lateinit var uuid: MutableState<String>
+    lateinit var tips: MutableState<String>
 
     lateinit var foodTypes: List<String>
     lateinit var shelfLifeList: List<String>
@@ -36,7 +38,7 @@ class InsertionDialogViewModel : ViewModel() {
                 shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
             }
 
-            foodName = mutableStateOf("FoodName")
+            foodName = mutableStateOf("")
             productionDate = mutableStateOf(
                 DateUtil.dateWithFormat(
                     DateUtil.todayMillis(),
@@ -45,7 +47,9 @@ class InsertionDialogViewModel : ViewModel() {
             )
             foodType = mutableStateOf(foodTypes[0])
             shelfLife = mutableStateOf(shelfLifeList[0])
+            expirationDate = mutableStateOf("")
             uuid = mutableStateOf("")
+            tips = mutableStateOf("")
         }
     }
 

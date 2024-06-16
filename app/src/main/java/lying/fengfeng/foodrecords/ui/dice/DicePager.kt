@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
@@ -95,8 +98,7 @@ fun DiceView(cardDataList: List<FoodInfo>) {
         })
 
         Box(
-            modifier = Modifier.fillMaxSize(0.6f),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxWidth(0.5f).wrapContentHeight(),
         ) {
             HorizontalPager(
                 state = pagerState,
@@ -139,6 +141,7 @@ fun DiceView(cardDataList: List<FoodInfo>) {
 
             },
             modifier = Modifier
+                .padding(16.dp)
                 .wrapContentSize()
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),

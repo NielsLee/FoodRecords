@@ -34,6 +34,7 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
+import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
 
@@ -49,7 +50,8 @@ fun IconButtonRow(
     val context = LocalContext.current
     val activityContext = LocalActivityContext.current
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel =
+        viewModel(viewModelStoreOwner = (activityContext as MainActivity))
 
     var showDialog by remember { dialogViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
@@ -75,7 +77,7 @@ fun IconButtonRow(
                     (-54).dp at 150
                 }
             }
-    }) { status ->
+        }) { status ->
         if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else (-54).dp
     }
 
@@ -169,11 +171,13 @@ fun IconButtonRow(
                 onClick = {
                     EffectUtil.playSoundEffect(context)
                     val foodInfo = FoodInfo(
-                        dialogViewModel.foodName.value,
-                        dialogViewModel.productionDate.value,
-                        dialogViewModel.foodType.value,
-                        dialogViewModel.shelfLife.value,
-                        pictureUUID
+                        foodName = dialogViewModel.foodName.value,
+                        productionDate = DateUtil.validateDateFormat(dialogViewModel.productionDate.value),
+                        foodType = dialogViewModel.foodType.value,
+                        shelfLife = dialogViewModel.shelfLife.value,
+                        expirationDate = DateUtil.validateDateFormat(dialogViewModel.expirationDate.value),
+                        uuid = pictureUUID,
+                        tips = dialogViewModel.tips.value
                     )
                     appViewModel.addFoodInfo(foodInfo)
                     showDialog = false
