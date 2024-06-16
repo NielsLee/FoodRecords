@@ -172,15 +172,10 @@ fun IconButtonRow(
                     EffectUtil.playSoundEffect(context)
                     val foodInfo = FoodInfo(
                         foodName = dialogViewModel.foodName.value,
-                        productionDate = dialogViewModel.productionDate.value,
+                        productionDate = DateUtil.validateDateFormat(dialogViewModel.productionDate.value),
                         foodType = dialogViewModel.foodType.value,
                         shelfLife = dialogViewModel.shelfLife.value,
-                        expirationDate = dialogViewModel.expirationDate.value.ifEmpty {
-                            DateUtil.getExpirationDate(
-                                dialogViewModel.productionDate.value,
-                                dialogViewModel.shelfLife.value
-                            )
-                        },
+                        expirationDate = DateUtil.validateDateFormat(dialogViewModel.expirationDate.value),
                         uuid = pictureUUID,
                         tips = dialogViewModel.tips.value
                     )

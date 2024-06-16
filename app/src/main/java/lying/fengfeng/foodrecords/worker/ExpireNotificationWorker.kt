@@ -18,8 +18,8 @@ class ExpireNotificationWorker(
 ) {
     override suspend fun doWork(): Result {
         val foodInfoList = AppRepo.getAllFoodInfo()
-        val nearExpiredItems = foodInfoList.filter {
-            DateUtil.getRemainingDays(it.productionDate, it.shelfLife, it.expirationDate).let {
+        val nearExpiredItems = foodInfoList.filter { foodInfo ->
+            DateUtil.getRemainingDays(foodInfo.productionDate, foodInfo.shelfLife, foodInfo.expirationDate).let {
                 it < AppRepo.getDaysBeforeNotification() && it >= 0
             }
         }

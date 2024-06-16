@@ -38,7 +38,7 @@ class InsertionDialogViewModel : ViewModel() {
                 shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
             }
 
-            foodName = mutableStateOf("FoodName")
+            foodName = mutableStateOf("")
             productionDate = mutableStateOf(
                 DateUtil.dateWithFormat(
                     DateUtil.todayMillis(),

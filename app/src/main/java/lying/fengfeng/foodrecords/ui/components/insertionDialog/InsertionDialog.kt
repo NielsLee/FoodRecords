@@ -141,7 +141,7 @@ fun InsertionDialog() {
                         .padding(12.dp)
                         .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
                         .aspectRatio(
-                            1f / 1f
+                            1f / 1.1f
                         )
 
                 ) {
@@ -181,10 +181,7 @@ fun InsertionDialog() {
                                     label = { Text(text = context.getString(R.string.title_name)) },
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .focusRequester(focusRequester)
-                                        .onFocusChanged {
-                                            foodName = ""
-                                        },
+                                        .focusRequester(focusRequester),
                                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
                                 )
                             }
@@ -210,7 +207,7 @@ fun InsertionDialog() {
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             text = context.getString(R.string.title_production_date),
-                                            fontSize = 12.sp
+                                            fontSize = 10.sp
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
 
@@ -235,7 +232,7 @@ fun InsertionDialog() {
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
                                             text = context.getString(R.string.title_expiration_date),
-                                            fontSize = 12.sp
+                                            fontSize = 10.sp
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
 
@@ -243,7 +240,7 @@ fun InsertionDialog() {
 
                                     OutlinedTextField(
                                         readOnly = false,
-                                        value = if (isExpireDate) "YY-MM-dd" else productionDate,
+                                        value = if (isExpireDate) expirationDate else productionDate,
                                         maxLines = 1,
                                         onValueChange = { newValue ->
                                             if (isExpireDate) {

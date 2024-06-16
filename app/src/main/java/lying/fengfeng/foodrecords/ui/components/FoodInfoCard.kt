@@ -194,7 +194,7 @@ fun FoodInfoCard(
                 ) {
                     Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null)
                     Text(
-                        text = foodInfo.expirationDate,
+                        text = DateUtil.getExpirationDate(foodInfo),
                         fontWeight = FontWeight.ExtraBold
                     )
                 }
