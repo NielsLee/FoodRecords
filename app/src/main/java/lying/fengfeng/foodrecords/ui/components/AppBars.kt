@@ -1,13 +1,13 @@
 package lying.fengfeng.foodrecords.ui.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.HelpOutline
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -21,18 +21,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodRecordsTopBar(title: String) {
+
+    var currentDate by remember { mutableStateOf (getCurrentDate())}
+
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -41,8 +58,32 @@ fun FoodRecordsTopBar(title: String) {
         title = {
             Text(text = title)
         },
+        actions = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.CalendarMonth,
+                    contentDescription = null,
+                    modifier = Modifier.padding(4.dp)
+                )
+                Text(text = currentDate)
+                Box(modifier = Modifier.size(48.dp))
+            }
+        },
         modifier = Modifier.shadow(12.dp)
     )
+
+    LaunchedEffect(key1 = Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                delay(1000)
+                withContext(Dispatchers.Main) {
+                    currentDate = getCurrentDate()
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -76,7 +117,8 @@ fun FoodRecordsBottomBar(
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.dice3_svg),
-                    "Icon navigate to Dice page")
+                    "Icon navigate to Dice page"
+                )
             }
             IconButton(onClick = {
                 if (navController.currentBackStackEntry?.destination?.route != "settings") {
@@ -102,4 +144,9 @@ fun FoodRecordsBottomBar(
         },
         modifier = Modifier
     )
+}
+
+private fun getCurrentDate(): String {
+    val dateFormat = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+    return dateFormat.format(Date())
 }
