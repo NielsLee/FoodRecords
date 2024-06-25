@@ -35,6 +35,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodRecords"
         tools:targetApi="31">
+
+        <service
+            android:name=".ExpiryNotificationService"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
