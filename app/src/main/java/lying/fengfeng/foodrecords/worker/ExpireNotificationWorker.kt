@@ -2,10 +2,13 @@ package lying.fengfeng.foodrecords.worker
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -37,6 +40,11 @@ class ExpireNotificationWorker(
         val channelId = "food_expiry_channel"
         val channelName = "Food Expiry Notifications"
 
+        val intent = Intent(applicationContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val channel =
             NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         notificationManager.createNotificationChannel(channel)
@@ -46,6 +54,8 @@ class ExpireNotificationWorker(
             .setContentTitle(applicationContext.getString(R.string.expire_notification_title))
             .setContentText("$size${applicationContext.getString(R.string.expire_notification_content)}")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(1, notification)

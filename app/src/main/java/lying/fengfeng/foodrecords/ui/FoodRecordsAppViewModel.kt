@@ -5,16 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +24,7 @@ import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.worker.ExpireNotificationWorker
+import java.time.Duration
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -126,8 +125,6 @@ class FoodRecordsAppViewModel: ViewModel() {
         Toast.makeText(context, "⏰✅", Toast.LENGTH_SHORT).show()
         setNotificationEnabled(true)
 
-        val workManager = WorkManager.getInstance(context)
-
         val morningRequest = PeriodicWorkRequestBuilder<ExpireNotificationWorker>(
             1, TimeUnit.DAYS
         )
@@ -140,13 +137,13 @@ class FoodRecordsAppViewModel: ViewModel() {
             .setInitialDelay(millisFromNowTo(16), TimeUnit.MILLISECONDS)
             .build()
 
-        workManager.enqueueUniquePeriodicWork(
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             "morningNotification",
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             morningRequest
         )
 
-        workManager.enqueueUniquePeriodicWork(
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             "afternoonNotification",
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             afternoonRequest
