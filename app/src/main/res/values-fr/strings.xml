@@ -41,4 +41,5 @@
     <string name="expire_notification_title">Sur le point d\'expirer !</string>
     <string name="expire_notification_content">des articles sont sur le point d\'expirer, veuillez en prendre soin !</string>
     <string name="tips_title">Ajouter des conseils</string>
+    <string name="notification_permisson_failed">La demande d\'autorisation de notifications a échoué, veuillez vous assurer que vous avez autorisé les notifications pour cette application.</string>
 </resources>

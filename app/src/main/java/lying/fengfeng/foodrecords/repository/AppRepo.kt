@@ -126,6 +126,14 @@ object AppRepo {
         sp.edit().putInt("days_before_notification", days).apply()
     }
 
+    fun setNextNotificationMillis(time: Long) {
+        sp.edit().putLong("next_notification_time", time).apply()
+    }
+
+    fun getNextNotificationMillis(): Long {
+        return sp.getLong("next_notification_time", -1)
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 

@@ -35,6 +35,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodRecords"
         tools:targetApi="31">
+
+        <receiver android:name=".notification.ScreenOnReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

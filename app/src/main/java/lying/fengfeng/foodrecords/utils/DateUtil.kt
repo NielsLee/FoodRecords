@@ -7,6 +7,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset
+import java.util.Calendar
 import java.util.Locale
 
 object DateUtil {
@@ -74,5 +75,18 @@ object DateUtil {
         } catch (e: ParseException) {
             "--"
         }
+    }
+
+    fun millisFromNowTo(hour: Int): Long {
+        val currentTime = Calendar.getInstance()
+        val notificationTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+        if (currentTime.after(notificationTime)) {
+            notificationTime.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        return notificationTime.timeInMillis - currentTime.timeInMillis
     }
 }

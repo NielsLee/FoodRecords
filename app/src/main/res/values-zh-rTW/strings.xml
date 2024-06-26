@@ -42,4 +42,5 @@
     <string name="expire_notification_content">種吃的要過期了，快處理一下吧！</string>
     <string name="title_expiration_date">有效日期</string>
     <string name="tips_title">添加備註</string>
+    <string name="notification_permisson_failed">請求通知權限失敗，請確保你已允許此應用程式的通知權限</string>
 </resources>
