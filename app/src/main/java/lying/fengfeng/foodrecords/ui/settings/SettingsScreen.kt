@@ -415,9 +415,9 @@ fun SettingsScreen(
                             onCheckedChange = {
                                 notificationEnabled = !notificationEnabled
                                 if (notificationEnabled) {
-                                    appViewModel.enableNotification(activityContext)
+                                    appViewModel.enableNotification(activityContext.applicationContext)
                                 } else {
-                                    appViewModel.disableNotification(activityContext)
+                                    appViewModel.disableNotification(activityContext.applicationContext)
                                 }
                             },
                             modifier = Modifier.size(iconSize)

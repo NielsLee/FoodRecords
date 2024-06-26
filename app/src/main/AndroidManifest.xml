@@ -36,12 +36,12 @@
         android:theme="@style/Theme.FoodRecords"
         tools:targetApi="31">
 
-        <service
-            android:name=".ExpiryNotificationService"
-            android:enabled="true"
+        <receiver android:name=".notification.ScreenOnReceiver"
             android:exported="true">
-
-        </service>
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".MainActivity"
