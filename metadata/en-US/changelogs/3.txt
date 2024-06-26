@@ -1,0 +1,1 @@
+Optimized the notification logic: The app will now attempt to send notifications after the screen is turned on at 10 AM daily, provided notifications are enabled (however, due to customized ROM notification controls and power management controls, timely notifications cannot be guaranteed. It is recommended to manually disable the app's power management policy).
