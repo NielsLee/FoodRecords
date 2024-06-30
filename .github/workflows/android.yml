@@ -48,6 +48,10 @@ jobs:
         RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
       run: ./gradlew assembleRelease --stacktrace
 
+    - name: Get release file apk path
+      id: releaseApk
+      run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
     - name: Upload Release Build to Artifacts
       uses: actions/upload-artifact@v3
       with:
