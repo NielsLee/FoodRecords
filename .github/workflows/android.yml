@@ -36,7 +36,7 @@ jobs:
 
       run: |
         echo $ENCODED_STRING > keystore-b64.txt
-        base64 -d keystore-b64.txt > keystore.jks
+        base64 -d keystore-b64.txt > fengfengkeystore.jks
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -53,7 +53,7 @@ jobs:
       run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
     - name: Upload Release Build to Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
          name: release-artifacts
          path: ${{ steps.releaseApk.outputs.apkfile }}
