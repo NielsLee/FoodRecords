@@ -653,7 +653,9 @@ fun SettingsScreen(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            appViewModel.addShelfLifeInfo(ShelfLifeInfo(life = input))
+                            if (input.isNotEmpty()) {
+                                appViewModel.addShelfLifeInfo(ShelfLifeInfo(life = input))
+                            }
                             shelfLifeDialogShown = false
                         }
                     ) {

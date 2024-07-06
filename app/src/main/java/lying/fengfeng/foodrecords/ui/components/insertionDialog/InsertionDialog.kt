@@ -48,7 +48,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +61,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -74,7 +75,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
@@ -94,9 +94,8 @@ fun InsertionDialog() {
     val context = LocalContext.current
 
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = (context as MainActivity))
-    var isDialogShown by remember { dialogViewModel.isDialogShown }
+    val appViewModel: FoodRecordsAppViewModel = viewModel()
+    var isDialogShown by remember { appViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     var isExpireDate by remember { mutableStateOf(false) }
@@ -522,6 +521,11 @@ fun InsertionDialog() {
                 }
             }
         }
+    }
+
+    // 创建和销毁的时候分别初始化一次数据
+    LaunchedEffect(Unit) {
+        dialogViewModel.refreshParams()
     }
 }
 

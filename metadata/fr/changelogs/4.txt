@@ -1,0 +1,3 @@
+Correction des problèmes de stabilité lors de l'ajout de dates de péremption ou de catégories en double.
+Les dates de péremption sont désormais triées par ordre croissant.
+Corrigez le problème où la durée de conservation restante est calculée incorrectement lorsque la durée de conservation est longue.
