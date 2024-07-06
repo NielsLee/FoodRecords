@@ -48,12 +48,10 @@ fun IconButtonRow(
 ) {
 
     val context = LocalContext.current
-    val activityContext = LocalActivityContext.current
     val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = (activityContext as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel = viewModel()
 
-    var showDialog by remember { dialogViewModel.isDialogShown }
+    var showDialog by remember { appViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     val buttonsContracted = updateTransition(cameraStatus, label = "IconButtonsContracted")

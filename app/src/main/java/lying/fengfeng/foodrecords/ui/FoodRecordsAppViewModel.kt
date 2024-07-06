@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
@@ -23,6 +24,8 @@ import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
 
 class FoodRecordsAppViewModel: ViewModel() {
+
+    var isDialogShown: MutableState<Boolean> = mutableStateOf(false)
 
     var foodInfoList = mutableStateListOf<FoodInfo>()
     var foodTypeList = mutableStateListOf<FoodTypeInfo>()
@@ -70,12 +73,21 @@ class FoodRecordsAppViewModel: ViewModel() {
 
     fun addFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {
         AppRepo.addTypeInfo(foodTypeInfo)
-        foodTypeList.add(foodTypeInfo)
+        foodTypeList.also {
+            if (!it.contains(foodTypeInfo)) {
+                it.add(foodTypeInfo)
+            }
+        }
     }
 
     fun addShelfLifeInfo(shelfLifeInfo: ShelfLifeInfo) {
         AppRepo.addShelfLifeInfo(shelfLifeInfo)
-        shelfLifeList.add(shelfLifeInfo)
+        shelfLifeList.also { list ->
+            if (!list.contains(shelfLifeInfo)) {
+                list.add(shelfLifeInfo)
+                list.sortBy { it.life.toInt() }
+            }
+        }
     }
 
     fun removeFoodInfo(foodInfo: FoodInfo) {

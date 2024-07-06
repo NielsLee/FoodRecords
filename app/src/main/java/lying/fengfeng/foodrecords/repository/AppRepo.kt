@@ -95,7 +95,7 @@ object AppRepo {
     }
 
     fun getAllShelfLifeInfo(): List<ShelfLifeInfo> {
-        return shelfLifeDao.getAll()
+        return shelfLifeDao.getAll().sortedBy { it.life.toInt() }
     }
 
     fun addShelfLifeInfo(shelfLifeInfo: ShelfLifeInfo) {

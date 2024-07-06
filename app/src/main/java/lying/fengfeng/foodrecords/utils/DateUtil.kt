@@ -40,7 +40,7 @@ object DateUtil {
         } catch (e: ParseException) {
             try {
                 val productionTimeMillis = dateFormatter.parse(productionDate).time
-                val expirationTimeMillis = productionTimeMillis + shelfLife.toInt() * (24 * 60 * 60 * 1000)
+                val expirationTimeMillis = productionTimeMillis + shelfLife.toLong() * (24 * 60 * 60 * 1000)
                 ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
             } catch (e: ParseException) {
                 0

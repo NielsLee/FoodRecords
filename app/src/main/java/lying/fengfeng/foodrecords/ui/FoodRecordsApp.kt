@@ -21,16 +21,15 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
-import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel
 import lying.fengfeng.foodrecords.ui.theme.FoodRecordsTheme
 import lying.fengfeng.foodrecords.utils.EffectUtil
 
 @Composable
 fun FoodRecordsApp() {
 
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
+    val appViewModel: FoodRecordsAppViewModel = viewModel()
 
-    var showDialog by remember { dialogViewModel.isDialogShown }
+    var showDialog by remember { appViewModel.isDialogShown }
 
     val navController = rememberNavController()
     val context = LocalContext.current

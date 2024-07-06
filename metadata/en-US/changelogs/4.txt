@@ -1,0 +1,3 @@
+Fixed stability issues when adding duplicate shelf lives or categories.
+Shelf lives are now sorted in ascending order.
+Fix the issue where the remaining shelf life is calculated incorrectly when the shelf life is long.

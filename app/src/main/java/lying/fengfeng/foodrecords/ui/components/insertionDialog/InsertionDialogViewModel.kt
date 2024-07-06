@@ -6,36 +6,56 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
 
 class InsertionDialogViewModel : ViewModel() {
 
-    var isDialogShown: MutableState<Boolean> = mutableStateOf(false)
     var cameraStatus: MutableState<CameraStatus> = mutableStateOf(CameraStatus.IDLE)
 
-    lateinit var foodName: MutableState<String>
-    lateinit var productionDate: MutableState<String>
-    lateinit var foodType: MutableState<String>
-    lateinit var shelfLife: MutableState<String>
-    lateinit var expirationDate: MutableState<String>
-    lateinit var uuid: MutableState<String>
-    lateinit var tips: MutableState<String>
+    var foodName: MutableState<String> = mutableStateOf("")
+    var productionDate: MutableState<String> = mutableStateOf(
+        DateUtil.dateWithFormat(
+            DateUtil.todayMillis(),
+            "YY-MM-dd"
+        )
+    )
 
-    lateinit var foodTypes: List<String>
-    lateinit var shelfLifeList: List<String>
+    private lateinit var foodTypes: List<String>
+    private lateinit var shelfLifeList: List<String>
+
+    var foodType: MutableState<String> = mutableStateOf("")
+    var shelfLife: MutableState<String> = mutableStateOf("")
+    var expirationDate: MutableState<String> = mutableStateOf("")
+    var uuid: MutableState<String> = mutableStateOf("")
+    var tips: MutableState<String> = mutableStateOf("")
 
     init {
-        initParams()
+//        initParams()
+    }
+
+    fun refreshParams() {
+        CoroutineScope(Dispatchers.IO).launch {
+            foodTypes = AppRepo.getAllTypeInfo().map { it.type }
+            shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
+
+            withContext(Dispatchers.Main) {
+                foodType.value = foodTypes[0]
+                shelfLife.value = shelfLifeList[0]
+            }
+        }
     }
 
     fun initParams() {
         CoroutineScope(Dispatchers.IO).launch {
 
-            runBlocking {
-                foodTypes = AppRepo.getAllTypeInfo().map { it.type }
-                shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
+            foodTypes = AppRepo.getAllTypeInfo().map { it.type }
+            shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
+
+            withContext(Dispatchers.Main) {
+                foodType.value = foodTypes[0]
+                shelfLife.value = shelfLifeList[0]
             }
 
             foodName = mutableStateOf("")
@@ -45,8 +65,6 @@ class InsertionDialogViewModel : ViewModel() {
                     "YY-MM-dd"
                 )
             )
-            foodType = mutableStateOf(foodTypes[0])
-            shelfLife = mutableStateOf(shelfLifeList[0])
             expirationDate = mutableStateOf("")
             uuid = mutableStateOf("")
             tips = mutableStateOf("")
