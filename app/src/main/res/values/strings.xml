@@ -42,4 +42,6 @@
     <string name="expire_notification_content">items about to expire, please take care of them!</string>
     <string name="tips_title">Add Tips</string>
     <string name="notification_permisson_failed">Request notification permission failed, please ensure you have allowed notification permissions for this app.</string>
+    <string name="export_data">Export data</string>
+    <string name="import_data">Import data</string>
 </resources>

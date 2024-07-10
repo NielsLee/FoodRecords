@@ -42,4 +42,6 @@
     <string name="expire_notification_content">des articles sont sur le point d\'expirer, veuillez en prendre soin !</string>
     <string name="tips_title">Ajouter des conseils</string>
     <string name="notification_permisson_failed">La demande d\'autorisation de notifications a échoué, veuillez vous assurer que vous avez autorisé les notifications pour cette application.</string>
+    <string name="export_data">exporter des données</string>
+    <string name="import_data">Importer des données</string>
 </resources>

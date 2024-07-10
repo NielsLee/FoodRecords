@@ -22,7 +22,8 @@ Or download the latest APK from the [Releases Section](https://github.com/NielsL
 - [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE)在首页按照保质期升序排列展示所有记录的食物卡片（距离保质期越近，卡片越靠上）
 - [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE)随机选择一款冰箱中的食物
 - [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE)在设定的临期范围内发送通知（由于一些OEM厂商对应用后台活动的限制，通知有时候可能无法正常发送）
-  
+- [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE)通过CSV导出和导入食品信息
+
 
 ## TODO
 
@@ -47,6 +48,7 @@ A simple recording app for keeping track of the ingredients at home; with just a
 * [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE) Displayed all food cards on the home page sorted in ascending order of expiration date (cards closer to expiration are shown first).
 * [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE) Randomly selected a food item from the refrigerator.
 * [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE) Sent notifications within the set nearing expiration range (notifications may not always be reliable due to OEM restrictions on app background activities).
+* [✅](https://emojipedia.org/zh/%E5%8B%BE%E5%8F%B7%E6%8C%89%E9%92%AE) Export or import food data through csv file
 
 ## TODO
 

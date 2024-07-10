@@ -43,4 +43,6 @@
     <string name="title_expiration_date">过保质期</string>
     <string name="tips_title">添加备注</string>
     <string name="notification_permisson_failed">请求通知权限失败，请确保你允许了此应用的通知权限</string>
+    <string name="export_data">导出数据</string>
+    <string name="import_data">导入数据</string>
 </resources>
