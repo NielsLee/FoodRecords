@@ -68,7 +68,11 @@ class FoodRecordsAppViewModel: ViewModel() {
 
     fun addFoodInfo(foodInfo: FoodInfo) {
         AppRepo.addFoodInfo(foodInfo)
-        foodInfoList.add(foodInfo)
+        foodInfoList.also {
+            if (!it.contains(foodInfo)) {
+                it.add(foodInfo)
+            }
+        }
     }
 
     fun addFoodTypeInfo(foodTypeInfo: FoodTypeInfo) {

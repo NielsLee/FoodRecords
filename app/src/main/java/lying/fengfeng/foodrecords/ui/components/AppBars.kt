@@ -1,16 +1,18 @@
 package lying.fengfeng.foodrecords.ui.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.ImportExport
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -38,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.text.SimpleDateFormat
@@ -48,7 +51,10 @@ import java.util.Locale
 @Composable
 fun FoodRecordsTopBar(title: String) {
 
+    val activity = LocalContext.current as MainActivity
     var currentDate by remember { mutableStateOf (getCurrentDate())}
+    var isDropdownMenuExpanded by remember { mutableStateOf(false) }
+
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -68,7 +74,40 @@ fun FoodRecordsTopBar(title: String) {
                     modifier = Modifier.padding(4.dp)
                 )
                 Text(text = currentDate)
-                Box(modifier = Modifier.size(48.dp))
+                IconButton(onClick = { isDropdownMenuExpanded = !isDropdownMenuExpanded }) {
+                    Icon(imageVector = Icons.Outlined.ImportExport, contentDescription = null)
+                }
+                DropdownMenu(
+                    expanded = isDropdownMenuExpanded,
+                    onDismissRequest = {
+                        isDropdownMenuExpanded= false
+                    }
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                Modifier.fillMaxSize()
+                            ) {
+                                Text(text = activity.getString(R.string.import_data))
+                            }
+                        },
+                        onClick = {
+                            activity.importLauncher.launch("")
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                Modifier.fillMaxSize()
+                            ) {
+                                Text(text = activity.getString(R.string.export_data))
+                            }
+                        },
+                        onClick = {
+                            activity.exportLauncher.launch("")
+                        }
+                    )
+                }
             }
         },
         modifier = Modifier.shadow(12.dp)
