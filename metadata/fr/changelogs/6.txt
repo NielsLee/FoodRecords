@@ -1,0 +1,2 @@
+La création d'aliments n'est pas autorisée lorsque le nom d'entrée est vide
+Cartes alimentaires sans images pour une mise en page plus nette
