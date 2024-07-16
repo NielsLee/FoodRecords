@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
@@ -133,21 +133,12 @@ fun FoodInfoCard(
             ) {
                 val foodPicturePath = AppRepo.getPicturePath(foodInfo.uuid)
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                ) {
-                    if (imageBitmap == null) {
-                        Image(
-                            imageVector = Icons.Filled.Fastfood,
-                            contentDescription = null,
-                            modifier = Modifier.aspectRatio(3f/4f)
-                        )
-                    } else {
+                Box {
+                    if (imageBitmap != null) {
                         Image(
                             bitmap = imageBitmap!!,
                             contentDescription = null,
-                            modifier = Modifier
+                            modifier = Modifier.fillMaxWidth(0.6f)
                         )
                     }
 
@@ -164,7 +155,8 @@ fun FoodInfoCard(
                 RemainingDaysWindow(
                     productionDate = foodInfo.productionDate,
                     shelfLife = foodInfo.shelfLife,
-                    expirationDate = foodInfo.expirationDate
+                    expirationDate = foodInfo.expirationDate,
+                    isHorizontal = imageBitmap == null
                 )
             }
         }
@@ -284,7 +276,8 @@ fun FoodInfoCard(
 fun RemainingDaysWindow(
     productionDate: String,
     shelfLife: String,
-    expirationDate: String
+    expirationDate: String,
+    isHorizontal: Boolean = false
 ) {
     val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
     val context = LocalContext.current
@@ -296,73 +289,60 @@ fun RemainingDaysWindow(
     ) {
         val fontSize = 36.sp
 
-        if (remainingDays > 0) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 1.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .border(2.dp, ExpiredGreen, shape = RoundedCornerShape(12.dp))
-                ) {
-                    Text(
-                        text = context.getString(R.string.valid_in),
-                        modifier = Modifier.padding(4.dp),
-                        color = ExpiredGreen,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                }
+        val (remainingTitleColor, remainingTitleText) = if (remainingDays > 0) {
+            ExpiredGreen to context.getString(R.string.valid_in)
+        } else {
+            ExpiredRed to context.getString(R.string.expired)
+        }
 
+        val contents = @Composable {
+            Box(
+                modifier = Modifier
+                    .border(2.dp, remainingTitleColor, shape = RoundedCornerShape(12.dp))
+            ) {
                 Text(
-                    text = remainingDays.let {
-                        if (it.absoluteValue > 99) {
-                            "99+"
-                        } else {
-                            it.toString()
-                        }
-                    },
-                    modifier = Modifier,
-                    style = TextStyle(
-                        fontSize = fontSize,
-                        color = ExpiredGreen
-                    )
+                    text = remainingTitleText,
+                    modifier = Modifier.padding(4.dp),
+                    color = remainingTitleColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
-                Text(text = context.getString(R.string.shelf_life_day))
+            }
+
+            Text(
+                text = remainingDays.let {
+                    if (it.absoluteValue > 99) {
+                        "99+"
+                    } else {
+                        it.absoluteValue.toString()
+                    }
+                },
+                modifier = Modifier,
+                style = TextStyle(
+                    fontSize = fontSize,
+                    color = remainingTitleColor
+                )
+            )
+
+            Text(text = context.getString(R.string.shelf_life_day))
+        }
+
+        if (isHorizontal) {
+            // No picture, use row to show remaining days
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.padding(horizontal = 1.dp).fillMaxWidth()
+            ) {
+                contents()
             }
         } else {
+            // has picture, use column
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(horizontal = 1.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .border(2.dp, ExpiredRed, shape = RoundedCornerShape(12.dp))
-                ) {
-                    Text(
-                        text = context.getString(R.string.expired),
-                        modifier = Modifier.padding(4.dp),
-                        color = ExpiredRed,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Text(
-                    text = remainingDays.let {
-                        if (it.absoluteValue > 99) {
-                            "99+"
-                        } else {
-                            (-it).toString()
-                        }
-                    },
-                    modifier = Modifier,
-                    style = TextStyle(
-                        fontSize = fontSize,
-                        color = ExpiredRed
-                    )
-                )
-
-                Text(text = context.getString(R.string.shelf_life_day))
+                contents()
             }
         }
     }
