@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import android.widget.Toast
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
@@ -29,11 +30,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.CameraState
-import lying.fengfeng.foodrecords.MainActivity
+import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
@@ -167,6 +167,10 @@ fun IconButtonRow(
 
             IconButton(
                 onClick = {
+                    if (dialogViewModel.foodName.value.isEmpty()) {
+                        Toast.makeText(context, context.getString(R.string.toast_enter_name), Toast.LENGTH_SHORT).show()
+                        return@IconButton
+                    }
                     EffectUtil.playSoundEffect(context)
                     val foodInfo = FoodInfo(
                         foodName = dialogViewModel.foodName.value,
