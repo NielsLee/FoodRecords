@@ -1,0 +1,2 @@
+When the input name is empty, food creation is not allowed.
+Food cards without images use a simpler layout.
