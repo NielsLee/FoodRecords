@@ -44,4 +44,5 @@
     <string name="notification_permisson_failed">La demande d\'autorisation de notifications a échoué, veuillez vous assurer que vous avez autorisé les notifications pour cette application.</string>
     <string name="export_data">exporter des données</string>
     <string name="import_data">Importer des données</string>
+    <string name="toast_enter_name">Veuillez entrer le nom</string>
 </resources>

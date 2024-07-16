@@ -44,4 +44,5 @@
     <string name="notification_permisson_failed">Request notification permission failed, please ensure you have allowed notification permissions for this app.</string>
     <string name="export_data">Export data</string>
     <string name="import_data">Import data</string>
+    <string name="toast_enter_name">Please enter a name</string>
 </resources>
