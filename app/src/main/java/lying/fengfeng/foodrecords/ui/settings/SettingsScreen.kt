@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
@@ -102,6 +103,7 @@ fun SettingsScreen(
 
         var foodTypeOptionExpanded by remember { mutableStateOf(false) }
         var shelfOptionExpanded by remember { mutableStateOf(false) }
+        var dateFormatOptionExpanded by remember { mutableStateOf(false) }
         var notificationOptionExpanded by remember { mutableStateOf(false) }
         var infoExpanded by remember { mutableStateOf(false) }
         var wechatInfoExpanded by remember { mutableStateOf(false) }
@@ -360,9 +362,132 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .wrapContentSize()
+                .padding(vertical = 8.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Numbers,
+                    contentDescription = null,
+                    modifier = Modifier.size(iconSize)
+                )
+                Text(
+                    text = stringResource(id = R.string.date_format_option),
+                    fontSize = titleFontSize,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                AnimatedVisibility(visible = dateFormatOptionExpanded, enter = scaleIn()) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(iconSize)
+                            .clickable {
+                                dateFormatOptionExpanded = true
+                            }
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .rotate(if (dateFormatOptionExpanded) 180f else 0f)
+                        .clickable {
+                            dateFormatOptionExpanded = !dateFormatOptionExpanded
+                            foodTypeOptionExpanded = false
+                            shelfOptionExpanded = false
+                            notificationOptionExpanded = false
+                            infoExpanded = false
+                            wechatInfoExpanded = false
+                        }
+                )
+            }
+
+            AnimatedVisibility(visible = dateFormatOptionExpanded) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(2),
+                        modifier = Modifier.heightIn(max = 96.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        items(
+                            key = { foodTypeList[it].type },
+                            count = foodTypeList.size
+                        ) { index ->
+                            var selected by remember { mutableStateOf(false) }
+                            val foodTypeInfo = foodTypeList[index]
+                            Box(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .padding(2.dp)
+                            ) {
+                                InputChip(
+                                    selected = selected,
+                                    onClick = {
+                                        selected = !selected
+                                    },
+                                    label = {
+                                        Text(
+                                            text = foodTypeInfo.type,
+                                            fontSize = 18.sp
+                                        )
+                                        if (selected) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Close,
+                                                contentDescription = null,
+                                                modifier = Modifier.clickable {
+                                                    appViewModel.removeFoodTypeInfo(foodTypeInfo)
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        val result = snackBarHostState.showSnackbar(
+                                                            message = "${context.getString(R.string.removed)} ${foodTypeInfo.type}",
+                                                            actionLabel = context.getString(R.string.undo),
+                                                            duration = SnackbarDuration.Short
+                                                        )
+                                                        when (result) {
+                                                            SnackbarResult.ActionPerformed -> {
+                                                                appViewModel.addFoodTypeInfo(
+                                                                    foodTypeInfo
+                                                                )
+                                                            }
+
+                                                            SnackbarResult.Dismissed -> {
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    },
+                                    colors = InputChipDefaults.inputChipColors(
+                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                    ),
+                                    border = null
+                                )
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
                 .padding(vertical = 8.dp),
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(12.dp)
             ) {
                 Icon(
@@ -454,6 +579,7 @@ fun SettingsScreen(
                 .padding(vertical = 8.dp),
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(12.dp)
             ) {
                 Icon(

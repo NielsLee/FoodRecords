@@ -45,4 +45,5 @@
     <string name="export_data">Export data</string>
     <string name="import_data">Import data</string>
     <string name="toast_enter_name">Please enter a name</string>
+    <string name="date_format_option">Date Format Settings</string>
 </resources>
