@@ -1,0 +1,2 @@
+Added the function of modifying the date format
+Optimized the view of the dice page
