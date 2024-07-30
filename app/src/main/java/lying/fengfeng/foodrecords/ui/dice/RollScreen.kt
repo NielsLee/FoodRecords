@@ -72,7 +72,7 @@ fun RollScreen() {
                 color = MaterialTheme.colorScheme.primary,
                 lineHeight = 48.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(vertical = 16.dp)
             )
             Text(
                 text = context.getString(R.string.roll_title_secondary),
