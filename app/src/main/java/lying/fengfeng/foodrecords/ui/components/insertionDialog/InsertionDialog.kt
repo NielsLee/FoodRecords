@@ -48,9 +48,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +74,7 @@ import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
@@ -132,7 +131,9 @@ fun InsertionDialog() {
                 dismissOnClickOutside = false
             ),
         ) {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
@@ -285,10 +286,10 @@ fun InsertionDialog() {
                                                     datePickerState.selectedDateMillis?.also {
                                                         if (isExpireDate) {
                                                             expirationDate =
-                                                                dateWithFormat(it, "YY-MM-dd")
+                                                                dateWithFormat(it, AppRepo.getDateFormat())
                                                         } else {
                                                             productionDate =
-                                                                dateWithFormat(it, "YY-MM-dd")
+                                                                dateWithFormat(it, AppRepo.getDateFormat())
                                                         }
                                                     }
                                                 },

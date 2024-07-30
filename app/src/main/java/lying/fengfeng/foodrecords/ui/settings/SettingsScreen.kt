@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -78,6 +80,7 @@ import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 
@@ -163,6 +166,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -284,6 +288,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -381,18 +386,6 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                AnimatedVisibility(visible = dateFormatOptionExpanded, enter = scaleIn()) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(iconSize)
-                            .clickable {
-                                dateFormatOptionExpanded = true
-                            }
-                    )
-                }
-
                 Icon(
                     imageVector = Icons.Filled.ArrowDropDown,
                     contentDescription = null,
@@ -414,66 +407,67 @@ fun SettingsScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    var currentDateFormat by remember { appViewModel.dateFormat }
+
                     LazyHorizontalStaggeredGrid(
-                        rows = StaggeredGridCells.Fixed(2),
-                        modifier = Modifier.heightIn(max = 96.dp),
+                        rows = StaggeredGridCells.Fixed(1),
+                        modifier = Modifier.heightIn(max = 48.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp)
                     ) {
-                        items(
-                            key = { foodTypeList[it].type },
-                            count = foodTypeList.size
-                        ) { index ->
-                            var selected by remember { mutableStateOf(false) }
-                            val foodTypeInfo = foodTypeList[index]
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .padding(2.dp)
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                InputChip(
-                                    selected = selected,
-                                    onClick = {
-                                        selected = !selected
-                                    },
-                                    label = {
-                                        Text(
-                                            text = foodTypeInfo.type,
-                                            fontSize = 18.sp
-                                        )
-                                        if (selected) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Close,
-                                                contentDescription = null,
-                                                modifier = Modifier.clickable {
-                                                    appViewModel.removeFoodTypeInfo(foodTypeInfo)
-                                                    CoroutineScope(Dispatchers.Main).launch {
-                                                        val result = snackBarHostState.showSnackbar(
-                                                            message = "${context.getString(R.string.removed)} ${foodTypeInfo.type}",
-                                                            actionLabel = context.getString(R.string.undo),
-                                                            duration = SnackbarDuration.Short
-                                                        )
-                                                        when (result) {
-                                                            SnackbarResult.ActionPerformed -> {
-                                                                appViewModel.addFoodTypeInfo(
-                                                                    foodTypeInfo
-                                                                )
-                                                            }
-
-                                                            SnackbarResult.Dismissed -> {
-
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    },
-                                    colors = InputChipDefaults.inputChipColors(
-                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                                    ),
-                                    border = null
+                                Checkbox(
+                                    checked = currentDateFormat == "yy-MM-dd",
+                                    onCheckedChange = {
+                                        currentDateFormat = "yy-MM-dd"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
                                 )
+                                Text(
+                                    text = "YY-MM-DD",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
 
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = currentDateFormat == "dd-MM-yy",
+                                    onCheckedChange = {
+                                        currentDateFormat = "dd-MM-yy"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
+                                )
+                                Text(
+                                    text = "DD-MM-YY",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
+
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = currentDateFormat == "MM-dd-yy",
+                                    onCheckedChange = {
+                                        currentDateFormat = "MM-dd-yy"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
+                                )
+                                Text(
+                                    text = "MM-DD-YY",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
                             }
                         }
                     }
@@ -516,6 +510,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = !notificationOptionExpanded
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -608,6 +603,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = !infoExpanded
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -844,7 +840,8 @@ fun NumberPickerWithButtons(
                 }
                 onNumberChange(number)
             },
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
@@ -867,7 +864,8 @@ fun NumberPickerWithButtons(
                     onNumberChange(number)
                 }
             },
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
@@ -961,7 +959,7 @@ fun GitHubButton() {
     }
 }
 
-fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
+private fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
     return try {
         packageManager.getPackageInfo(packageName, 0)
         true
