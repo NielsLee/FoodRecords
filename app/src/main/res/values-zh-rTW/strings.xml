@@ -46,4 +46,6 @@
     <string name="export_data">匯出數據</string>
     <string name="import_data">導入數據</string>
     <string name="toast_enter_name">請輸入名稱</string>
+    <string name="date_format_option">日期格式設定</string>
+    <string name="only_one">就這一個，不用挑了:)</string>
 </resources>

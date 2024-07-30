@@ -1,0 +1,2 @@
+Ajout de la possibilité de modifier le format de la date
+Optimisation de la vue de la page des dés

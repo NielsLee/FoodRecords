@@ -18,7 +18,7 @@ class InsertionDialogViewModel : ViewModel() {
     var productionDate: MutableState<String> = mutableStateOf(
         DateUtil.dateWithFormat(
             DateUtil.todayMillis(),
-            "YY-MM-dd"
+            AppRepo.getDateFormat()
         )
     )
 
@@ -31,11 +31,11 @@ class InsertionDialogViewModel : ViewModel() {
     var uuid: MutableState<String> = mutableStateOf("")
     var tips: MutableState<String> = mutableStateOf("")
 
-    init {
-//        initParams()
-    }
-
     fun refreshParams() {
+        productionDate.value = DateUtil.dateWithFormat(
+            DateUtil.todayMillis(),
+            AppRepo.getDateFormat()
+        )
         CoroutineScope(Dispatchers.IO).launch {
             foodTypes = AppRepo.getAllTypeInfo().map { it.type }
             shelfLifeList = AppRepo.getAllShelfLifeInfo().map { it.life }
@@ -62,7 +62,7 @@ class InsertionDialogViewModel : ViewModel() {
             productionDate = mutableStateOf(
                 DateUtil.dateWithFormat(
                     DateUtil.todayMillis(),
-                    "YY-MM-dd"
+                    AppRepo.getDateFormat()
                 )
             )
             expirationDate = mutableStateOf("")

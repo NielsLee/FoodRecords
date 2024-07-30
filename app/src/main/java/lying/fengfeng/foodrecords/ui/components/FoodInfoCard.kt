@@ -287,7 +287,7 @@ fun RemainingDaysWindow(
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        val fontSize = 36.sp
+        val fontSize = 32.sp
 
         val (remainingTitleColor, remainingTitleText) = if (remainingDays > 0) {
             ExpiredGreen to context.getString(R.string.valid_in)

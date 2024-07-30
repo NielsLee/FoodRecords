@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -186,6 +187,6 @@ fun FoodRecordsBottomBar(
 }
 
 private fun getCurrentDate(): String {
-    val dateFormat = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+    val dateFormat = SimpleDateFormat(AppRepo.getDateFormat(), Locale.getDefault())
     return dateFormat.format(Date())
 }

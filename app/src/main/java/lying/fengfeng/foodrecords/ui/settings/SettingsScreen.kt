@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -34,6 +36,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
@@ -77,6 +80,7 @@ import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 
@@ -102,6 +106,7 @@ fun SettingsScreen(
 
         var foodTypeOptionExpanded by remember { mutableStateOf(false) }
         var shelfOptionExpanded by remember { mutableStateOf(false) }
+        var dateFormatOptionExpanded by remember { mutableStateOf(false) }
         var notificationOptionExpanded by remember { mutableStateOf(false) }
         var infoExpanded by remember { mutableStateOf(false) }
         var wechatInfoExpanded by remember { mutableStateOf(false) }
@@ -161,6 +166,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -282,6 +288,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -360,9 +367,121 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .wrapContentSize()
+                .padding(vertical = 8.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Numbers,
+                    contentDescription = null,
+                    modifier = Modifier.size(iconSize)
+                )
+                Text(
+                    text = stringResource(id = R.string.date_format_option),
+                    fontSize = titleFontSize,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .rotate(if (dateFormatOptionExpanded) 180f else 0f)
+                        .clickable {
+                            dateFormatOptionExpanded = !dateFormatOptionExpanded
+                            foodTypeOptionExpanded = false
+                            shelfOptionExpanded = false
+                            notificationOptionExpanded = false
+                            infoExpanded = false
+                            wechatInfoExpanded = false
+                        }
+                )
+            }
+
+            AnimatedVisibility(visible = dateFormatOptionExpanded) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    var currentDateFormat by remember { appViewModel.dateFormat }
+
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(1),
+                        modifier = Modifier.heightIn(max = 48.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = currentDateFormat == "yy-MM-dd",
+                                    onCheckedChange = {
+                                        currentDateFormat = "yy-MM-dd"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
+                                )
+                                Text(
+                                    text = "YY-MM-DD",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
+
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = currentDateFormat == "dd-MM-yy",
+                                    onCheckedChange = {
+                                        currentDateFormat = "dd-MM-yy"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
+                                )
+                                Text(
+                                    text = "DD-MM-YY",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
+
+                        item {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = currentDateFormat == "MM-dd-yy",
+                                    onCheckedChange = {
+                                        currentDateFormat = "MM-dd-yy"
+                                        appViewModel.updateDateFormat(currentDateFormat)
+                                    }
+                                )
+                                Text(
+                                    text = "MM-DD-YY",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
                 .padding(vertical = 8.dp),
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(12.dp)
             ) {
                 Icon(
@@ -391,6 +510,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = !notificationOptionExpanded
                             infoExpanded = false
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -454,6 +574,7 @@ fun SettingsScreen(
                 .padding(vertical = 8.dp),
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(12.dp)
             ) {
                 Icon(
@@ -482,6 +603,7 @@ fun SettingsScreen(
                             notificationOptionExpanded = false
                             infoExpanded = !infoExpanded
                             wechatInfoExpanded = false
+                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -718,7 +840,8 @@ fun NumberPickerWithButtons(
                 }
                 onNumberChange(number)
             },
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
@@ -741,7 +864,8 @@ fun NumberPickerWithButtons(
                     onNumberChange(number)
                 }
             },
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
@@ -835,7 +959,7 @@ fun GitHubButton() {
     }
 }
 
-fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
+private fun isAppInstalled(packageManager: PackageManager, packageName: String): Boolean {
     return try {
         packageManager.getPackageInfo(packageName, 0)
         true

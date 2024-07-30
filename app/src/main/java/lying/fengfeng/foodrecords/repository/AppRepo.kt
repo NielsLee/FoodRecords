@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.repository
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -17,6 +18,8 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object AppRepo {
 
@@ -38,6 +41,31 @@ object AppRepo {
             db.execSQL("ALTER TABLE FoodInfo ADD COLUMN tips TEXT NOT NULL DEFAULT '' ")
         }
     }
+    private val MIGRATION_2_3 = object : Migration(2, 3) {
+        @SuppressLint("Range")
+        override fun migrate(db: SupportSQLiteDatabase) {
+            val cursor = db.query("SELECT uuid, productionDate, expirationDate FROM FoodInfo",
+                emptyArray())
+            if (cursor.moveToFirst()) {
+                do {
+                    val uuid = cursor.getString(cursor.getColumnIndex("uuid"))
+                    val productionDate = cursor.getString(cursor.getColumnIndex("productionDate"))
+                    val expirationDate = cursor.getString(cursor.getColumnIndex("expirationDate"))
+
+                    val dateFormatter = SimpleDateFormat("yy-MM-dd", Locale.getDefault())
+                    val productionDateTimestamp = dateFormatter.parse(productionDate)?.time ?: 0
+                    val expirationDateTimestamp = if (expirationDate == "--") 0 else dateFormatter.parse(expirationDate)?.time ?: 0
+                    val updateQuery = "UPDATE FoodInfo SET productionDate = ?, expirationDate = ? " +
+                            "WHERE uuid = ?"
+
+                    db.execSQL(updateQuery, arrayOf(productionDateTimestamp, expirationDateTimestamp,
+                        uuid))
+
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+        }
+    }
 
     fun init(application: Application) {
 
@@ -46,6 +74,7 @@ object AppRepo {
 
         foodInfoDB = Room.databaseBuilder(app, FoodInfoDatabase::class.java, DB_NAME_FOOD_INFO)
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
         foodInfoDao = foodInfoDB.foodInfoDao()
 
@@ -132,6 +161,14 @@ object AppRepo {
 
     fun getNextNotificationMillis(): Long {
         return sp.getLong("next_notification_time", -1)
+    }
+
+    fun setDateFormat(format: String) {
+        sp.edit().putString("date_format", format).apply()
+    }
+
+    fun getDateFormat(): String {
+        return sp.getString("date_format", "yy-MM-dd") ?: "yy-MM-dd"
     }
 
     private fun addInitializedData() {
