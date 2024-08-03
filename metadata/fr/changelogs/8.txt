@@ -1,0 +1,2 @@
+Ajout de la traduction en portugais
+Lorsque le titre de la carte alimentaire est trop long, il ne s'enroule plus, mais défile.
