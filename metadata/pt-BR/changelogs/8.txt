@@ -1,0 +1,2 @@
+Adicionada tradução para o português
+Quando o título do cartão de alimentação é muito longo, ele não é mais enrolado, mas rolado.

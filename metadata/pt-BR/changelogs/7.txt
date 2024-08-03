@@ -1,0 +1,2 @@
+Adicionada a função de modificar o formato da data
+Otimizou a visualização da página de dados

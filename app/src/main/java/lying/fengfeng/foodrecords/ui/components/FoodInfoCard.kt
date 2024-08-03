@@ -10,10 +10,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
@@ -94,6 +97,7 @@ fun FoodInfoCard(
             )
     ) {
         Row(
+            modifier = Modifier.padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
@@ -107,20 +111,26 @@ fun FoodInfoCard(
                         imageVector = Icons.Filled.Info,
                         contentDescription = null,
                         modifier = Modifier
-                            .padding(start = 8.dp)
                             .clickable {
                                 tipsShown = !tipsShown
                             }
                     )
                 }
             }
-            Text(
-                text = foodInfo.foodName,
-                modifier = Modifier.padding(8.dp),
-                style = TextStyle(
-                    fontSize = 24.sp
+
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val scrollState = rememberScrollState()
+                Text(
+                    text = foodInfo.foodName,
+                    modifier = Modifier
+                        .horizontalScroll(scrollState),
+                    style = TextStyle(
+                        fontSize = 24.sp
+                    )
                 )
-            )
+            }
         }
 
         Card(
@@ -168,8 +178,9 @@ fun FoodInfoCard(
         ) {
 
             Column(
-                Modifier.padding(horizontal = 8.dp)
+                Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.7f)
             ) {
+                val scrollState = rememberScrollState()
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -177,7 +188,8 @@ fun FoodInfoCard(
                     Icon(imageVector = Icons.Filled.TypeSpecimen, contentDescription = null)
                     Text(
                         text = foodInfo.foodType,
-                        fontStyle = FontStyle.Italic
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier.horizontalScroll(scrollState)
                     )
                 }
 
@@ -192,8 +204,9 @@ fun FoodInfoCard(
                 }
             }
 
+            Spacer(modifier = modifier.weight(1f))
+
             Box(
-                modifier = Modifier.fillMaxWidth(), // 设置为最大宽度 按钮才会显示在最右
                 contentAlignment = Alignment.CenterEnd
             ) {
                 IconButton(
@@ -332,7 +345,9 @@ fun RemainingDaysWindow(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.padding(horizontal = 1.dp).fillMaxWidth()
+                modifier = Modifier
+                    .padding(horizontal = 1.dp)
+                    .fillMaxWidth()
             ) {
                 contents()
             }

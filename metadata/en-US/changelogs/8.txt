@@ -1,0 +1,2 @@
+Added Portuguese translation
+When the food card title is too long, it will scroll instead of wrapping.
