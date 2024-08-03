@@ -1,0 +1,6 @@
+Adicionada tradução francesa
+A página de exibição do cartão agora mostra a data de validade em vez da data de produção
+Ao adicionar alimentos, agora permite definir o prazo de validade diretamente
+Adicionado um recurso de dicas para cartões de alimentos. Você pode inserir dicas ao adicionar alimentos e posteriormente exibi-las clicando no botão de dicas na página de exibição.
+Adicionada uma área na barra superior do aplicativo para exibir a data atual
+Ajustou ligeiramente alguns estilos e corrigiu alguns problemas de exibição

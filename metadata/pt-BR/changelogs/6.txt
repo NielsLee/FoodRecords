@@ -1,0 +1,2 @@
+Quando o nome de entrada está vazio, a criação de alimentos não é permitida.
+Os cartões de alimentação sem imagens usam um layout mais simples.

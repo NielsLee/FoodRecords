@@ -1,0 +1,3 @@
+Corrigidos problemas de estabilidade ao adicionar categorias ou prazos de validade duplicados.
+O prazo de validade agora está classificado em ordem crescente.
+Corrija o problema em que o prazo de validade restante é calculado incorretamente quando o prazo de validade é longo.

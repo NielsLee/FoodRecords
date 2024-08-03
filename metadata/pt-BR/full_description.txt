@@ -1,0 +1,1 @@
+Um aplicativo para registro de alimentos, que permite inserir facilmente as fotos, nomes, datas de produção e prazo de validade dos alimentos, o aplicativo irá ajudá-lo a classificar os alimentos de acordo com quando estão prestes a expirar, e enviará notificações para lembrá-lo; lidar com eles quando os alimentos estão prestes a expirar (se necessário)
