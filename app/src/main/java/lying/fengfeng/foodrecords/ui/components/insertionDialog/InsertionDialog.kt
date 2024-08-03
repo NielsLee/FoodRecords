@@ -432,7 +432,8 @@ fun InsertionDialog() {
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(8.dp)
-                                .padding(top = 8.dp)
+                                .padding(top = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
                             OutlinedCard(
@@ -454,7 +455,7 @@ fun InsertionDialog() {
                 }
 
                 Row(
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 ) {
 
                     Spacer(modifier = Modifier.weight(1f))
