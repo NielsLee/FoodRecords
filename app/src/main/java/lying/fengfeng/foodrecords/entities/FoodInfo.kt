@@ -3,6 +3,8 @@ package lying.fengfeng.foodrecords.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import lying.fengfeng.foodrecords.utils.DateUtil
+import kotlin.math.absoluteValue
 
 @Entity
 data class FoodInfo(
@@ -14,4 +16,10 @@ data class FoodInfo(
     @PrimaryKey val uuid: String,
     @ColumnInfo var amount: Int,
     @ColumnInfo val tips: String = ""
-)
+) {
+    fun getSortIndex(): Int {
+        val remainingDate = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
+        val nameHashNum = foodName.hashCode().absoluteValue % 10
+        return 10 * remainingDate + nameHashNum
+    }
+}
