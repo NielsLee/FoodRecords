@@ -111,6 +111,16 @@ class FoodRecordsAppViewModel: ViewModel() {
         AppRepo.removeShelfLifeInfo(shelfLifeInfo)
     }
 
+    fun updateFoodInfo(foodInfo: FoodInfo) {
+        foodInfoList.also {
+            if (it.contains(foodInfo)) {
+                it.remove(foodInfo)
+                it.add(foodInfo)
+                AppRepo.addFoodInfo(foodInfo)
+            }
+        }
+    }
+
     fun updateDaysBeforeNotification(days: Int) {
         daysBeforeNotification.value = days
         AppRepo.setDaysBeforeNotification(days)

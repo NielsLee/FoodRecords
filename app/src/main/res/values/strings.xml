@@ -47,4 +47,6 @@
     <string name="toast_enter_name">Please enter a name</string>
     <string name="date_format_option">Date Format Settings</string>
     <string name="only_one">Only one, my friend :)</string>
+    <string name="eat">Eat up</string>
+    <string name="supplement">Supplement</string>
 </resources>

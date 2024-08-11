@@ -12,6 +12,6 @@ data class FoodInfo(
     @ColumnInfo val shelfLife: String,
     @ColumnInfo val expirationDate: String,
     @PrimaryKey val uuid: String,
-    @ColumnInfo val amount: Int,
+    @ColumnInfo var amount: Int,
     @ColumnInfo val tips: String = ""
 )
