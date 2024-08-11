@@ -72,6 +72,7 @@ import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
+import lying.fengfeng.foodrecords.utils.EffectUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
 import kotlin.math.absoluteValue
@@ -230,6 +231,7 @@ fun FoodInfoCard(
                 IconButton(
                     onClick = {
                         dropDownMenuExpanded = true
+                        EffectUtil.playVibrationEffect(context)
                     },
                     modifier = Modifier
                 ) {
@@ -251,6 +253,7 @@ fun FoodInfoCard(
                             Text(text = context.getString(R.string.eat))
                         },
                         onClick = {
+                            EffectUtil.playVibrationEffect(context)
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
                                 if (foodInfo.amount > 1) {
@@ -273,6 +276,7 @@ fun FoodInfoCard(
                             Text(text = context.getString(R.string.supplement))
                         },
                         onClick = {
+                            EffectUtil.playVibrationEffect(context)
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
                                 foodInfo.amount += 1
@@ -292,6 +296,7 @@ fun FoodInfoCard(
                             Text(text = context.getString(R.string.delete_record),)
                         },
                         onClick = {
+                            EffectUtil.playVibrationEffect(context)
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
                                 deleteFood(appViewModel, foodInfo)
