@@ -66,6 +66,11 @@ object AppRepo {
             cursor.close()
         }
     }
+    private val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE FoodInfo ADD COLUMN amount INTEGER NOT NULL DEFAULT 1")
+        }
+    }
 
     fun init(application: Application) {
 
@@ -75,6 +80,7 @@ object AppRepo {
         foodInfoDB = Room.databaseBuilder(app, FoodInfoDatabase::class.java, DB_NAME_FOOD_INFO)
             .addMigrations(MIGRATION_1_2)
             .addMigrations(MIGRATION_2_3)
+            .addMigrations(MIGRATION_3_4)
             .build()
         foodInfoDao = foodInfoDB.foodInfoDao()
 

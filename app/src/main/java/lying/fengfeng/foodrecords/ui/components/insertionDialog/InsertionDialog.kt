@@ -77,6 +77,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
+import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import java.util.UUID
@@ -442,6 +443,14 @@ fun InsertionDialog() {
                                     .aspectRatio(3f / 4f)
                             ) {
                                 FoodPreview(context, cameraState)
+                            }
+
+                            NumberPickerWithButtons(
+                                initialNumber = 1,
+                                minNumber = 1,
+                                modifier = Modifier.padding(2.dp)
+                            ) {
+                                dialogViewModel.amount.intValue = it
                             }
 
                             IconButtonRow(

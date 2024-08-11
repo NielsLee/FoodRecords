@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
                             foodInfo.shelfLife,
                             foodInfo.expirationDate,
                             foodInfo.tips,
+                            foodInfo.amount,
                             Base64Util.fileToBase64(AppRepo.getPicturePath(foodInfo.uuid))
                             )
                     }
@@ -101,12 +102,13 @@ class MainActivity : ComponentActivity() {
                                 productionDate = line[3],
                                 shelfLife = line[4],
                                 expirationDate = line[5],
-                                tips = line[6]
+                                tips = line[6],
+                                amount = line[7].toInt()
                             ).also {
                                 foodInfoList.add(it)
                                 appViewModel.addFoodInfo(it)
                             }
-                            Base64Util.base64ToFile(line[7], AppRepo.getPicturePath(line[0]))
+                            Base64Util.base64ToFile(line[8], AppRepo.getPicturePath(line[0]))
                         }
                     }
 

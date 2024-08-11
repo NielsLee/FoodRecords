@@ -48,4 +48,6 @@
     <string name="toast_enter_name">Por favor, insira o nome</string>
     <string name="date_format_option">Configuração de formato de data</string>
     <string name="only_one">Só tem este, não precisa escolher :)</string>
+    <string name="eat">Comer tudo</string>
+    <string name="supplement">Suplementar</string>
 </resources>

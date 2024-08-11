@@ -33,7 +33,7 @@ fun FoodRecordsNavHost(
 
     val activityContext = LocalActivityContext.current
     val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
-    val foodInfoList = remember { appViewModel.foodInfoList }.sortedBy { DateUtil.getRemainingDays(it.productionDate, it.shelfLife, it.expirationDate) }
+    val foodInfoList = remember { appViewModel.foodInfoList }.sortedBy { it.getSortIndex() }
 
     NavHost(
         navController = navController,

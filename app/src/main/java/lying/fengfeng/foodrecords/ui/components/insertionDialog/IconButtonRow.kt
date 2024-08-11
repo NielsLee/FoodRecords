@@ -179,6 +179,7 @@ fun IconButtonRow(
                         shelfLife = dialogViewModel.shelfLife.value,
                         expirationDate = DateUtil.validateDateFormat(dialogViewModel.expirationDate.value),
                         uuid = pictureUUID,
+                        amount = dialogViewModel.amount.intValue,
                         tips = dialogViewModel.tips.value
                     )
                     appViewModel.addFoodInfo(foodInfo)

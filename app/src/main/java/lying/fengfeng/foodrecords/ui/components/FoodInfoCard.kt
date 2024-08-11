@@ -26,8 +26,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreHoriz
@@ -42,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +72,7 @@ import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
+import lying.fengfeng.foodrecords.utils.EffectUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
 import kotlin.math.absoluteValue
@@ -86,6 +91,7 @@ fun FoodInfoCard(
 
     val tipsButtonShown by remember { mutableStateOf(foodInfo.tips.isNotEmpty()) }
     var tipsShown by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
 
     Card(
@@ -178,9 +184,22 @@ fun FoodInfoCard(
         ) {
 
             Column(
-                Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.7f)
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(0.7f)
             ) {
                 val scrollState = rememberScrollState()
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null)
+                    Text(
+                        text = foodInfo.amount.toString(),
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier.horizontalScroll(scrollState)
+                    )
+                }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -212,6 +231,7 @@ fun FoodInfoCard(
                 IconButton(
                     onClick = {
                         dropDownMenuExpanded = true
+                        EffectUtil.playVibrationEffect(context)
                     },
                     modifier = Modifier
                 ) {
@@ -223,23 +243,63 @@ fun FoodInfoCard(
                     onDismissRequest = { dropDownMenuExpanded = false }
                 ) {
                     DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.eat_svg),
+                                null,
+                            )
+                        },
                         text = {
-                            Row(
-                                Modifier.fillMaxSize()
-                            ) {
-                                Icon(imageVector = Icons.Outlined.Delete, null)
-                                Text(text = context.getString(R.string.delete_record))
-                            }
+                            Text(text = context.getString(R.string.eat))
                         },
                         onClick = {
+                            EffectUtil.playVibrationEffect(context)
                             dropDownMenuExpanded = false
-                            CoroutineScope(Dispatchers.IO).launch {
-                                File(AppRepo.getPicturePath(foodInfo.uuid)).also {
-                                    if (it.exists()) {
-                                        it.delete()
-                                    }
+                            coroutineScope.launch(Dispatchers.IO) {
+                                if (foodInfo.amount > 1) {
+                                    foodInfo.amount -= 1
+                                    appViewModel.updateFoodInfo(foodInfo)
+                                } else {
+                                    deleteFood(appViewModel, foodInfo)
                                 }
-                                appViewModel.removeFoodInfo(foodInfo)
+                            }
+                        })
+
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.AddShoppingCart,
+                                null,
+                            )
+                        },
+                        text = {
+                            Text(text = context.getString(R.string.supplement))
+                        },
+                        onClick = {
+                            EffectUtil.playVibrationEffect(context)
+                            dropDownMenuExpanded = false
+                            coroutineScope.launch(Dispatchers.IO) {
+                                foodInfo.amount += 1
+                                appViewModel.updateFoodInfo(foodInfo)
+                            }
+                        })
+
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                null,
+                                modifier = Modifier.padding(1.dp)
+                            )
+                        },
+                        text = {
+                            Text(text = context.getString(R.string.delete_record),)
+                        },
+                        onClick = {
+                            EffectUtil.playVibrationEffect(context)
+                            dropDownMenuExpanded = false
+                            coroutineScope.launch(Dispatchers.IO) {
+                                deleteFood(appViewModel, foodInfo)
                             }
                         })
                 }
@@ -283,6 +343,15 @@ fun FoodInfoCard(
             }
         }
     }
+}
+
+fun deleteFood(appViewModel: FoodRecordsAppViewModel, foodInfo: FoodInfo) {
+    File(AppRepo.getPicturePath(foodInfo.uuid)).also {
+        if (it.exists()) {
+            it.delete()
+        }
+    }
+    appViewModel.removeFoodInfo(foodInfo)
 }
 
 @Composable

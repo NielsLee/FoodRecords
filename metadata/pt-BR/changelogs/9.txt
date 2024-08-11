@@ -1,0 +1,3 @@
+Implementar a funcionalidade de registro da quantidade de alimentos, incluindo:
+- Adicionar a quantidade de alimento ao adicionar o alimento
+- "Consumir" e "reabastecer" alimentos na lista de alimentos
