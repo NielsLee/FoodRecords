@@ -102,4 +102,20 @@ class MigrationTest {
 
         db = helper.runMigrationsAndValidate("FoodInfoDatabase", 3, true, MIGRATION_2_3)
     }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate3To4() {
+        var db = helper.createDatabase("FoodInfoDatabase", 3).apply {
+            close()
+        }
+
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE FoodInfo ADD COLUMN amount INTEGER NOT NULL DEFAULT 1")
+            }
+        }
+
+        db = helper.runMigrationsAndValidate("FoodInfoDatabase", 3, true, MIGRATION_3_4)
+    }
 }

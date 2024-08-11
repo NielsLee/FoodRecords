@@ -802,6 +802,7 @@ fun SettingsScreen(
 
 @Composable
 fun NumberPickerWithButtons(
+    modifier: Modifier = Modifier,
     initialNumber: Int = 0,
     minNumber: Int = 0,
     maxNumber: Int = Int.MAX_VALUE,
@@ -813,8 +814,12 @@ fun NumberPickerWithButtons(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
+        modifier = modifier
     ) {
+
+        val iconSize = 40.dp
+        val iconButtonSize = 40.dp
+
         if (expanded) {
             IconButton(
                 onClick = {
@@ -828,7 +833,7 @@ fun NumberPickerWithButtons(
                 Icon(
                     imageVector = Icons.Outlined.Remove,
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(iconSize)
                 )
             }
         }
@@ -841,8 +846,8 @@ fun NumberPickerWithButtons(
                 onNumberChange(number)
             },
             modifier = Modifier
-                .size(40.dp)
                 .clip(CircleShape)
+                .size(iconButtonSize)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Icon(imageVector = Icons.Filled.Remove, contentDescription = null)
@@ -865,8 +870,8 @@ fun NumberPickerWithButtons(
                 }
             },
             modifier = Modifier
-                .size(40.dp)
                 .clip(CircleShape)
+                .size(iconButtonSize)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = null)
@@ -885,7 +890,7 @@ fun NumberPickerWithButtons(
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(iconSize)
                 )
             }
         }

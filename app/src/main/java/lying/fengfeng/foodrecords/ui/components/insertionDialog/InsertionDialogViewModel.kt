@@ -1,6 +1,8 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +32,7 @@ class InsertionDialogViewModel : ViewModel() {
     var expirationDate: MutableState<String> = mutableStateOf("")
     var uuid: MutableState<String> = mutableStateOf("")
     var tips: MutableState<String> = mutableStateOf("")
+    var amount: MutableIntState = mutableIntStateOf(1)
 
     fun refreshParams() {
         productionDate.value = DateUtil.dateWithFormat(

@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreHoriz
@@ -181,6 +182,17 @@ fun FoodInfoCard(
                 Modifier.padding(horizontal = 8.dp).fillMaxWidth(0.7f)
             ) {
                 val scrollState = rememberScrollState()
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null)
+                    Text(
+                        text = foodInfo.amount.toString(),
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier.horizontalScroll(scrollState)
+                    )
+                }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
