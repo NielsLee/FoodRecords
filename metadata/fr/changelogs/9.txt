@@ -1,0 +1,3 @@
+Mettre en œuvre la fonctionnalité de saisie de la quantité d'aliments, y compris :
+- Lors de l'ajout d'un aliment, ajouter la quantité d'aliment
+- Dans la liste des aliments, "manger" et "réapprovisionner" les aliments
