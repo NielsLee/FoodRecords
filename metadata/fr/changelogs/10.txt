@@ -1,0 +1,1 @@
+Prend en charge la sélection manuelle des couleurs du thème
