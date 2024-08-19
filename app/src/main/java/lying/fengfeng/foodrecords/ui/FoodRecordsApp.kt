@@ -50,8 +50,11 @@ fun FoodRecordsApp() {
     } else {
         1f
     }
+    val themeOption by remember{ appViewModel.themeOption }
 
-    FoodRecordsTheme {
+    FoodRecordsTheme(
+        themeOption = themeOption
+    ) {
         CompositionLocalProvider(LocalScreenParams provides screenParams) {
             CompositionLocalProvider(LocalActivityContext provides context) {
                 Scaffold(

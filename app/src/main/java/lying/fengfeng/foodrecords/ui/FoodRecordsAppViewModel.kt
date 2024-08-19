@@ -22,6 +22,7 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 import lying.fengfeng.foodrecords.utils.DateUtil
 
 class FoodRecordsAppViewModel: ViewModel() {
@@ -34,6 +35,7 @@ class FoodRecordsAppViewModel: ViewModel() {
     var isNotificationEnabled = mutableStateOf(false)
     var daysBeforeNotification = mutableIntStateOf(AppRepo.getDaysBeforeNotification())
     var dateFormat = mutableStateOf(AppRepo.getDateFormat())
+    var themeOption = mutableStateOf(AppRepo.getThemeOption())
 
     init {
         CoroutineScope(Dispatchers.Main).launch {
@@ -164,6 +166,11 @@ class FoodRecordsAppViewModel: ViewModel() {
         setNotificationEnabled(false)
 
         AppRepo.setNextNotificationMillis(-1)
+    }
+
+    fun setThemeOption(option: ThemeOptions) {
+        themeOption.value = option
+        AppRepo.setThemeOption(option)
     }
 
     private fun setNotificationEnabled(boolean: Boolean) {

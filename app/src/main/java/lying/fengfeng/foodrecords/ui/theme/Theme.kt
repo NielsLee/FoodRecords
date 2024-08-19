@@ -10,10 +10,12 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.materialkolor.rememberDynamicColorScheme
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,19 +42,26 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun FoodRecordsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    themeOption: ThemeOptions = ThemeOptions.DYNAMIC,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colorScheme = when (themeOption) {
+        ThemeOptions.RED -> rememberDynamicColorScheme(Color.Red, darkTheme)
+        ThemeOptions.YELLOW -> rememberDynamicColorScheme(Color.Yellow, darkTheme)
+        ThemeOptions.GREEN -> rememberDynamicColorScheme(Color.Green, darkTheme)
+        ThemeOptions.BLUE -> rememberDynamicColorScheme(Color.Blue, darkTheme)
+        else -> when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
     }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -67,4 +76,18 @@ fun FoodRecordsTheme(
         typography = Typography,
         content = content
     )
+}
+
+enum class ThemeOptions(val int: Int) {
+    DYNAMIC(0),
+    RED(1),
+    YELLOW(2),
+    GREEN(3),
+    BLUE(4);
+
+    companion object {
+        fun fromInt(value: Int): ThemeOptions {
+            return entries.find { it.int == value } ?: DYNAMIC
+        }
+    }
 }

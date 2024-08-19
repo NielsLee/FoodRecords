@@ -49,4 +49,5 @@
     <string name="only_one">Un seul, mon ami :)</string>
     <string name="eat">Manger tout</string>
     <string name="supplement">Compléter</string>
+    <string name="theme_option">Paramètres du thème</string>
 </resources>

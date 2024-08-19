@@ -18,6 +18,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -177,6 +178,14 @@ object AppRepo {
         return sp.getString("date_format", "yy-MM-dd") ?: "yy-MM-dd"
     }
 
+    fun setThemeOption(option: ThemeOptions) {
+        sp.edit().putInt("theme_option", option.int).apply()
+    }
+
+    fun getThemeOption(): ThemeOptions {
+        val themeValue = sp.getInt("theme_option", 0)
+        return ThemeOptions.fromInt(themeValue)
+    }
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 

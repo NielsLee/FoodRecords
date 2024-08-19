@@ -50,4 +50,5 @@
     <string name="only_one">Só tem este, não precisa escolher :)</string>
     <string name="eat">Comer tudo</string>
     <string name="supplement">Suplementar</string>
+    <string name="theme_option">Configurações de tema</string>
 </resources>
