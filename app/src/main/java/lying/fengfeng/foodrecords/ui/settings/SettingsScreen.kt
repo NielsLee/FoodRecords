@@ -9,6 +9,8 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,23 +18,24 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
@@ -42,7 +45,6 @@ import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -67,11 +69,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,18 +86,20 @@ import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
+import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     snackBarHostState: SnackbarHostState
 ) {
+
+    val scrollState = rememberScrollState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = Modifier.verticalScroll(scrollState)
     ) {
 
         val context = LocalContext.current
@@ -109,21 +117,25 @@ fun SettingsScreen(
         var dateFormatOptionExpanded by remember { mutableStateOf(false) }
         var notificationOptionExpanded by remember { mutableStateOf(false) }
         var infoExpanded by remember { mutableStateOf(false) }
-        var wechatInfoExpanded by remember { mutableStateOf(false) }
+        var themeOptionExpanded by remember { mutableStateOf(false) }
 
         var foodTypeDialogShown by remember { mutableStateOf(false) }
         var shelfLifeDialogShown by remember { mutableStateOf(false) }
+        var wechatDialogShown by remember { mutableStateOf(false) }
         val focusRequester = remember { FocusRequester() }
 
         val foodTypeList = remember { appViewModel.foodTypeList }
         val shelfLifeList = remember { appViewModel.shelfLifeList }
         var notificationEnabled by remember { appViewModel.isNotificationEnabled }
-        var daysBeforeNotification by remember { appViewModel.daysBeforeNotification }
+        val daysBeforeNotification by remember { appViewModel.daysBeforeNotification }
+
+        val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
                 .wrapContentSize()
                 .padding(vertical = 8.dp)
+                .scrollable(scrollState, Orientation.Vertical)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -162,11 +174,6 @@ fun SettingsScreen(
                         .rotate(if (foodTypeOptionExpanded) 180f else 0f)
                         .clickable {
                             foodTypeOptionExpanded = !foodTypeOptionExpanded
-                            shelfOptionExpanded = false
-                            notificationOptionExpanded = false
-                            infoExpanded = false
-                            wechatInfoExpanded = false
-                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -283,12 +290,7 @@ fun SettingsScreen(
                         .size(iconSize)
                         .rotate(if (shelfOptionExpanded) 180f else 0f)
                         .clickable {
-                            foodTypeOptionExpanded = false
                             shelfOptionExpanded = !shelfOptionExpanded
-                            notificationOptionExpanded = false
-                            infoExpanded = false
-                            wechatInfoExpanded = false
-                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -394,11 +396,6 @@ fun SettingsScreen(
                         .rotate(if (dateFormatOptionExpanded) 180f else 0f)
                         .clickable {
                             dateFormatOptionExpanded = !dateFormatOptionExpanded
-                            foodTypeOptionExpanded = false
-                            shelfOptionExpanded = false
-                            notificationOptionExpanded = false
-                            infoExpanded = false
-                            wechatInfoExpanded = false
                         }
                 )
             }
@@ -505,12 +502,7 @@ fun SettingsScreen(
                         .size(iconSize)
                         .rotate(if (notificationOptionExpanded) 180f else 0f)
                         .clickable {
-                            foodTypeOptionExpanded = false
-                            shelfOptionExpanded = false
                             notificationOptionExpanded = !notificationOptionExpanded
-                            infoExpanded = false
-                            wechatInfoExpanded = false
-                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -578,6 +570,88 @@ fun SettingsScreen(
                 modifier = Modifier.padding(12.dp)
             ) {
                 Icon(
+                    imageVector = Icons.Filled.ColorLens,
+                    contentDescription = null,
+                    modifier = Modifier.size(iconSize)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.theme_option),
+                    fontSize = titleFontSize,
+                    modifier = Modifier.padding(paddingValues = titlePadding)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .rotate(if (themeOptionExpanded) 180f else 0f)
+                        .clickable {
+                            themeOptionExpanded = !themeOptionExpanded
+                        }
+                )
+            }
+
+            AnimatedVisibility(visible = themeOptionExpanded) {
+                Row {
+                    LazyHorizontalStaggeredGrid(
+                        rows = StaggeredGridCells.Fixed(1),
+                        modifier = Modifier.heightIn(max = 48.dp),
+                        contentPadding = PaddingValues(horizontal = iconSize),
+                        horizontalItemSpacing = 24.dp
+                    ) {
+                        items(
+                            count = 5
+                        ) { index ->
+                            IconButton(
+                                onClick = {
+                                    appViewModel.setThemeOption(ThemeOptions.fromInt(index))
+                                },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            Pair(0.1f, Color.Red),
+                                            Pair(0.3f, Color.Yellow),
+                                            Pair(0.6f, Color.Green),
+                                            Pair(0.9f, Color.Blue)
+                                        )
+                                    )
+                            ) {
+                                Image(
+                                    painter = when(index) {
+                                        1 -> ColorPainter(Color.Red)
+                                        2 -> ColorPainter(Color.Yellow)
+                                        3 -> ColorPainter(Color.Green)
+                                        4 -> ColorPainter(Color.Blue)
+                                        else -> ColorPainter(Color.Transparent)
+                                    },
+                                    contentDescription = null,
+                                )
+                                if (appViewModel.themeOption.value.int == index) {
+                                    Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(vertical = 8.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Icon(
                     imageVector = Icons.Filled.Info,
                     contentDescription = null,
                     modifier = Modifier.size(iconSize)
@@ -598,12 +672,7 @@ fun SettingsScreen(
                         .size(iconSize)
                         .rotate(if (infoExpanded) 180f else 0f)
                         .clickable {
-                            foodTypeOptionExpanded = false
-                            shelfOptionExpanded = false
-                            notificationOptionExpanded = false
                             infoExpanded = !infoExpanded
-                            wechatInfoExpanded = false
-                            dateFormatOptionExpanded = false
                         }
                 )
             }
@@ -644,7 +713,7 @@ fun SettingsScreen(
 
                         IconButton(
                             onClick = {
-                                wechatInfoExpanded = !wechatInfoExpanded
+                                wechatDialogShown = true
                             },
                             modifier = Modifier.size(iconSize)
                         ) {
@@ -666,34 +735,39 @@ fun SettingsScreen(
             }
         }
 
-        AnimatedVisibility(visible = wechatInfoExpanded) {
-            Card(
-                modifier = Modifier.fillMaxSize(0.9f),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img_wechat),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(12.dp))
-                    )
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+        if (wechatDialogShown) {
+            Dialog(
+                onDismissRequest = { wechatDialogShown = false },
+                content = {
+                    Card(
+                        modifier = Modifier.wrapContentSize(),
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "(✿´‿`)")
-                            Text(text = "添加请注明来意哦")
+                            Image(
+                                painter = painterResource(id = R.drawable.img_wechat),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.6f)
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(text = "(✿´‿`)")
+                                    Text(text = "添加请注明来意哦")
+                                }
+                            }
                         }
                     }
                 }
-            }
+            )
         }
 
         if (foodTypeDialogShown) {

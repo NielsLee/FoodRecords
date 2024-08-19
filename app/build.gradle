@@ -91,6 +91,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'io.github.ujizin:camposer:0.4.0'
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3'
+    implementation 'com.materialkolor:material-kolor:1.7.0'
 
     ksp "androidx.room:room-compiler:2.6.1"
     implementation "androidx.room:room-runtime:2.6.1"

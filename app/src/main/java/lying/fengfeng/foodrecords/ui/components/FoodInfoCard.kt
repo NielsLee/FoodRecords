@@ -131,6 +131,7 @@ fun FoodInfoCard(
                 Text(
                     text = foodInfo.foodName,
                     modifier = Modifier
+                        .padding(4.dp)
                         .horizontalScroll(scrollState),
                     style = TextStyle(
                         fontSize = 24.sp
