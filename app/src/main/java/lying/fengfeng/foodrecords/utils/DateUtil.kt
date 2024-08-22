@@ -50,7 +50,7 @@ object DateUtil {
         val dateFormatter = SimpleDateFormat(AppRepo.getDateFormat(), Locale.getDefault())
         if (expirationDate == "0") {
             val productionTimeMillis = productionDate.toLong()
-            val expirationTimeMillis = productionTimeMillis + shelfLife.toInt() * 24 * 60 * 60 * 1000
+            val expirationTimeMillis = productionTimeMillis + shelfLife.toLong() * 24 * 60 * 60 * 1000
             return dateFormatter.format(expirationTimeMillis)
         } else {
             return dateFormatter.format(expirationDate.toLong())
