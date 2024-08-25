@@ -73,14 +73,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
+import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
-import java.util.UUID
 
 /**
  * 添加食物记录的弹窗
@@ -88,13 +90,10 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertionDialog() {
-
-    val pictureUUID = UUID.randomUUID().toString()
-
     val context = LocalContext.current
 
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel()
+    val dialogViewModel: InsertionDialogViewModel = InsertionDialogViewModel()
+    val appViewModel: FoodRecordsAppViewModel = viewModel(context as MainActivity)
     var isDialogShown by remember { appViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
@@ -104,11 +103,13 @@ fun InsertionDialog() {
 
     var shelfLifeExpanded by remember { mutableStateOf(false) }
 
+    val uuid by remember { dialogViewModel.uuid }
     var foodName by remember { dialogViewModel.foodName }
     var productionDate by remember { dialogViewModel.productionDate }
     var expirationDate by remember { dialogViewModel.expirationDate }
     var foodType by remember { dialogViewModel.foodType }
     var shelfLife by remember { dialogViewModel.shelfLife }
+    var amount by remember { dialogViewModel.amount }
     var tips by remember { dialogViewModel.tips }
 
     val datePickerState = rememberDatePickerState(todayMillis())
@@ -118,9 +119,11 @@ fun InsertionDialog() {
     val focusRequester = remember { FocusRequester() }
     val cameraState = rememberCameraState()
 
-    cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+    LaunchedEffect(Unit) {
+        dialogViewModel.fillParams()
+    }
 
-    CompositionLocalProvider(LocalUUID provides pictureUUID) {
+    CompositionLocalProvider(LocalUUID provides uuid) {
 
         Dialog(
             onDismissRequest = {
@@ -446,7 +449,7 @@ fun InsertionDialog() {
                                     .fillMaxWidth()
                                     .aspectRatio(3f / 4f)
                             ) {
-                                FoodPreview(context, cameraState)
+                                FoodPreview(dialogViewModel, context, cameraState)
                             }
 
                             NumberPickerWithButtons(
@@ -454,14 +457,25 @@ fun InsertionDialog() {
                                 minNumber = 1,
                                 modifier = Modifier.padding(2.dp)
                             ) {
-                                dialogViewModel.amount.intValue = it
+                                amount = it
                             }
 
                             IconButtonRow(
+                                foodInfo = FoodInfo(
+                                    foodName = foodName,
+                                    productionDate = DateUtil.validateDateFormat(productionDate),
+                                    foodType = foodType,
+                                    shelfLife = shelfLife,
+                                    expirationDate = DateUtil.validateDateFormat(expirationDate),
+                                    uuid = uuid,
+                                    amount = amount,
+                                    tips = tips
+                            ),
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(top = 4.dp),
                                 cameraState,
+                                dialogViewModel
                             )
                         }
                     }
@@ -536,11 +550,6 @@ fun InsertionDialog() {
                 }
             }
         }
-    }
-
-    // 创建和销毁的时候分别初始化一次数据
-    LaunchedEffect(Unit) {
-        dialogViewModel.refreshParams()
     }
 }
 

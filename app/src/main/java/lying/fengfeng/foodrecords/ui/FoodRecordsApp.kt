@@ -55,36 +55,34 @@ fun FoodRecordsApp() {
     FoodRecordsTheme(
         themeOption = themeOption
     ) {
-        CompositionLocalProvider(LocalScreenParams provides screenParams) {
-            CompositionLocalProvider(LocalActivityContext provides context) {
-                Scaffold(
-                    snackbarHost = {
-                        SnackbarHost(hostState = snackBarHostState)
-                    },
-                    topBar = {
-                        FoodRecordsTopBar(context.getString(R.string.app_name))
-                    },
-                    bottomBar = {
-                        FoodRecordsBottomBar(
-                            navController = navController,
-                            fabOnClick = {
-                                showDialog = true
-                                EffectUtil.playSoundEffect(context)
-                                EffectUtil.playVibrationEffect(context)
-                            })
-                    }
-                ) { paddingValues ->
-                    FoodRecordsNavHost(
+        CompositionLocalProvider(LocalScreenParams provides screenParams, LocalActivityContext provides context) {
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackBarHostState)
+                },
+                topBar = {
+                    FoodRecordsTopBar(context.getString(R.string.app_name))
+                },
+                bottomBar = {
+                    FoodRecordsBottomBar(
                         navController = navController,
-                        snackBarHostState = snackBarHostState,
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize()
-                    )
+                        fabOnClick = {
+                            showDialog = true
+                            EffectUtil.playSoundEffect(context)
+                            EffectUtil.playVibrationEffect(context)
+                        })
+                }
+            ) { paddingValues ->
+                FoodRecordsNavHost(
+                    navController = navController,
+                    snackBarHostState = snackBarHostState,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                )
 
-                    if (showDialog) {
-                        InsertionDialog()
-                    }
+                if (showDialog) {
+                    InsertionDialog()
                 }
             }
         }

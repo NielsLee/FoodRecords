@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.filled.TypeSpecimen
@@ -61,7 +62,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.MainActivity
@@ -264,7 +264,8 @@ fun FoodInfoCard(
                                     deleteFood(appViewModel, foodInfo)
                                 }
                             }
-                        })
+                        }
+                    )
 
                     DropdownMenuItem(
                         leadingIcon = {
@@ -283,7 +284,23 @@ fun FoodInfoCard(
                                 foodInfo.amount += 1
                                 appViewModel.updateFoodInfo(foodInfo)
                             }
-                        })
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                null,
+                            )
+                        },
+                        text = {
+                            Text(text = context.getString(R.string.edit))
+                        },
+                        onClick = {
+                            // TODO Edit
+                        }
+                    )
 
                     DropdownMenuItem(
                         leadingIcon = {
@@ -302,7 +319,8 @@ fun FoodInfoCard(
                             coroutineScope.launch(Dispatchers.IO) {
                                 deleteFood(appViewModel, foodInfo)
                             }
-                        })
+                        }
+                    )
                 }
             }
         }

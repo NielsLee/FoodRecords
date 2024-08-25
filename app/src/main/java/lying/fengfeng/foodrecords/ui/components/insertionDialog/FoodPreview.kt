@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ujizin.camposer.CameraPreview
@@ -47,10 +46,10 @@ import lying.fengfeng.foodrecords.repository.AppRepo
  */
 @Composable
 fun FoodPreview(
+    dialogViewModel: InsertionDialogViewModel, // TODO too many recompose need to be optimize
     context: Context,
     cameraState: CameraState
 ) {
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
     val camSelector by rememberCamSelector(CamSelector.Back)
     var cameraPermissionGranted by remember { mutableStateOf(false) }
     var cameraStatus by remember { dialogViewModel.cameraStatus }

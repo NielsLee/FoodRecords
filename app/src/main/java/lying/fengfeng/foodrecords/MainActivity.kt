@@ -1,15 +1,14 @@
 package lying.fengfeng.foodrecords
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import kotlinx.coroutines.Dispatchers
@@ -37,10 +36,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            appViewModel = viewModel()
             FoodRecordsApp()
         }
-
-        appViewModel = ViewModelProvider(this)[FoodRecordsAppViewModel::class.java]
 
         exportLauncher = registerForActivityResult(ExportActivityResultContract()) { contentUriStr ->
             lifecycleScope.launch {
@@ -106,7 +104,7 @@ class MainActivity : ComponentActivity() {
                                 amount = line[7].toInt()
                             ).also {
                                 foodInfoList.add(it)
-                                appViewModel.addFoodInfo(it)
+                                appViewModel.addOrUpdateFoodInfo(it)
                             }
                             Base64Util.base64ToFile(line[8], AppRepo.getPicturePath(line[0]))
                         }
