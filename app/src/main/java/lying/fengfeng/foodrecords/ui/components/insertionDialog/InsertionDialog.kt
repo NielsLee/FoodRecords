@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -83,6 +84,8 @@ import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
+import lying.fengfeng.foodrecords.utils.EffectUtil
+import java.io.File
 
 /**
  * 添加食物记录的弹窗
@@ -92,7 +95,7 @@ import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 fun InsertionDialog() {
     val context = LocalContext.current
 
-    val dialogViewModel: InsertionDialogViewModel = InsertionDialogViewModel()
+    val dialogViewModel = InsertionDialogViewModel()
     val appViewModel: FoodRecordsAppViewModel = viewModel(context as MainActivity)
     var isDialogShown by remember { appViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
@@ -292,10 +295,16 @@ fun InsertionDialog() {
                                                     datePickerState.selectedDateMillis?.also {
                                                         if (isExpireDate) {
                                                             expirationDate =
-                                                                dateWithFormat(it, AppRepo.getDateFormat())
+                                                                dateWithFormat(
+                                                                    it,
+                                                                    AppRepo.getDateFormat()
+                                                                )
                                                         } else {
                                                             productionDate =
-                                                                dateWithFormat(it, AppRepo.getDateFormat())
+                                                                dateWithFormat(
+                                                                    it,
+                                                                    AppRepo.getDateFormat()
+                                                                )
                                                         }
                                                     }
                                                 },
@@ -461,21 +470,46 @@ fun InsertionDialog() {
                             }
 
                             IconButtonRow(
-                                foodInfo = FoodInfo(
-                                    foodName = foodName,
-                                    productionDate = DateUtil.validateDateFormat(productionDate),
-                                    foodType = foodType,
-                                    shelfLife = shelfLife,
-                                    expirationDate = DateUtil.validateDateFormat(expirationDate),
-                                    uuid = uuid,
-                                    amount = amount,
-                                    tips = tips
-                            ),
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(top = 4.dp),
-                                cameraState,
-                                dialogViewModel
+                                cameraStatus = cameraStatus,
+                                onChecked = {
+                                    if (foodName.isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.toast_enter_name),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        return@IconButtonRow
+                                    }
+                                    val foodInfo = FoodInfo(
+                                        foodName = foodName,
+                                        productionDate = DateUtil.validateDateFormat(productionDate),
+                                        foodType = foodType,
+                                        shelfLife = shelfLife,
+                                        expirationDate = DateUtil.validateDateFormat(expirationDate),
+                                        uuid = uuid,
+                                        amount = amount,
+                                        tips = tips
+                                    )
+                                    EffectUtil.playSoundEffect(context)
+                                    appViewModel.addOrUpdateFoodInfo(foodInfo)
+                                    isDialogShown = false
+                                },
+                                onClosed = {
+                                    EffectUtil.playSoundEffect(context)
+                                    isDialogShown = false
+                                },
+                                onCameraCaptured = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    val file = File(AppRepo.getPicturePath(uuid))
+                                    dialogViewModel.uuid.value = uuid
+                                    cameraState.takePicture(file) {
+                                        cameraStatus =
+                                            InsertionDialogViewModel.CameraStatus.IMAGE_READY
+                                    }
+                                }
                             )
                         }
                     }
