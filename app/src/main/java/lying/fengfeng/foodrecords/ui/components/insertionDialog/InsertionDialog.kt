@@ -95,10 +95,12 @@ fun InsertionDialog(
     shelfLifeList: List<ShelfLifeInfo>,
     foodTypeList: List<FoodTypeInfo>,
     onDismiss: () -> Unit,
-    onFoodInfoCreated: (FoodInfo) -> Unit
+    onFoodInfoCreated: (FoodInfo) -> Unit,
+    existedFoodInfo: FoodInfo? = null
 ) {
     val context = LocalContext.current
 
+    // viewModel's lifecycle is the same as this dialog
     val dialogViewModel = InsertionDialogViewModel()
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
@@ -125,7 +127,7 @@ fun InsertionDialog(
     val cameraState = rememberCameraState()
 
     LaunchedEffect(Unit) {
-        dialogViewModel.fillParams()
+        dialogViewModel.fillParams(existedFoodInfo)
     }
 
     CompositionLocalProvider(LocalUUID provides uuid) {

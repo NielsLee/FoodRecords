@@ -69,6 +69,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -92,6 +93,8 @@ fun FoodInfoCard(
     val tipsButtonShown by remember { mutableStateOf(foodInfo.tips.isNotEmpty()) }
     var tipsShown by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+
+    var isEditing by remember { mutableStateOf(false) }
 
 
     Card(
@@ -298,7 +301,7 @@ fun FoodInfoCard(
                             Text(text = context.getString(R.string.edit))
                         },
                         onClick = {
-                            // TODO Edit
+                            isEditing = true
                         }
                     )
 
@@ -323,6 +326,20 @@ fun FoodInfoCard(
                     )
                 }
             }
+        }
+
+        if (isEditing) {
+            InsertionDialog(
+                shelfLifeList = appViewModel.shelfLifeList,
+                foodTypeList = appViewModel.foodTypeList,
+                onDismiss = {
+                    isEditing = false
+                },
+                onFoodInfoCreated = {
+                    appViewModel.addOrUpdateFoodInfo(it)
+                },
+                existedFoodInfo = foodInfo
+            )
         }
     }
     
