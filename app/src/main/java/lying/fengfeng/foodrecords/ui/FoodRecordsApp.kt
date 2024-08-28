@@ -82,7 +82,16 @@ fun FoodRecordsApp() {
                 )
 
                 if (showDialog) {
-                    InsertionDialog()
+                    InsertionDialog(
+                        shelfLifeList = appViewModel.shelfLifeList,
+                        foodTypeList = appViewModel.foodTypeList,
+                        onDismiss = {
+                            showDialog = false
+                        },
+                        onFoodInfoCreated = {
+                            appViewModel.addOrUpdateFoodInfo(it)
+                        }
+                    )
                 }
             }
         }

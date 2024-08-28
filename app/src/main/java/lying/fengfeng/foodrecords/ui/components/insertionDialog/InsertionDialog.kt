@@ -70,15 +70,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entities.FoodTypeInfo
+import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
-import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -92,12 +91,15 @@ import java.io.File
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsertionDialog() {
+fun InsertionDialog(
+    shelfLifeList: List<ShelfLifeInfo>,
+    foodTypeList: List<FoodTypeInfo>,
+    onDismiss: () -> Unit,
+    onFoodInfoCreated: (FoodInfo) -> Unit
+) {
     val context = LocalContext.current
 
     val dialogViewModel = InsertionDialogViewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel(context as MainActivity)
-    var isDialogShown by remember { appViewModel.isDialogShown }
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     var isExpireDate by remember { mutableStateOf(false) }
@@ -130,8 +132,8 @@ fun InsertionDialog() {
 
         Dialog(
             onDismissRequest = {
-                isDialogShown = false
                 cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+                onDismiss.invoke()
             },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -372,7 +374,7 @@ fun InsertionDialog() {
                                     modifier = Modifier.exposedDropdownSize(),
                                 ) {
 
-                                    appViewModel.shelfLifeList.forEach { selectionOption ->
+                                    shelfLifeList.forEach { selectionOption ->
                                         DropdownMenuItem(
                                             onClick = {
                                                 shelfLife = selectionOption.life
@@ -430,7 +432,7 @@ fun InsertionDialog() {
 
                                 ) {
 
-                                    appViewModel.foodTypeList.forEach { selectionOption ->
+                                    foodTypeList.forEach { selectionOption ->
                                         DropdownMenuItem(
                                             onClick = {
                                                 foodType = selectionOption.type
@@ -494,12 +496,12 @@ fun InsertionDialog() {
                                         tips = tips
                                     )
                                     EffectUtil.playSoundEffect(context)
-                                    appViewModel.addOrUpdateFoodInfo(foodInfo)
-                                    isDialogShown = false
+                                    onDismiss.invoke()
+                                    onFoodInfoCreated.invoke(foodInfo)
                                 },
                                 onClosed = {
                                     EffectUtil.playSoundEffect(context)
-                                    isDialogShown = false
+                                    onDismiss.invoke()
                                 },
                                 onCameraCaptured = {
                                     EffectUtil.playVibrationEffect(context)
