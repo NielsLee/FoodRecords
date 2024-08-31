@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -69,33 +70,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ujizin.camposer.state.rememberCameraState
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
+import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entities.FoodTypeInfo
+import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
-import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
 import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
+import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
-import java.util.UUID
+import lying.fengfeng.foodrecords.utils.EffectUtil
+import java.io.File
 
 /**
  * 添加食物记录的弹窗
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsertionDialog() {
-
-    val pictureUUID = UUID.randomUUID().toString()
-
+fun InsertionDialog(
+    shelfLifeList: List<ShelfLifeInfo>,
+    foodTypeList: List<FoodTypeInfo>,
+    onDismiss: () -> Unit,
+    onFoodInfoCreated: (FoodInfo) -> Unit,
+    existedFoodInfo: FoodInfo? = null
+) {
     val context = LocalContext.current
 
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel()
-    var isDialogShown by remember { appViewModel.isDialogShown }
+    // viewModel's lifecycle is the same as this dialog
+    // fill existed params or create a set of new params
+    val dialogViewModel = InsertionDialogViewModel(existedFoodInfo)
     var cameraStatus by remember { dialogViewModel.cameraStatus }
 
     var isExpireDate by remember { mutableStateOf(false) }
@@ -104,11 +112,13 @@ fun InsertionDialog() {
 
     var shelfLifeExpanded by remember { mutableStateOf(false) }
 
+    val uuid by remember { dialogViewModel.uuid }
     var foodName by remember { dialogViewModel.foodName }
     var productionDate by remember { dialogViewModel.productionDate }
     var expirationDate by remember { dialogViewModel.expirationDate }
     var foodType by remember { dialogViewModel.foodType }
     var shelfLife by remember { dialogViewModel.shelfLife }
+    var amount by remember { dialogViewModel.amount }
     var tips by remember { dialogViewModel.tips }
 
     val datePickerState = rememberDatePickerState(todayMillis())
@@ -117,15 +127,13 @@ fun InsertionDialog() {
 
     val focusRequester = remember { FocusRequester() }
     val cameraState = rememberCameraState()
-
-    cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
-
-    CompositionLocalProvider(LocalUUID provides pictureUUID) {
+    val mutableCameraStatus = dialogViewModel.cameraStatus
+    CompositionLocalProvider(LocalUUID provides uuid) {
 
         Dialog(
             onDismissRequest = {
-                isDialogShown = false
-                cameraStatus = InsertionDialogViewModel.CameraStatus.IDLE
+                cameraStatus = CameraStatus.IDLE
+                onDismiss.invoke()
             },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -147,7 +155,7 @@ fun InsertionDialog() {
 
                 ) {
                     Text(
-                        text = context.getString(R.string.title_add_new),
+                        text = if (existedFoodInfo == null) context.getString(R.string.title_add_new) else context.getString(R.string.edit),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -243,7 +251,7 @@ fun InsertionDialog() {
                                 contentAlignment = Alignment.TopCenter
                             ) {
                                 OutlinedTextField(
-                                    readOnly = false,
+                                    readOnly = true,
                                     value = if (isExpireDate) expirationDate else productionDate,
                                     maxLines = 1,
                                     onValueChange = { newValue ->
@@ -289,10 +297,16 @@ fun InsertionDialog() {
                                                     datePickerState.selectedDateMillis?.also {
                                                         if (isExpireDate) {
                                                             expirationDate =
-                                                                dateWithFormat(it, AppRepo.getDateFormat())
+                                                                dateWithFormat(
+                                                                    it,
+                                                                    AppRepo.getDateFormat()
+                                                                )
                                                         } else {
                                                             productionDate =
-                                                                dateWithFormat(it, AppRepo.getDateFormat())
+                                                                dateWithFormat(
+                                                                    it,
+                                                                    AppRepo.getDateFormat()
+                                                                )
                                                         }
                                                     }
                                                 },
@@ -360,7 +374,7 @@ fun InsertionDialog() {
                                     modifier = Modifier.exposedDropdownSize(),
                                 ) {
 
-                                    appViewModel.shelfLifeList.forEach { selectionOption ->
+                                    shelfLifeList.forEach { selectionOption ->
                                         DropdownMenuItem(
                                             onClick = {
                                                 shelfLife = selectionOption.life
@@ -418,7 +432,7 @@ fun InsertionDialog() {
 
                                 ) {
 
-                                    appViewModel.foodTypeList.forEach { selectionOption ->
+                                    foodTypeList.forEach { selectionOption ->
                                         DropdownMenuItem(
                                             onClick = {
                                                 foodType = selectionOption.type
@@ -446,22 +460,58 @@ fun InsertionDialog() {
                                     .fillMaxWidth()
                                     .aspectRatio(3f / 4f)
                             ) {
-                                FoodPreview(context, cameraState)
+                                FoodPreview(uuid, context, cameraState, mutableCameraStatus)
                             }
 
                             NumberPickerWithButtons(
-                                initialNumber = 1,
+                                initialNumber = amount,
                                 minNumber = 1,
-                                modifier = Modifier.padding(2.dp)
-                            ) {
-                                dialogViewModel.amount.intValue = it
-                            }
+                                modifier = Modifier.padding(2.dp),
+                                onNumberChange = { newNumber ->
+                                    amount = newNumber
+                                }
+                            )
 
                             IconButtonRow(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 4.dp),
-                                cameraState,
+                                    .padding(vertical = 4.dp),
+                                cameraStatus = cameraStatus,
+                                onChecked = {
+                                    if (foodName.isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.toast_enter_name),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        return@IconButtonRow
+                                    }
+                                    val foodInfo = FoodInfo(
+                                        foodName = foodName,
+                                        productionDate = DateUtil.validateDateFormat(productionDate),
+                                        foodType = foodType,
+                                        shelfLife = shelfLife,
+                                        expirationDate = DateUtil.validateDateFormat(expirationDate),
+                                        uuid = uuid,
+                                        amount = amount,
+                                        tips = tips
+                                    )
+                                    EffectUtil.playVibrationEffect(context)
+                                    onDismiss.invoke()
+                                    onFoodInfoCreated.invoke(foodInfo)
+                                },
+                                onClosed = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    onDismiss.invoke()
+                                },
+                                onCameraCaptured = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    val file = File(AppRepo.getPicturePath(uuid))
+                                    dialogViewModel.uuid.value = uuid
+                                    cameraState.takePicture(file) {
+                                        cameraStatus = CameraStatus.IMAGE_READY
+                                    }
+                                }
                             )
                         }
                     }
@@ -536,11 +586,6 @@ fun InsertionDialog() {
                 }
             }
         }
-    }
-
-    // 创建和销毁的时候分别初始化一次数据
-    LaunchedEffect(Unit) {
-        dialogViewModel.refreshParams()
     }
 }
 

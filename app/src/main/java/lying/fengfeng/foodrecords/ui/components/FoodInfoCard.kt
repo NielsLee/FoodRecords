@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material.icons.filled.TypeSpecimen
@@ -61,7 +62,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.MainActivity
@@ -69,6 +69,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -92,6 +93,8 @@ fun FoodInfoCard(
     val tipsButtonShown by remember { mutableStateOf(foodInfo.tips.isNotEmpty()) }
     var tipsShown by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+
+    var isEditing by remember { mutableStateOf(false) }
 
 
     Card(
@@ -160,7 +163,7 @@ fun FoodInfoCard(
                     }
 
                     // 在IO线程中加载图片
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(isEditing) {
                         val bitmap = ImageUtil.preProcessImage(foodPicturePath)
                         // 切换回主线程更新UI
                         launch(Dispatchers.Main) {
@@ -264,7 +267,8 @@ fun FoodInfoCard(
                                     deleteFood(appViewModel, foodInfo)
                                 }
                             }
-                        })
+                        }
+                    )
 
                     DropdownMenuItem(
                         leadingIcon = {
@@ -283,7 +287,25 @@ fun FoodInfoCard(
                                 foodInfo.amount += 1
                                 appViewModel.updateFoodInfo(foodInfo)
                             }
-                        })
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                null,
+                            )
+                        },
+                        text = {
+                            Text(text = context.getString(R.string.edit))
+                        },
+                        onClick = {
+                            EffectUtil.playVibrationEffect(context)
+                            isEditing = true
+                            dropDownMenuExpanded = false
+                        }
+                    )
 
                     DropdownMenuItem(
                         leadingIcon = {
@@ -302,9 +324,24 @@ fun FoodInfoCard(
                             coroutineScope.launch(Dispatchers.IO) {
                                 deleteFood(appViewModel, foodInfo)
                             }
-                        })
+                        }
+                    )
                 }
             }
+        }
+
+        if (isEditing) {
+            InsertionDialog(
+                shelfLifeList = appViewModel.shelfLifeList,
+                foodTypeList = appViewModel.foodTypeList,
+                onDismiss = {
+                    isEditing = false
+                },
+                onFoodInfoCreated = {
+                    appViewModel.addOrUpdateFoodInfo(it)
+                },
+                existedFoodInfo = foodInfo
+            )
         }
     }
     

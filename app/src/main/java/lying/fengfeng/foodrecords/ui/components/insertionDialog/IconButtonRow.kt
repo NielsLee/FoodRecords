@@ -1,11 +1,10 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.widget.Toast
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -17,26 +16,16 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ujizin.camposer.state.CameraState
-import lying.fengfeng.foodrecords.R
-import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
-import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.utils.DateUtil
-import lying.fengfeng.foodrecords.utils.EffectUtil
-import java.io.File
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
 
 /**
  * 图片预览下方控制拍摄的按钮行
@@ -44,24 +33,18 @@ import java.io.File
 @Composable
 fun IconButtonRow(
     modifier: Modifier,
-    cameraState: CameraState,
+    cameraStatus: CameraStatus,
+    onChecked: () -> Unit,
+    onClosed: () -> Unit,
+    onCameraCaptured: () -> Unit
 ) {
-
-    val context = LocalContext.current
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
-    val appViewModel: FoodRecordsAppViewModel = viewModel()
-
-    var showDialog by remember { appViewModel.isDialogShown }
-    var cameraStatus by remember { dialogViewModel.cameraStatus }
-
     val buttonsContracted = updateTransition(cameraStatus, label = "IconButtonsContracted")
-    val pictureUUID = LocalUUID.current
 
     /* TODO 将dp改为相对位置 */
     val offsetXLeft by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {
-            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+            if (targetState == CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     (-54).dp at 0
@@ -76,14 +59,14 @@ fun IconButtonRow(
                 }
             }
         }) { status ->
-        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else (-54).dp
+        if (status == CameraStatus.PREVIEWING) 0.dp else (-54).dp
     }
 
     /* TODO 将dp改为相对位置 */
     val offsetXRight by buttonsContracted.animateDp(
         label = "",
         transitionSpec = {
-            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+            if (targetState == CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     54.dp at 0
@@ -98,12 +81,12 @@ fun IconButtonRow(
             }
         }
     ) { status ->
-        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0.dp else 54.dp
+        if (status == CameraStatus.PREVIEWING) 0.dp else 54.dp
     }
 
     val edgeButtonAlpha by buttonsContracted.animateFloat(
         transitionSpec = {
-            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+            if (targetState == CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     1f at 0
@@ -118,12 +101,12 @@ fun IconButtonRow(
             }
         }, label = ""
     ) { status ->
-        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 0f else 1f
+        if (status == CameraStatus.PREVIEWING) 0f else 1f
     }
 
     val centerButtonAlpha by buttonsContracted.animateFloat(
         transitionSpec = {
-            if (targetState == InsertionDialogViewModel.CameraStatus.PREVIEWING) {
+            if (targetState == CameraStatus.PREVIEWING) {
                 keyframes {
                     durationMillis = 300
                     0f at 0
@@ -138,7 +121,7 @@ fun IconButtonRow(
             }
         }, label = ""
     ) { status ->
-        if (status == InsertionDialogViewModel.CameraStatus.PREVIEWING) 1f else 0f
+        if (status == CameraStatus.PREVIEWING) 1f else 0f
     }
 
     Row(
@@ -151,63 +134,36 @@ fun IconButtonRow(
         ) {
 
             IconButton(
-                onClick = {
-                    EffectUtil.playSoundEffect(context)
-                    showDialog = false
-                    dialogViewModel.initParams()
-                },
+                onClick = onClosed,
                 modifier = Modifier
                     .offset { IntOffset(offsetXLeft.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = (cameraStatus != InsertionDialogViewModel.CameraStatus.PREVIEWING)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                enabled = (cameraStatus != CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Close, contentDescription = null)
             }
 
             IconButton(
-                onClick = {
-                    if (dialogViewModel.foodName.value.isEmpty()) {
-                        Toast.makeText(context, context.getString(R.string.toast_enter_name), Toast.LENGTH_SHORT).show()
-                        return@IconButton
-                    }
-                    EffectUtil.playSoundEffect(context)
-                    val foodInfo = FoodInfo(
-                        foodName = dialogViewModel.foodName.value,
-                        productionDate = DateUtil.validateDateFormat(dialogViewModel.productionDate.value),
-                        foodType = dialogViewModel.foodType.value,
-                        shelfLife = dialogViewModel.shelfLife.value,
-                        expirationDate = DateUtil.validateDateFormat(dialogViewModel.expirationDate.value),
-                        uuid = pictureUUID,
-                        amount = dialogViewModel.amount.intValue,
-                        tips = dialogViewModel.tips.value
-                    )
-                    appViewModel.addFoodInfo(foodInfo)
-                    showDialog = false
-                    dialogViewModel.initParams()
-                },
+                onClick = onChecked,
                 modifier = Modifier
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = (cameraStatus != InsertionDialogViewModel.CameraStatus.PREVIEWING)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                enabled = (cameraStatus != CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Check, contentDescription = null)
             }
 
             IconButton(
-                onClick = {
-                    EffectUtil.playVibrationEffect(context)
-                    val file = File(AppRepo.getPicturePath(pictureUUID))
-                    dialogViewModel.uuid.value = pictureUUID
-                    cameraState.takePicture(file) {
-                        cameraStatus = InsertionDialogViewModel.CameraStatus.IMAGE_READY
-                    }
-                },
+                onClick = onCameraCaptured,
                 modifier = Modifier
                     .alpha(centerButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
-                enabled = (cameraStatus == InsertionDialogViewModel.CameraStatus.PREVIEWING)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                enabled = (cameraStatus == CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Camera, contentDescription = null)
             }

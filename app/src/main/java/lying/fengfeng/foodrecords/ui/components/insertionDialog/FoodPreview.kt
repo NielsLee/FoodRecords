@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ujizin.camposer.CameraPreview
@@ -41,37 +41,39 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
+import java.io.File
 
 /**
  * 图片预览窗
  */
 @Composable
 fun FoodPreview(
+    uuid: String,
     context: Context,
-    cameraState: CameraState
+    cameraState: CameraState,
+    mutableCameraStatus: MutableState<CameraStatus>
 ) {
-    val dialogViewModel: InsertionDialogViewModel = viewModel()
     val camSelector by rememberCamSelector(CamSelector.Back)
-    var cameraPermissionGranted by remember { mutableStateOf(false) }
-    var cameraStatus by remember { dialogViewModel.cameraStatus }
+    var cameraPermissionGranted by remember { mutableStateOf(checkCameraPermission(context)) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         if (cameraPermissionGranted) {
-            when(cameraStatus) {
-                InsertionDialogViewModel.CameraStatus.IDLE -> {
+            when(mutableCameraStatus.value) {
+                CameraStatus.IDLE -> {
                     IconButton(
                         onClick = {
-                            cameraStatus = InsertionDialogViewModel.CameraStatus.PREVIEWING
+                            mutableCameraStatus.value = CameraStatus.PREVIEWING
                         },
                         Modifier.fillMaxSize()
                     ) {
                         Icon(Icons.Filled.CameraAlt, null)
                     }
                 }
-                InsertionDialogViewModel.CameraStatus.PREVIEWING -> {
+                CameraStatus.PREVIEWING -> {
 
                     CameraPreview(
                         cameraState = cameraState,
@@ -84,20 +86,23 @@ fun FoodPreview(
 
                     }
                 }
-                InsertionDialogViewModel.CameraStatus.IMAGE_READY -> {
-
-                    val picturePath = AppRepo.getPicturePath(dialogViewModel.uuid.value)
+                CameraStatus.IMAGE_READY -> {
+                    val picturePath = AppRepo.getPicturePath(uuid)
                     var bitmap by remember { mutableStateOf(createPreviewBitmap()) }
                     val imageBitmap = bitmap.asImageBitmap()
                     val painter = BitmapPainter(imageBitmap)
 
                     LaunchedEffect(Unit) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            bitmap = Glide.with(context).asBitmap()
-                                .load(picturePath)
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                .skipMemoryCache(true)
-                                .submit().get()
+                            if (File(picturePath).exists()) {
+                                bitmap = Glide.with(context).asBitmap()
+                                    .load(picturePath)
+                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                    .skipMemoryCache(true)
+                                    .submit().get()
+                            } else {
+                                mutableCameraStatus.value = CameraStatus.IDLE
+                            }
                         }
                     }
 
@@ -118,7 +123,7 @@ fun FoodPreview(
                         )
                         if (permission == PackageManager.PERMISSION_GRANTED) {
                             cameraPermissionGranted = true
-                            cameraStatus = InsertionDialogViewModel.CameraStatus.PREVIEWING
+                            mutableCameraStatus.value = CameraStatus.PREVIEWING
                         } else {
                             ActivityCompat.requestPermissions(
                                 context as Activity,
@@ -136,7 +141,7 @@ fun FoodPreview(
     }
 }
 
-fun createPreviewBitmap(): Bitmap {
+private fun createPreviewBitmap(): Bitmap {
 
     val bitmap = Bitmap.createBitmap(1200, 1600, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -146,4 +151,12 @@ fun createPreviewBitmap(): Bitmap {
     canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
 
     return bitmap
+}
+
+private fun checkCameraPermission(context: Context): Boolean {
+    val permission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.CAMERA
+    )
+    return permission == PackageManager.PERMISSION_GRANTED
 }

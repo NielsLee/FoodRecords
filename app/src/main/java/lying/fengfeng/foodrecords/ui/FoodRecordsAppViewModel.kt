@@ -70,11 +70,14 @@ class FoodRecordsAppViewModel: ViewModel() {
         return shelfLifeList
     }
 
-    fun addFoodInfo(foodInfo: FoodInfo) {
+    fun addOrUpdateFoodInfo(foodInfo: FoodInfo) {
         AppRepo.addFoodInfo(foodInfo)
-        foodInfoList.also {
-            if (!it.contains(foodInfo)) {
-                it.add(foodInfo)
+        foodInfoList.also { list ->
+            if (!list.any { it.uuid == foodInfo.uuid}) {
+                list.add(foodInfo)
+            } else {
+                list.removeIf { it.uuid == foodInfo.uuid }
+                list.add(foodInfo)
             }
         }
     }

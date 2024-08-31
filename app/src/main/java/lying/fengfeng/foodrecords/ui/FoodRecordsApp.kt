@@ -40,51 +40,50 @@ fun FoodRecordsApp() {
     val widthPixels = LocalContext.current.resources.displayMetrics.widthPixels
     val dpi = LocalContext.current.resources.displayMetrics.densityDpi
     val widthDp = widthPixels / (dpi / 160f)
-    screenParams.listColumnNum = if (widthDp > 600) {
-        3
-    } else {
-        2
-    }
-    screenParams.insertDialogWidthPercent = if (widthDp > 600) {
-        0.6f
-    } else {
-        1f
-    }
+    screenParams.listColumnNum = if (widthDp > 600) 3 else 2
+    screenParams.insertDialogWidthPercent = if (widthDp > 600) 0.6f else 1f
     val themeOption by remember{ appViewModel.themeOption }
 
     FoodRecordsTheme(
         themeOption = themeOption
     ) {
-        CompositionLocalProvider(LocalScreenParams provides screenParams) {
-            CompositionLocalProvider(LocalActivityContext provides context) {
-                Scaffold(
-                    snackbarHost = {
-                        SnackbarHost(hostState = snackBarHostState)
-                    },
-                    topBar = {
-                        FoodRecordsTopBar(context.getString(R.string.app_name))
-                    },
-                    bottomBar = {
-                        FoodRecordsBottomBar(
-                            navController = navController,
-                            fabOnClick = {
-                                showDialog = true
-                                EffectUtil.playSoundEffect(context)
-                                EffectUtil.playVibrationEffect(context)
-                            })
-                    }
-                ) { paddingValues ->
-                    FoodRecordsNavHost(
+        CompositionLocalProvider(LocalScreenParams provides screenParams, LocalActivityContext provides context) {
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackBarHostState)
+                },
+                topBar = {
+                    FoodRecordsTopBar(context.getString(R.string.app_name))
+                },
+                bottomBar = {
+                    FoodRecordsBottomBar(
                         navController = navController,
-                        snackBarHostState = snackBarHostState,
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize()
-                    )
+                        fabOnClick = {
+                            showDialog = true
+                            EffectUtil.playSoundEffect(context)
+                            EffectUtil.playVibrationEffect(context)
+                        })
+                }
+            ) { paddingValues ->
+                FoodRecordsNavHost(
+                    navController = navController,
+                    snackBarHostState = snackBarHostState,
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                )
 
-                    if (showDialog) {
-                        InsertionDialog()
-                    }
+                if (showDialog) {
+                    InsertionDialog(
+                        shelfLifeList = appViewModel.shelfLifeList,
+                        foodTypeList = appViewModel.foodTypeList,
+                        onDismiss = {
+                            showDialog = false
+                        },
+                        onFoodInfoCreated = {
+                            appViewModel.addOrUpdateFoodInfo(it)
+                        }
+                    )
                 }
             }
         }
