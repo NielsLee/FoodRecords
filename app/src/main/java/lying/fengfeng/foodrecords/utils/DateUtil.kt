@@ -14,6 +14,7 @@ import java.util.Locale
 object DateUtil {
 
     fun dateWithFormat(date: Long, format: String): String {
+        if (date == 0L) return ""
         val dateFormatter = SimpleDateFormat(format, Locale.getDefault())
         return dateFormatter.format(date)
     }

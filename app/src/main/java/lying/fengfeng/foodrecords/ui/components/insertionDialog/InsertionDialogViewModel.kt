@@ -14,7 +14,9 @@ import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
 import java.util.UUID
 
-class InsertionDialogViewModel : ViewModel() {
+class InsertionDialogViewModel(
+    existedFoodInfo: FoodInfo? = null
+) : ViewModel() {
 
     var cameraStatus: MutableState<CameraStatus> = mutableStateOf(CameraStatus.IDLE)
 
@@ -36,22 +38,26 @@ class InsertionDialogViewModel : ViewModel() {
     var tips: MutableState<String> = mutableStateOf("")
     var amount: MutableIntState = mutableIntStateOf(1)
 
-    fun fillParams(foodInfo: FoodInfo? = null) {
-
-        if (foodInfo != null) {
+    init {
+        if (existedFoodInfo != null) {
             // foodInfo is not empty(editing), fill with them
-            uuid.value = foodInfo.uuid
-            foodName.value = foodInfo.foodName
+            uuid.value = existedFoodInfo.uuid
+            foodName.value = existedFoodInfo.foodName
             productionDate.value = DateUtil.dateWithFormat(
-                foodInfo.productionDate.toLong(),
+                existedFoodInfo.productionDate.toLong(),
                 AppRepo.getDateFormat()
             )
-            foodType.value = foodInfo.foodType
-            shelfLife.value = foodInfo.shelfLife
-            expirationDate.value = foodInfo.expirationDate
-            tips.value = foodInfo.tips
-            amount.intValue = foodInfo.amount
-
+            foodType.value = existedFoodInfo.foodType
+            shelfLife.value = existedFoodInfo.shelfLife
+            expirationDate.value = DateUtil.dateWithFormat(
+                existedFoodInfo.expirationDate.toLong(),
+                AppRepo.getDateFormat()
+            )
+            tips.value = existedFoodInfo.tips
+            amount.intValue = existedFoodInfo.amount
+            if (existedFoodInfo.pictureExists()) {
+                cameraStatus.value = CameraStatus.IMAGE_READY
+            }
         } else {
             // foodInfo is empty(adding), fill with new params
             productionDate.value = DateUtil.dateWithFormat(

@@ -163,7 +163,7 @@ fun FoodInfoCard(
                     }
 
                     // 在IO线程中加载图片
-                    LaunchedEffect(Unit) {
+                    LaunchedEffect(isEditing) {
                         val bitmap = ImageUtil.preProcessImage(foodPicturePath)
                         // 切换回主线程更新UI
                         launch(Dispatchers.Main) {
@@ -301,7 +301,9 @@ fun FoodInfoCard(
                             Text(text = context.getString(R.string.edit))
                         },
                         onClick = {
+                            EffectUtil.playVibrationEffect(context)
                             isEditing = true
+                            dropDownMenuExpanded = false
                         }
                     )
 

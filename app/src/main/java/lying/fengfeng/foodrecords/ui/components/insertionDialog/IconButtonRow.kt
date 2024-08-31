@@ -4,7 +4,7 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,12 +16,13 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
@@ -137,7 +138,8 @@ fun IconButtonRow(
                 modifier = Modifier
                     .offset { IntOffset(offsetXLeft.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
                 enabled = (cameraStatus != CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Close, contentDescription = null)
@@ -148,7 +150,8 @@ fun IconButtonRow(
                 modifier = Modifier
                     .offset { IntOffset(offsetXRight.roundToPx(), 0) }
                     .alpha(edgeButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
                 enabled = (cameraStatus != CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Check, contentDescription = null)
@@ -158,7 +161,8 @@ fun IconButtonRow(
                 onClick = onCameraCaptured,
                 modifier = Modifier
                     .alpha(centerButtonAlpha)
-                    .border(width = 1.dp, color = Color.Gray, shape = CircleShape),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
                 enabled = (cameraStatus == CameraStatus.PREVIEWING)
             ) {
                 Icon(Icons.Filled.Camera, contentDescription = null)
