@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
@@ -31,6 +32,7 @@ import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
+import lying.fengfeng.foodrecords.ui.components.FoodInfoCardNew
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,6 +45,7 @@ fun DicePager(
     var isCardListEmpty by remember { mutableStateOf(false) }
 
     var foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }
+    val isNewUI by remember { appViewModel.isNewUI }
 
     LaunchedEffect(key1 = foodInfoList) {
         withContext(Dispatchers.IO) {
@@ -54,7 +57,7 @@ fun DicePager(
     if (isCardListEmpty) {
         EmptyView()
     } else {
-        DiceView(cardDataList = foodInfoList, pagerState = pagerState)
+        DiceView(cardDataList = foodInfoList, pagerState = pagerState, isNewUI = isNewUI)
     }
 }
 
@@ -70,22 +73,36 @@ fun EmptyView() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState) {
+fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Boolean) {
     Column(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
         Box(
-            modifier = Modifier.fillMaxWidth(0.5f).wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.BottomCenter
         ) {
             HorizontalPager(
                 state = pagerState,
-                userScrollEnabled = false
+                userScrollEnabled = false,
+                modifier = Modifier.fillMaxWidth()
             ) { page ->
-                FoodInfoCard(foodInfo = cardDataList[page])
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isNewUI) {
+                        FoodInfoCardNew(foodInfo = cardDataList[page])
+                    } else {
+                        FoodInfoCard(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.6f))
+                    }
+                }
             }
         }
+
     }
 }

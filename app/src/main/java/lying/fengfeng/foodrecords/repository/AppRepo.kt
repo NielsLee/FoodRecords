@@ -186,6 +186,15 @@ object AppRepo {
         val themeValue = sp.getInt("theme_option", 0)
         return ThemeOptions.fromInt(themeValue)
     }
+
+    fun setIsNewUI(isNewUI: Boolean) {
+        sp.edit().putBoolean("is_new_ui", isNewUI).apply()
+    }
+
+    fun isNewUI(): Boolean {
+        return sp.getBoolean("is_new_ui", false)
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 

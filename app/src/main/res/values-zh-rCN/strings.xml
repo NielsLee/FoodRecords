@@ -52,4 +52,6 @@
     <string name="supplement">补充</string>
     <string name="theme_option">主题设置</string>
     <string name="edit">修改</string>
+    <string name="amount">数量</string>
+    <string name="use_new_ui">使用新UI</string>
 </resources>

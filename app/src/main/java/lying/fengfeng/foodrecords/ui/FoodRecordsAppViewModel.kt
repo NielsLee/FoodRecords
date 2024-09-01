@@ -36,6 +36,7 @@ class FoodRecordsAppViewModel: ViewModel() {
     var daysBeforeNotification = mutableIntStateOf(AppRepo.getDaysBeforeNotification())
     var dateFormat = mutableStateOf(AppRepo.getDateFormat())
     var themeOption = mutableStateOf(AppRepo.getThemeOption())
+    var isNewUI = mutableStateOf(AppRepo.isNewUI())
 
     init {
         CoroutineScope(Dispatchers.Main).launch {
@@ -174,6 +175,11 @@ class FoodRecordsAppViewModel: ViewModel() {
     fun setThemeOption(option: ThemeOptions) {
         themeOption.value = option
         AppRepo.setThemeOption(option)
+    }
+
+    fun setIsNewUI(isNewUI: Boolean) {
+        this.isNewUI.value = isNewUI
+        AppRepo.setIsNewUI(isNewUI)
     }
 
     private fun setNotificationEnabled(boolean: Boolean) {

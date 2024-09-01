@@ -45,6 +45,7 @@ import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -54,6 +55,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -86,10 +88,12 @@ import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     snackBarHostState: SnackbarHostState
@@ -129,7 +133,7 @@ fun SettingsScreen(
         var notificationEnabled by remember { appViewModel.isNotificationEnabled }
         val daysBeforeNotification by remember { appViewModel.daysBeforeNotification }
 
-        val scrollState = rememberScrollState()
+        var isNewUI by remember { appViewModel.isNewUI }
 
         Column(
             modifier = Modifier
@@ -596,44 +600,63 @@ fun SettingsScreen(
             }
 
             AnimatedVisibility(visible = themeOptionExpanded) {
-                Row {
-                    LazyHorizontalStaggeredGrid(
-                        rows = StaggeredGridCells.Fixed(1),
-                        modifier = Modifier.heightIn(max = 48.dp),
-                        contentPadding = PaddingValues(horizontal = iconSize),
-                        horizontalItemSpacing = 24.dp
+                Column {
+                    
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(12.dp)
                     ) {
-                        items(
-                            count = 5
-                        ) { index ->
-                            IconButton(
-                                onClick = {
-                                    appViewModel.setThemeOption(ThemeOptions.fromInt(index))
-                                },
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        Brush.verticalGradient(
-                                            Pair(0.1f, Color.Red),
-                                            Pair(0.3f, Color.Yellow),
-                                            Pair(0.6f, Color.Green),
-                                            Pair(0.9f, Color.Blue)
-                                        )
-                                    )
-                            ) {
-                                Image(
-                                    painter = when(index) {
-                                        1 -> ColorPainter(Color.Red)
-                                        2 -> ColorPainter(Color.Yellow)
-                                        3 -> ColorPainter(Color.Green)
-                                        4 -> ColorPainter(Color.Blue)
-                                        else -> ColorPainter(Color.Transparent)
+                        Spacer(modifier = Modifier.size(iconSize))
+                        Text(text = stringResource(id = R.string.use_new_ui))
+                        Spacer(modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = isNewUI,
+                            onCheckedChange = {
+                                appViewModel.setIsNewUI(it)
+                            },
+                        )
+                    }
+
+                    Row {
+                        LazyHorizontalStaggeredGrid(
+                            rows = StaggeredGridCells.Fixed(1),
+                            modifier = Modifier.heightIn(max = 48.dp),
+                            contentPadding = PaddingValues(horizontal = iconSize),
+                            horizontalItemSpacing = 24.dp
+                        ) {
+                            items(
+                                count = 6
+                            ) { index ->
+                                IconButton(
+                                    onClick = {
+                                        appViewModel.setThemeOption(ThemeOptions.fromInt(index))
                                     },
-                                    contentDescription = null,
-                                )
-                                if (appViewModel.themeOption.value.int == index) {
-                                    Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                Pair(0.1f, Color.Red),
+                                                Pair(0.3f, Color.Yellow),
+                                                Pair(0.6f, Color.Green),
+                                                Pair(0.9f, Color.Blue)
+                                            )
+                                        )
+                                ) {
+                                    Image(
+                                        painter = when(index) {
+                                            1 -> ColorPainter(Color.Red)
+                                            2 -> ColorPainter(Color.Yellow)
+                                            3 -> ColorPainter(Color.Green)
+                                            4 -> ColorPainter(Color.Blue)
+                                            5 -> ColorPainter(Color.Magenta)
+                                            else -> ColorPainter(Color.Transparent)
+                                        },
+                                        contentDescription = null,
+                                    )
+                                    if (appViewModel.themeOption.value.int == index) {
+                                        Icon(imageVector = Icons.Filled.Check, contentDescription = null)
+                                    }
                                 }
                             }
                         }

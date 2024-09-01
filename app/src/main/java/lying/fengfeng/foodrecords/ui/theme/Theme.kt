@@ -51,6 +51,7 @@ fun FoodRecordsTheme(
         ThemeOptions.YELLOW -> rememberDynamicColorScheme(Color.Yellow, darkTheme)
         ThemeOptions.GREEN -> rememberDynamicColorScheme(Color.Green, darkTheme)
         ThemeOptions.BLUE -> rememberDynamicColorScheme(Color.Blue, darkTheme)
+        ThemeOptions.MAGENTA -> rememberDynamicColorScheme(Color.Magenta, darkTheme)
         else -> when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
@@ -83,7 +84,8 @@ enum class ThemeOptions(val int: Int) {
     RED(1),
     YELLOW(2),
     GREEN(3),
-    BLUE(4);
+    BLUE(4),
+    MAGENTA(5);
 
     companion object {
         fun fromInt(value: Int): ThemeOptions {

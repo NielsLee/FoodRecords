@@ -32,15 +32,19 @@ object DateUtil {
         return startTimestamp
     }
 
-    fun getRemainingDays(productionDate: String, shelfLife: String, expirationDate: String): Int {
+    fun getRemainingDays(foodInfo: FoodInfo): Pair<Int, Boolean> {
+        val productionDate = foodInfo.productionDate
+        val shelfLife = foodInfo.shelfLife
+        val expirationDate = foodInfo.expirationDate
         if (expirationDate == "0") {
             val productionTimeMillis = productionDate.toLong()
             val expirationTimeMillis = productionTimeMillis + shelfLife.toLong() * (24 * 60 * 60 * 1000)
-            return ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
+            val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
+            if (result > 0) return Pair(result, false) else return Pair(-result, true)
         } else {
             val expirationTimeMillis = expirationDate.toLong()
-            val remainingMillis = expirationTimeMillis - System.currentTimeMillis()
-            return (remainingMillis / (24 * 60 * 60 * 1000)).toInt()
+            val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
+            if (result > 0) return Pair(result, false) else return Pair(-result, true)
         }
     }
 

@@ -51,4 +51,6 @@
     <string name="supplement">Compléter</string>
     <string name="theme_option">Paramètres du thème</string>
     <string name="edit">Réviser</string>
+    <string name="amount">quantité</string>
+    <string name="use_new_ui">Utiliser la nouvelle UI</string>
 </resources>
