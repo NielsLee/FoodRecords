@@ -22,11 +22,10 @@ Ou baixe a versão mais recente na [página de Releases](https://github.com/Niel
 * ✅ Envio de notificações dentro do intervalo de proximidade da data de validade definido (as notificações podem nem sempre ser confiáveis devido às restrições do fabricante sobre as atividades em segundo plano do aplicativo).
 * ✅ Exportar ou importar dados de alimentos através de arquivo csv.
 * ✅ Implementação de uma opção de layout mais concisa que omite imagens de alimentos para exibir mais informações de alimentos na página inicial.
-
+* ✅ Adicionar quantidade e unidade aos registros de alimentos.
+* ✅ Adicionar um botão "consumir" (por exemplo, para comer ou usar o alimento para outros fins) para diminuir a quantidade de itens alimentares.
 
 ## A Fazer
-
-* 🟨 Adicionar quantidade e unidade aos registros de alimentos.
-* 🟨 Adicionar um botão "consumir" (por exemplo, para comer ou usar o alimento para outros fins) para diminuir a quantidade de itens alimentares.
+* 🟨 Nova UI projetada por designers reais (não programadores)
 
 <a href='https://ko-fi.com/J3J611C0CZ' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>

@@ -22,11 +22,10 @@ Ou téléchargez la dernière version depuis la [page de Release](https://github
 * ✅ Envoi de notifications dans la plage d'approche de la date de péremption définie (les notifications peuvent ne pas toujours être fiables en raison des restrictions des fabricants sur les activités en arrière-plan des applications).
 * ✅ Exporter ou importer des données alimentaires via un fichier csv.
 * ✅ Mise en œuvre d'une option de mise en page plus concise qui omet les images des aliments pour afficher plus d'informations alimentaires sur la page d'accueil.
-
+* ✅ Ajouter la quantité et l'unité aux fiches alimentaires.
+* ✅ Ajouter un bouton "consommer" (par exemple, pour manger ou utiliser l'aliment à d'autres fins) pour diminuer la quantité d'articles alimentaires.
 
 ## À Faire
-
-* 🟨 Ajouter la quantité et l'unité aux fiches alimentaires.
-* 🟨 Ajouter un bouton "consommer" (par exemple, pour manger ou utiliser l'aliment à d'autres fins) pour diminuer la quantité d'articles alimentaires.
+* 🟨 Toute nouvelle interface utilisateur conçue par de vrais designers (pas de programmeurs)
 
 <a href='https://ko-fi.com/J3J611C0CZ' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>

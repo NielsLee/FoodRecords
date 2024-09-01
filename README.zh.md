@@ -24,11 +24,10 @@ height="80">](https://f-droid.org/packages/lying.fengfeng.foodrecords/)
 - ✅ 在设定的临期范围内发送通知（由于一些OEM厂商对应用后台活动的限制，通知有时候可能无法正常发送）
 - ✅ 通过CSV导出和导入食品信息
 - ✅ 新增一套更加简洁的布局，省略食物图片，这样可以在首页展示更多的食物信息
-
-
-## TODO
-
 - 🟨为记录的食物添加数量和单位
 - 🟨新增一个“消耗”按钮（比如吃掉了，或者拿来做其他食物了），用于消耗食物的数量
+
+## TODO
+- 🟨 真正设计师（不是程序员）设计的全新UI
 
 <a href='https://ko-fi.com/J3J611C0CZ' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
