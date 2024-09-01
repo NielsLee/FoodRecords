@@ -63,12 +63,17 @@ fun DicePager(
 
 @Composable
 fun EmptyView() {
-    Text(
-        text = stringResource(id = R.string.dice_view_empty_title),
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary
-    )
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.dice_view_empty_title),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
