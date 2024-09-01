@@ -24,11 +24,11 @@ Or download the latest version from the [Release page](https://github.com/NielsL
 * ✅ Sent notifications within the set nearing expiration range (notifications may not always be reliable due to OEM restrictions on app background activities).
 * ✅ Export or import food data through csv file
 * ✅ Implement a more concise layout option that omits food images to display more food information on the home page.
+* ✅ Add quantity and unit to food records.
+* ✅ Add a "consume" button (e.g., for eating or using the food for other purposes) to decrement the quantity of food items.
 
 
 ## TODO
-
-* 🟨 Add quantity and unit to food records.
-* 🟨 Add a "consume" button (e.g., for eating or using the food for other purposes) to decrement the quantity of food items.
+* 🟨 A brand new UI designed by a real designer (not a programmer)
 
 <a href='https://ko-fi.com/J3J611C0CZ' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
