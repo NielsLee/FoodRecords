@@ -69,19 +69,19 @@ fun RollScreen() {
         ) {
             Text(
                 text = context.getString(R.string.roll_title_primary),
-                fontSize = 36.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                lineHeight = 36.sp,
+                lineHeight = 32.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
             Text(
                 text = context.getString(R.string.roll_title_secondary),
-                fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                lineHeight = 28.sp,
+                lineHeight = 24.sp,
                 textAlign = TextAlign.Center
             )
         }
@@ -91,7 +91,6 @@ fun RollScreen() {
         ) {
             DicePager(pagerState)
         }
-
 
         IconButton(
             onClick = {

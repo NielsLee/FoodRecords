@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
@@ -101,7 +100,7 @@ fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Bool
                     contentAlignment = Alignment.Center
                 ) {
                     if (isNewUI) {
-                        FoodInfoCardNew(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.3f))
+                        FoodInfoCardNew(foodInfo = cardDataList[page])
                     } else {
                         FoodInfoCard(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.6f))
                     }
