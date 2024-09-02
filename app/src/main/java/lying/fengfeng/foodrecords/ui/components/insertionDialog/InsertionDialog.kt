@@ -150,7 +150,7 @@ fun InsertionDialog(
                         .padding(12.dp)
                         .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
                         .aspectRatio(
-                            1f / 1.1f
+                            1f / 1.15f
                         )
 
                 ) {
@@ -247,7 +247,8 @@ fun InsertionDialog(
 
                             // 生产日期
                             Box(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier
+                                    .weight(1f),
                                 contentAlignment = Alignment.TopCenter
                             ) {
                                 OutlinedTextField(
@@ -342,7 +343,8 @@ fun InsertionDialog(
                                 onExpandedChange = {
                                     if (!isExpireDate) shelfLifeExpanded = !shelfLifeExpanded
                                 },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .weight(1f)
                             ) {
                                 OutlinedTextField(
                                     enabled = !isExpireDate,
@@ -403,7 +405,6 @@ fun InsertionDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f)
-
                             ) {
                                 OutlinedTextField(
                                     readOnly = true,

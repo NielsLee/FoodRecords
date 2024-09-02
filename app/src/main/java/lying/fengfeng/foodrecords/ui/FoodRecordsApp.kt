@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import lying.fengfeng.foodrecords.R
@@ -41,6 +42,7 @@ fun FoodRecordsApp() {
     val widthPixels = LocalContext.current.resources.displayMetrics.widthPixels
     val dpi = LocalContext.current.resources.displayMetrics.densityDpi
     val widthDp = widthPixels / (dpi / 160f)
+    screenParams.widthDp = widthDp.dp
     screenParams.listColumnNum = if (widthDp > 600) 3 else 2
     screenParams.insertDialogWidthPercent = if (widthDp > 600) 0.6f else 1f
     val themeOption by remember{ appViewModel.themeOption }

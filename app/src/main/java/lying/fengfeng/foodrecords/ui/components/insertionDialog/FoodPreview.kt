@@ -61,81 +61,75 @@ fun FoodPreview(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        if (cameraPermissionGranted) {
-            when(mutableCameraStatus.value) {
-                CameraStatus.IDLE -> {
-                    IconButton(
-                        onClick = {
-                            mutableCameraStatus.value = CameraStatus.PREVIEWING
-                        },
-                        Modifier.fillMaxSize()
-                    ) {
-                        Icon(Icons.Filled.CameraAlt, null)
-                    }
-                }
-                CameraStatus.PREVIEWING -> {
-
-                    CameraPreview(
-                        cameraState = cameraState,
-                        camSelector = camSelector,
-                        modifier = Modifier.fillMaxSize(),
-                        isFocusOnTapEnabled = false,
-                        imageCaptureTargetSize = ImageTargetSize(
-                            outputSize = CameraController.OutputSize(Size(480, 640)))
-                    ) {
-
-                    }
-                }
-                CameraStatus.IMAGE_READY -> {
-                    val picturePath = AppRepo.getPicturePath(uuid)
-                    var bitmap by remember { mutableStateOf(createPreviewBitmap()) }
-                    val imageBitmap = bitmap.asImageBitmap()
-                    val painter = BitmapPainter(imageBitmap)
-
-                    LaunchedEffect(Unit) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            if (File(picturePath).exists()) {
-                                bitmap = Glide.with(context).asBitmap()
-                                    .load(picturePath)
-                                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                    .skipMemoryCache(true)
-                                    .submit().get()
-                            } else {
-                                mutableCameraStatus.value = CameraStatus.IDLE
-                            }
-                        }
-                    }
-
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-        } else {
-            IconButton(
-                onClick = {
-                    MainScope().launch {
-                        val permission = ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.CAMERA
-                        )
-                        if (permission == PackageManager.PERMISSION_GRANTED) {
-                            cameraPermissionGranted = true
+        when(mutableCameraStatus.value) {
+            CameraStatus.IDLE -> {
+                IconButton(
+                    onClick = {
+                        if (cameraPermissionGranted) {
                             mutableCameraStatus.value = CameraStatus.PREVIEWING
                         } else {
-                            ActivityCompat.requestPermissions(
-                                context as Activity,
-                                arrayOf(Manifest.permission.CAMERA),
-                                888
-                            )
+                            MainScope().launch {
+                                val permission = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                )
+                                if (permission == PackageManager.PERMISSION_GRANTED) {
+                                    cameraPermissionGranted = true
+                                    mutableCameraStatus.value = CameraStatus.PREVIEWING
+                                } else {
+                                    ActivityCompat.requestPermissions(
+                                        context as Activity,
+                                        arrayOf(Manifest.permission.CAMERA),
+                                        888
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    Modifier.fillMaxSize()
+                ) {
+                    Icon(Icons.Filled.CameraAlt, null)
+                }
+            }
+            CameraStatus.PREVIEWING -> {
+
+                CameraPreview(
+                    cameraState = cameraState,
+                    camSelector = camSelector,
+                    modifier = Modifier.fillMaxSize(),
+                    isFocusOnTapEnabled = false,
+                    imageCaptureTargetSize = ImageTargetSize(
+                        outputSize = CameraController.OutputSize(Size(480, 640)))
+                ) {
+
+                }
+            }
+            CameraStatus.IMAGE_READY -> {
+                val picturePath = AppRepo.getPicturePath(uuid)
+                var bitmap by remember { mutableStateOf(createPreviewBitmap()) }
+                val imageBitmap = bitmap.asImageBitmap()
+                val painter = BitmapPainter(imageBitmap)
+
+                LaunchedEffect(Unit) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // make sure the picture file is not empty
+                        if (File(picturePath).exists() && File(picturePath).length() > 100) {
+                            bitmap = Glide.with(context).asBitmap()
+                                .load(picturePath)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                .skipMemoryCache(true)
+                                .submit().get()
+                        } else {
+                            mutableCameraStatus.value = CameraStatus.IDLE
                         }
                     }
-                },
-                Modifier.fillMaxSize()
-            ) {
-                Icon(Icons.Filled.CameraAlt, null)
+                }
+
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components
 
+import android.graphics.Paint.Align
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
@@ -14,10 +15,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +53,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,6 +69,7 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ext.scaleToHalfScreenWidth
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
@@ -74,10 +82,18 @@ fun FoodInfoCardNew(
 ) {
 
     val context = LocalContext.current
+    val screenParams = LocalScreenParams.current
     val appViewModel: FoodRecordsAppViewModel =
         viewModel(viewModelStoreOwner = (context as MainActivity))
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
-    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    val foodPicturePath = AppRepo.getPicturePath(foodInfo.uuid)
+    var imageBitmap by remember {
+        mutableStateOf(
+            ImageUtil.preProcessImage(foodPicturePath)?.let {
+                it.scaleToHalfScreenWidth(context)?.asImageBitmap()
+            }
+        )
+    }
 
     var tipsShown by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -90,7 +106,7 @@ fun FoodInfoCardNew(
     Card(
         modifier = modifier
             .padding(4.dp)
-            .fillMaxWidth(0.5f),
+            .fillMaxWidth(1f / screenParams.listColumnNum),
         shape = RoundedCornerShape(12.dp)
     ) {
         // inner card for padding
@@ -101,6 +117,31 @@ fun FoodInfoCardNew(
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(end = iconButtonSize)
+                ) {
+                    if (foodInfo.tips.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                tipsShown = !tipsShown
+                            },
+                            modifier = Modifier
+                                .size(iconButtonSize)
+                        ) {
+                            Icon(imageVector = Icons.Filled.Info, contentDescription = null)
+                        }
+                    }
+
+                    val foodNameScrollState = rememberScrollState()
+                    Text(
+                        text = foodInfo.foodName,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .horizontalScroll(foodNameScrollState)
+                    )
+                }
                 Box(modifier = Modifier.align(Alignment.CenterEnd)) {
                     IconButton(
                         onClick = {
@@ -110,7 +151,11 @@ fun FoodInfoCardNew(
                         modifier = Modifier
                             .size(iconButtonSize)
                     ) {
-                        Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Filled.MoreHoriz,
+                            contentDescription = null,
+                            modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+                        )
                     }
 
                     DropdownMenu(
@@ -199,31 +244,6 @@ fun FoodInfoCardNew(
                         )
                     }
                 }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (foodInfo.tips.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
-                                tipsShown = !tipsShown
-                            },
-                            modifier = Modifier
-                                .size(iconButtonSize)
-                        ) {
-                            Icon(imageVector = Icons.Filled.Info, contentDescription = null)
-                        }
-                    }
-
-                    val foodNameScrollState = rememberScrollState()
-                    Text(
-                        text = foodInfo.foodName,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .horizontalScroll(foodNameScrollState)
-                    )
-                }
             }
 
             // content row
@@ -235,24 +255,21 @@ fun FoodInfoCardNew(
             ) {
                 // for picture, shelf life, amount
                 Card {
-                    val foodPicturePath = AppRepo.getPicturePath(foodInfo.uuid)
                     Box(
-                        modifier = Modifier
+                        modifier = Modifier,
+                        contentAlignment = Alignment.Center
                     ) {
-                        ImageUtil.preProcessImage(foodPicturePath)?.also {
-                            // expand bitmap since they are not wide enough for the entire card
-                            imageBitmap = it.scaleToHalfScreenWidth(context)?.asImageBitmap()
-                        }
                         imageBitmap?.let {
                             Image(
                                 bitmap = it,
-                                contentDescription = null
+                                contentDescription = null,
+                                modifier = Modifier
                             )
                         }
 
                         // for shelf life and amount
                         Box(
-                            modifier = modifier
+                            modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .background(
                                     brush = Brush.verticalGradient(

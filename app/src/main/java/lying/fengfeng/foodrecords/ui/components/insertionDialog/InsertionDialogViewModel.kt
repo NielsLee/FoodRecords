@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
+import java.io.File
 import java.util.UUID
 
 class InsertionDialogViewModel(

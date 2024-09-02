@@ -65,7 +65,7 @@ fun RollScreen() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = context.getString(R.string.roll_title_primary),

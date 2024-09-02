@@ -101,7 +101,7 @@ fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Bool
                     contentAlignment = Alignment.Center
                 ) {
                     if (isNewUI) {
-                        FoodInfoCardNew(foodInfo = cardDataList[page])
+                        FoodInfoCardNew(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.3f))
                     } else {
                         FoodInfoCard(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.6f))
                     }

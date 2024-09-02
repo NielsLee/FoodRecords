@@ -27,6 +27,6 @@ data class FoodInfo(
     }
 
     fun pictureExists(): Boolean {
-        return File(AppRepo.getPicturePath(uuid)).exists()
+        return File(AppRepo.getPicturePath(uuid)).exists() && File(AppRepo.getPicturePath(uuid)).length() > 0
     }
 }
