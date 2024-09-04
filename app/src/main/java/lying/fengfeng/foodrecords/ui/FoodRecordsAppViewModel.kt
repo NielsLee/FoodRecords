@@ -36,6 +36,9 @@ class FoodRecordsAppViewModel: ViewModel() {
     var daysBeforeNotification = mutableIntStateOf(AppRepo.getDaysBeforeNotification())
     var dateFormat = mutableStateOf(AppRepo.getDateFormat())
     var themeOption = mutableStateOf(AppRepo.getThemeOption())
+
+    var isNewUITried = mutableStateOf(AppRepo.isNewUITried())
+
     var isNewUI = mutableStateOf(AppRepo.isNewUI())
 
     init {
@@ -180,6 +183,11 @@ class FoodRecordsAppViewModel: ViewModel() {
     fun setIsNewUI(isNewUI: Boolean) {
         this.isNewUI.value = isNewUI
         AppRepo.setIsNewUI(isNewUI)
+    }
+
+    fun setIsNewUITried(isNewUITried: Boolean) {
+        this.isNewUITried.value = isNewUITried
+        AppRepo.setNewUITried(isNewUITried)
     }
 
     private fun setNotificationEnabled(boolean: Boolean) {

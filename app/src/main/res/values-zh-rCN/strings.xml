@@ -54,4 +54,5 @@
     <string name="edit">修改</string>
     <string name="amount">数量</string>
     <string name="use_new_ui">使用新UI</string>
+    <string name="badge_new">新</string>
 </resources>

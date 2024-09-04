@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -134,6 +135,7 @@ fun SettingsScreen(
         val daysBeforeNotification by remember { appViewModel.daysBeforeNotification }
 
         var isNewUI by remember { appViewModel.isNewUI }
+        var isNewUITried by remember { appViewModel.isNewUITried }
 
         Column(
             modifier = Modifier
@@ -585,6 +587,8 @@ fun SettingsScreen(
                     modifier = Modifier.padding(paddingValues = titlePadding)
                 )
 
+                Badge(modifier = Modifier.padding(start = 8.dp), containerColor = if (isNewUITried) Color.Transparent else Color.Red)
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Icon(
@@ -608,11 +612,15 @@ fun SettingsScreen(
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(text = stringResource(id = R.string.use_new_ui))
+                        Badge(
+                            modifier = Modifier.padding(start = 8.dp)
+                        ) { Text(text = stringResource(id = R.string.badge_new)) }
                         Spacer(modifier = Modifier.weight(1f))
                         Switch(
                             checked = isNewUI,
                             onCheckedChange = {
                                 appViewModel.setIsNewUI(it)
+                                appViewModel.setIsNewUITried(true) // no need to switch back
                             },
                         )
                     }

@@ -54,4 +54,5 @@
     <string name="edit">Rever</string>
     <string name="amount">quantidade</string>
     <string name="use_new_ui">Usar nova interface</string>
+    <string name="badge_new">novo</string>
 </resources>

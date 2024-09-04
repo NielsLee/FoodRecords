@@ -195,6 +195,14 @@ object AppRepo {
         return sp.getBoolean("is_new_ui", false)
     }
 
+    fun setNewUITried(isTried: Boolean) {
+        sp.edit().putBoolean("is_new_ui_tried", isTried).apply()
+    }
+
+    fun isNewUITried(): Boolean {
+        return sp.getBoolean("is_new_ui_tried", false)
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 
