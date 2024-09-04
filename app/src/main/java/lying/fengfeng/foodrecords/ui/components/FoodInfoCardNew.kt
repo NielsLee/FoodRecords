@@ -282,7 +282,7 @@ fun FoodInfoCardNew(
                         ) {
                             Row {
                                 // for shelf life
-                                val (days, isExpired) = DateUtil.getRemainingDays(foodInfo)
+                                val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     modifier = Modifier.padding(8.dp)
@@ -291,7 +291,13 @@ fun FoodInfoCardNew(
                                         verticalAlignment = Alignment.Bottom
                                     ) {
                                         Text(
-                                            text = days.toString(),
+                                            text = remainingDays.let {
+                                                if (it > 99) {
+                                                    "99+"
+                                                } else {
+                                                    it.toString()
+                                                }
+                                            },
                                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                                             fontSize = numberFontSize
                                         )
