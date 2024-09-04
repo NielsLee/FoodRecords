@@ -20,12 +20,13 @@ data class FoodInfo(
     @ColumnInfo val tips: String = ""
 ) {
     fun getSortIndex(): Int {
-        val remainingDate = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
+        var (remainingDate, isExpired) = DateUtil.getRemainingDays(this)
+        if (isExpired) remainingDate = -remainingDate
         val nameHashNum = foodName.hashCode().absoluteValue % 10
         return 10 * remainingDate + nameHashNum
     }
 
     fun pictureExists(): Boolean {
-        return File(AppRepo.getPicturePath(uuid)).exists()
+        return File(AppRepo.getPicturePath(uuid)).exists() && File(AppRepo.getPicturePath(uuid)).length() > 0
     }
 }

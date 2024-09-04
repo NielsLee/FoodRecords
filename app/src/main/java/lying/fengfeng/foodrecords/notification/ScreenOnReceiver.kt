@@ -38,11 +38,7 @@ class ScreenOnReceiver : BroadcastReceiver() {
 
             val foodInfoList = AppRepo.getAllFoodInfo()
             val nearExpiredItems = foodInfoList.filter { foodInfo ->
-                DateUtil.getRemainingDays(
-                    foodInfo.productionDate,
-                    foodInfo.shelfLife,
-                    foodInfo.expirationDate
-                ).let {
+                DateUtil.getRemainingDays(foodInfo).first.let {
                     it < AppRepo.getDaysBeforeNotification() && it >= 0
                 }
             }

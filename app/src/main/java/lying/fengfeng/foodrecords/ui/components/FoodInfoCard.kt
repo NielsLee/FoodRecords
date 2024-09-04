@@ -173,9 +173,7 @@ fun FoodInfoCard(
                 }
 
                 RemainingDaysWindow(
-                    productionDate = foodInfo.productionDate,
-                    shelfLife = foodInfo.shelfLife,
-                    expirationDate = foodInfo.expirationDate,
+                    foodInfo = foodInfo,
                     isHorizontal = imageBitmap == null
                 )
             }
@@ -394,12 +392,10 @@ fun deleteFood(appViewModel: FoodRecordsAppViewModel, foodInfo: FoodInfo) {
 
 @Composable
 fun RemainingDaysWindow(
-    productionDate: String,
-    shelfLife: String,
-    expirationDate: String,
+    foodInfo: FoodInfo,
     isHorizontal: Boolean = false
 ) {
-    val remainingDays = DateUtil.getRemainingDays(productionDate, shelfLife, expirationDate)
+    val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
     val context = LocalContext.current
     Box(
         modifier = Modifier
@@ -409,7 +405,7 @@ fun RemainingDaysWindow(
     ) {
         val fontSize = 32.sp
 
-        val (remainingTitleColor, remainingTitleText) = if (remainingDays > 0) {
+        val (remainingTitleColor, remainingTitleText) = if (!isExpired) {
             ExpiredGreen to context.getString(R.string.valid_in)
         } else {
             ExpiredRed to context.getString(R.string.expired)
@@ -431,10 +427,10 @@ fun RemainingDaysWindow(
 
             Text(
                 text = remainingDays.let {
-                    if (it.absoluteValue > 99) {
+                    if (it > 99) {
                         "99+"
                     } else {
-                        it.absoluteValue.toString()
+                        it.toString()
                     }
                 },
                 modifier = Modifier,

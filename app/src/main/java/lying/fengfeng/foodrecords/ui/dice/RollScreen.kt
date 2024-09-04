@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -63,31 +65,32 @@ fun RollScreen() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = context.getString(R.string.roll_title_primary),
-                fontSize = 48.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                lineHeight = 48.sp,
+                lineHeight = 32.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
             Text(
                 text = context.getString(R.string.roll_title_secondary),
-                fontSize = 36.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                lineHeight = 36.sp,
+                lineHeight = 24.sp,
                 textAlign = TextAlign.Center
             )
         }
 
-        Box {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             DicePager(pagerState)
         }
-
 
         IconButton(
             onClick = {

@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ImportExport
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.DropdownMenu
@@ -31,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +48,7 @@ import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -53,7 +59,7 @@ import java.util.Locale
 fun FoodRecordsTopBar(title: String) {
 
     val activity = LocalContext.current as MainActivity
-    var currentDate by remember { mutableStateOf (getCurrentDate())}
+    var currentDate by remember { mutableStateOf(getCurrentDate()) }
     var isDropdownMenuExpanded by remember { mutableStateOf(false) }
 
 
@@ -81,7 +87,7 @@ fun FoodRecordsTopBar(title: String) {
                 DropdownMenu(
                     expanded = isDropdownMenuExpanded,
                     onDismissRequest = {
-                        isDropdownMenuExpanded= false
+                        isDropdownMenuExpanded = false
                     }
                 ) {
                     DropdownMenuItem(
@@ -133,6 +139,8 @@ fun FoodRecordsBottomBar(
 ) {
 
     val context = LocalContext.current
+    val appViewModel: FoodRecordsAppViewModel = viewModel(context as MainActivity)
+    val isNewUITried by remember { appViewModel.isNewUITried }
 
     BottomAppBar(
         actions = {
@@ -167,10 +175,15 @@ fun FoodRecordsBottomBar(
                     EffectUtil.playVibrationEffect(context)
                 }
             }) {
-                Icon(
-                    Icons.Filled.Settings,
-                    contentDescription = "Icon navigate to Settings Page",
-                )
+                Box(
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    Badge(containerColor = if (isNewUITried) Color.Transparent else Color.Red)
+                    Icon(
+                        Icons.Filled.Settings,
+                        contentDescription = "Icon navigate to Settings Page",
+                    )
+                }
             }
         },
         floatingActionButton = {
