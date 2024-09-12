@@ -1,4 +1,4 @@
-<span>[中文](README.zh.md)</span> | <span>[Français](README.fr.md)</span> | <span>[English](README.md)</span>
+<span>[中文](README.zh.md)</span> | <span>[Français](README.fr.md)</span> | <span>[English](README.md)</span> <span>[Português](README.pt.md)</span>
 
 # Fridgey
 
