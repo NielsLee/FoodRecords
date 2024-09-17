@@ -1,0 +1,2 @@
+Correction de certains problèmes de mise en page de l'interface utilisateur
+Ajout d'un nouveau format de date

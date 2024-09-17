@@ -1,0 +1,2 @@
+Corrigir alguns problemas de layout da IU
+Adicionar um novo formato de data
