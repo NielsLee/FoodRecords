@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +66,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,12 +91,11 @@ import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
+import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     snackBarHostState: SnackbarHostState
@@ -116,6 +117,17 @@ fun SettingsScreen(
         val subIconSize = 24.dp
         val titleFontSize = 18.sp
         val titlePadding = PaddingValues(start = 8.dp)
+
+        val dateFormatList = listOf(
+            "yy-MM-dd",
+            "dd-MM-yy",
+            "MM-dd-yy",
+            "yyyy-MM-dd",
+            "dd-MM-yyyy",
+            "MM-dd-yyyy"
+        )
+
+        val dateFormatGridState = rememberLazyStaggeredGridState()
 
         var foodTypeOptionExpanded by remember { mutableStateOf(false) }
         var shelfOptionExpanded by remember { mutableStateOf(false) }
@@ -415,62 +427,36 @@ fun SettingsScreen(
                     LazyHorizontalStaggeredGrid(
                         rows = StaggeredGridCells.Fixed(1),
                         modifier = Modifier.heightIn(max = 48.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp)
+                        contentPadding = PaddingValues(horizontal = 8.dp),
+                        state = dateFormatGridState
                     ) {
-                        item {
+                        items(
+                            count = dateFormatList.size,
+                            key = { index -> dateFormatList[index] }
+                        ) { index ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Checkbox(
-                                    checked = currentDateFormat == "yy-MM-dd",
+                                    checked = currentDateFormat == dateFormatList[index],
                                     onCheckedChange = {
-                                        currentDateFormat = "yy-MM-dd"
+                                        currentDateFormat = dateFormatList[index]
                                         appViewModel.updateDateFormat(currentDateFormat)
                                     }
                                 )
                                 Text(
-                                    text = "YY-MM-DD",
+                                    text = dateFormatList[index].uppercase(Locale.getDefault()),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(8.dp)
                                 )
                             }
                         }
+                    }
 
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = currentDateFormat == "dd-MM-yy",
-                                    onCheckedChange = {
-                                        currentDateFormat = "dd-MM-yy"
-                                        appViewModel.updateDateFormat(currentDateFormat)
-                                    }
-                                )
-                                Text(
-                                    text = "DD-MM-YY",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
-                        }
-
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = currentDateFormat == "MM-dd-yy",
-                                    onCheckedChange = {
-                                        currentDateFormat = "MM-dd-yy"
-                                        appViewModel.updateDateFormat(currentDateFormat)
-                                    }
-                                )
-                                Text(
-                                    text = "MM-DD-YY",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(8.dp)
-                                )
+                    LaunchedEffect(key1 = Unit) {
+                        dateFormatList.forEachIndexed { index, dateFormat ->
+                            if (currentDateFormat == dateFormat) {
+                                dateFormatGridState.animateScrollToItem(index)
                             }
                         }
                     }
