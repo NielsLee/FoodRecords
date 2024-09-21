@@ -5,7 +5,7 @@
     <string name="title_production_date">pro.</string>
     <string name="title_expiration_date">exp.</string>
     <string name="title_type">Type</string>
-    <string name="title_shelf_life">Durée de conservation</string>
+    <string name="title_shelf_life">Dur. cons.</string>
     <string name="title_name">Nom</string>
     <string name="expired">Expiré</string>
     <string name="valid_in">Valide</string>
@@ -15,7 +15,7 @@
     <string name="roll_title_primary">Vous ne pouvez pas décider ?</string>
     <string name="roll_title_secondary">Essayez de randomiser</string>
     <string name="food_type_option">Paramètres du type d\'aliment</string>
-    <string name="shelf_life_option">Durée de conservation</string>
+    <string name="shelf_life_option">Param. dur. cons.</string>
     <string name="notification_option">Paramètres de notification</string>
     <string name="enable_notification">Activer les notifications</string>
     <string name="days_of_advance_notice">Jours d\'avance</string>

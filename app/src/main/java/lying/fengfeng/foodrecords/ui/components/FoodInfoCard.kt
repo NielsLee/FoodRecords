@@ -421,7 +421,8 @@ fun RemainingDaysWindow(
                     modifier = Modifier.padding(4.dp),
                     color = remainingTitleColor,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp
                 )
             }
 

@@ -3,11 +3,11 @@
     <string name="app_name">Fridgey</string>
     <string name="shelf_life_day">dias</string>
     <string name="title_add_new">Adicionar novo alimento!</string>
-    <string name="title_production_date">Dt. de prod.</string>
+    <string name="title_production_date">Dt.prod.</string>
     <string name="title_type">Tipo</string>
     <string name="title_shelf_life">Validade</string>
     <string name="title_name">Nome</string>
-    <string name="expired">Expirado</string>
+    <string name="expired">Exp.</string>
     <string name="valid_in">Válido</string>
     <string name="delete_record">Excluir</string>
     <string name="ok">Confirmar</string>
@@ -40,7 +40,7 @@
     <string name="undo">Desfazer</string>
     <string name="expire_notification_title">Está quase expirando!</string>
     <string name="expire_notification_content">Alguns alimentos estão quase expirando, cuide disso logo</string>
-    <string name="title_expiration_date">Dt. de val.</string>
+    <string name="title_expiration_date">Dt.val.</string>
     <string name="tips_title">Adicionar observação</string>
     <string name="notification_permisson_failed">Falha ao solicitar permissão de notificação, certifique-se de que você permitiu notificações para este aplicativo</string>
     <string name="export_data">Exportar dados</string>

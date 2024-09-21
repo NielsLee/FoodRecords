@@ -321,7 +321,8 @@ fun FoodInfoCardNew(
                                                 else MaterialTheme.colorScheme.primary
                                             )
                                             .padding(0.dp) //outer padding
-                                            .padding(horizontal = 8.dp)
+                                            .padding(horizontal = 8.dp),
+                                        fontSize = 12.sp
                                     )
                                 }
 
@@ -344,7 +345,8 @@ fun FoodInfoCardNew(
                                             .clip(RoundedCornerShape(16.dp))
                                             .background(MaterialTheme.colorScheme.primary)
                                             .padding(0.dp) //outer padding
-                                            .padding(horizontal = 8.dp) // inner padding
+                                            .padding(horizontal = 8.dp), // inner padding
+                                        fontSize = 12.sp
                                     )
                                 }
                             }
@@ -362,7 +364,7 @@ fun FoodInfoCardNew(
                     )
                     Text(
                         text = ": ${DateUtil.getExpirationDate(foodInfo)}",
-                        fontSize = 22.sp,
+                        fontSize = 16.sp,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }

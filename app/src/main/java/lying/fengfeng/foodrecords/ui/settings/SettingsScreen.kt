@@ -113,9 +113,10 @@ fun SettingsScreen(
         val appViewModel: FoodRecordsAppViewModel =
             viewModel(viewModelStoreOwner = (activityContext as MainActivity))
 
-        val iconSize = 36.dp
-        val subIconSize = 24.dp
-        val titleFontSize = 18.sp
+        val iconSize = 24.dp
+        val bigIconSize = 30.dp
+        val titleFontSize = 14.sp
+        val subTitleFontSize = 12.sp
         val titlePadding = PaddingValues(start = 8.dp)
 
         val dateFormatList = listOf(
@@ -224,7 +225,7 @@ fun SettingsScreen(
                                     label = {
                                         Text(
                                             text = foodTypeInfo.type,
-                                            fontSize = 18.sp
+                                            fontSize = subTitleFontSize
                                         )
                                         if (selected) {
                                             Icon(
@@ -336,7 +337,7 @@ fun SettingsScreen(
                                     label = {
                                         Text(
                                             text = shelfLifeInfo.life + stringResource(id = R.string.shelf_life_day),
-                                            fontSize = 18.sp
+                                            fontSize = subTitleFontSize
                                         )
                                         if (selected) {
                                             Icon(
@@ -447,7 +448,8 @@ fun SettingsScreen(
                                 Text(
                                     text = dateFormatList[index].uppercase(Locale.getDefault()),
                                     style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(8.dp),
+                                    fontSize = subTitleFontSize
                                 )
                             }
                         }
@@ -614,7 +616,7 @@ fun SettingsScreen(
                     Row {
                         LazyHorizontalStaggeredGrid(
                             rows = StaggeredGridCells.Fixed(1),
-                            modifier = Modifier.heightIn(max = 48.dp),
+                            modifier = Modifier.heightIn(max = bigIconSize),
                             contentPadding = PaddingValues(horizontal = iconSize),
                             horizontalItemSpacing = 24.dp
                         ) {
@@ -626,7 +628,6 @@ fun SettingsScreen(
                                         appViewModel.setThemeOption(ThemeOptions.fromInt(index))
                                     },
                                     modifier = Modifier
-                                        .size(48.dp)
                                         .clip(CircleShape)
                                         .background(
                                             Brush.verticalGradient(
@@ -636,6 +637,7 @@ fun SettingsScreen(
                                                 Pair(0.9f, Color.Blue)
                                             )
                                         )
+                                        .size(bigIconSize)
                                 ) {
                                     Image(
                                         painter = when(index) {
@@ -908,8 +910,8 @@ fun NumberPickerWithButtons(
         modifier = modifier
     ) {
 
-        val iconSize = 40.dp
-        val iconButtonSize = 40.dp
+        val iconSize = 24.dp
+        val iconButtonSize = 24.dp
 
         if (expanded) {
             IconButton(
@@ -948,7 +950,7 @@ fun NumberPickerWithButtons(
 
         Text(
             text = number.toString(),
-            fontSize = 24.sp
+            fontSize = 18.sp
         )
 
         Spacer(modifier = Modifier.width(16.dp))

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +53,7 @@ fun DicePager(
         }
         isCardListEmpty = foodInfoList.isEmpty()
     }
-    
+
     if (isCardListEmpty) {
         EmptyView()
     } else {
@@ -70,7 +71,8 @@ fun EmptyView() {
             text = stringResource(id = R.string.dice_view_empty_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
         )
     }
 }
