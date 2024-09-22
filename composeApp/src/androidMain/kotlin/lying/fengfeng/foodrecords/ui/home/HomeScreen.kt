@@ -8,11 +8,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import lying.fengfeng.foodrecords.AppContextDelegate
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCardNew
@@ -22,12 +24,11 @@ fun HomeScreen(
     foodInfoList: List<FoodInfo>
 ) {
 
-    val context = LocalActivityContext.current
-    val appViewModel: FoodRecordsAppViewModel = viewModel(context as MainActivity)
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner)
     val isNewUI by remember { appViewModel.isNewUI }
 
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(LocalScreenParams.current.listColumnNum),
+        columns = StaggeredGridCells.Fixed(LocalScreenParams.current.getListColumnCount()),
         contentPadding = PaddingValues(3.dp),
         modifier = Modifier
     ) {

@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -18,11 +16,9 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.ui.dice.RollScreen
 import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
-import lying.fengfeng.foodrecords.utils.DateUtil
 
 val routeList = listOf("home", "dice", "settings")
 
@@ -33,8 +29,8 @@ fun FoodRecordsNavHost(
     modifier: Modifier
 ) {
 
-    val activityContext = LocalActivityContext.current
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner)
+
     val foodInfoList = remember { appViewModel.foodInfoList }.sortedBy { it.getSortIndex() }
 
     NavHost(

@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,6 +21,8 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsApp
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
+import lying.fengfeng.foodrecords.ui.ScreenParams
 import lying.fengfeng.foodrecords.utils.Base64Util
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -35,9 +38,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val screenParams = ScreenParams(this)
         setContent {
             appViewModel = viewModel()
-            FoodRecordsApp()
+            CompositionLocalProvider(LocalScreenParams provides screenParams) {
+                FoodRecordsApp()
+            }
         }
 
         exportLauncher = registerForActivityResult(ExportActivityResultContract()) { contentUriStr ->

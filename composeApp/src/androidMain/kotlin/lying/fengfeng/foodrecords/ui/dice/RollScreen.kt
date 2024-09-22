@@ -1,12 +1,10 @@
 package lying.fengfeng.foodrecords.ui.dice
 
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
@@ -33,15 +31,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
-import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import kotlin.random.Random
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RollScreen() {
 
@@ -53,9 +49,8 @@ fun RollScreen() {
     ) {
 
         val coroutineScope = rememberCoroutineScope()
-        val activityContext = LocalActivityContext.current
         val appViewModel: FoodRecordsAppViewModel =
-            viewModel(viewModelStoreOwner = (activityContext as MainActivity))
+            viewModel(AppViewModelOwner)
         val foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }
         val pagerState = rememberPagerState(pageCount = {
             foodInfoList.size

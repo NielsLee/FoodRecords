@@ -64,10 +64,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
@@ -86,7 +86,7 @@ fun FoodInfoCard(
 
     val context = LocalContext.current
     val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = (context as MainActivity))
+        viewModel(viewModelStoreOwner = AppViewModelOwner)
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 

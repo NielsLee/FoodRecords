@@ -10,10 +10,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.Constants.DB_NAME_FOOD_INFO
-import lying.fengfeng.foodrecords.Constants.DB_NAME_FOOD_TYPE_INFO
-import lying.fengfeng.foodrecords.Constants.DB_NAME_SHELF_LIFE_INFO
-import lying.fengfeng.foodrecords.Constants.SP_NAME
+import lying.fengfeng.foodrecords.repository.Constants.DB_NAME_FOOD_INFO
+import lying.fengfeng.foodrecords.repository.Constants.DB_NAME_FOOD_TYPE_INFO
+import lying.fengfeng.foodrecords.repository.Constants.DB_NAME_SHELF_LIFE_INFO
+import lying.fengfeng.foodrecords.repository.Constants.SP_NAME
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo

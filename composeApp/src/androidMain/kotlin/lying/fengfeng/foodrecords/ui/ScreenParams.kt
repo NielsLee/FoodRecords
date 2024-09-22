@@ -1,10 +1,17 @@
 package lying.fengfeng.foodrecords.ui
 
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import android.content.Context
 
-data class ScreenParams(
-    var widthDp: Dp = 0.dp,
-    var listColumnNum: Int = 2,
-    var insertDialogWidthPercent: Float = 1.0f
-)
+actual class ScreenParams actual constructor(androidContext: Any?) {
+
+    private val widthPixels = (androidContext as Context).resources.displayMetrics.widthPixels
+    private val dpi = (androidContext as Context).resources.displayMetrics.densityDpi
+    private val widthDp = widthPixels / (dpi / 160f)
+
+    actual fun getListColumnCount(): Int {
+        return if (widthDp > 600) 3 else 2
+    }
+    actual fun getInsertDialogWidthPercent(): Float {
+        return if (widthDp > 600) 0.6f else 1f
+    }
+}

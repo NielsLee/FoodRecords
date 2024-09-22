@@ -15,16 +15,19 @@ camposer = "0.4.0"
 compose-plugin = "1.6.11"
 composeBom = "2024.09.02"
 glide = "4.16.0"
+jetbrainsNavigationComposeVersion = "2.7.0-alpha07"
 junit = "4.13.2"
 kotlin = "2.0.20"
 kotlinCsvJvm = "1.9.3"
+kotlinxDatetime = "0.6.0"
 lifecycleViewmodelCompose = "2.8.6"
+lifecycleViewmodelComposeVersion = "2.8.0"
 materialKolor = "1.7.0"
 navigationCompose = "2.8.1"
 navigationComposeVersion = "2.7.7"
-roomRuntime = "2.6.1"
-roomCommon = "2.6.1"
-roomCompiler = "2.6.1"
+roomRuntime = "2.7.0-alpha01"
+roomCommon = "2.7.0-alpha01"
+roomCompiler = "2.7.0-alpha01"
 ksp = "2.0.20-1.0.24"
 material3Android = "1.3.0"
 
@@ -36,6 +39,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 camposer = { module = "io.github.ujizin:camposer", version.ref = "camposer" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jetbrainsNavigationComposeVersion" }
 kotlin-csv-jvm = { module = "com.github.doyaaaaaken:kotlin-csv-jvm", version.ref = "kotlinCsvJvm" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -52,6 +56,8 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelComposeVersion" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 
 [plugins]

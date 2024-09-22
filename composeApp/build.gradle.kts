@@ -38,12 +38,24 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.jetbrains.navigation.compose)
+            implementation(libs.lifecycle.viewmodel.compose)
+
+            implementation (libs.androidx.room.runtime)
+            implementation(libs.androidx.room.common)
+
+            implementation (libs.material.kolor)
+
+            implementation(libs.kotlinx.datetime)
+
+
+
         }
     }
 }
@@ -106,7 +118,6 @@ dependencies {
     implementation (libs.androidx.material.icons.extended)
 
     implementation (libs.kotlin.csv.jvm)
-    implementation (libs.material.kolor)
     implementation (libs.camposer)
     implementation (libs.glide)
 

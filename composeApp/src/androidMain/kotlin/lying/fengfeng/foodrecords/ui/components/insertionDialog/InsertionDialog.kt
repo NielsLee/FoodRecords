@@ -148,7 +148,7 @@ fun InsertionDialog(
                     elevation = CardDefaults.cardElevation(4.dp),
                     modifier = Modifier
                         .padding(12.dp)
-                        .fillMaxWidth(LocalScreenParams.current.insertDialogWidthPercent)
+                        .fillMaxWidth(LocalScreenParams.current.getInsertDialogWidthPercent())
                         .aspectRatio(
                             1f / 1.15f
                         )

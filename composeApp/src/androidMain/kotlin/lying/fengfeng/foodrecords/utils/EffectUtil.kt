@@ -7,8 +7,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import lying.fengfeng.foodrecords.App
+import lying.fengfeng.foodrecords.AppContextDelegate
 
-object EffectUtil {
+actual object EffectUtil {
 
     fun playNotification(context: Context) {
         val notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -27,5 +29,17 @@ object EffectUtil {
             VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
         }
         vibrator.vibrate(vibrationEffect)
+    }
+
+    actual fun playNotification() {
+        playNotification(AppContextDelegate.context)
+    }
+
+    actual fun playSoundEffect() {
+        playSoundEffect(AppContextDelegate.context)
+    }
+
+    actual fun playVibrationEffect() {
+        playVibrationEffect(AppContextDelegate.context)
     }
 }
