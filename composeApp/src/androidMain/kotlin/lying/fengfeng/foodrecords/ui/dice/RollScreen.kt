@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.dice
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,26 +21,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.dice5_svg
+import fridgey_kmf.composeapp.generated.resources.only_one
+import fridgey_kmf.composeapp.generated.resources.pick_it
+import fridgey_kmf.composeapp.generated.resources.roll_title_primary
+import fridgey_kmf.composeapp.generated.resources.roll_title_secondary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.R
+import org.jetbrains.compose.resources.painterResource
+import lying.fengfeng.foodrecords.MainActivityDelegate
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import lying.fengfeng.foodrecords.utils.ToastUtil
+import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
 
 @Composable
 fun RollScreen() {
 
-    val context = LocalContext.current
+    val context = MainActivityDelegate.context
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,13 +63,16 @@ fun RollScreen() {
         })
         var isRollButtonEnabled by remember { mutableStateOf(foodInfoList.isNotEmpty()) }
 
+        val onlyOneStr = stringResource(resource = Res.string.only_one)
+        val pickItStr = stringResource(resource = Res.string.pick_it)
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = context.getString(R.string.roll_title_primary),
+                text = stringResource(resource = Res.string.roll_title_primary),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -72,7 +81,7 @@ fun RollScreen() {
                 modifier = Modifier.padding(vertical = 16.dp)
             )
             Text(
-                text = context.getString(R.string.roll_title_secondary),
+                text = stringResource(resource = Res.string.roll_title_secondary),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -90,7 +99,7 @@ fun RollScreen() {
         IconButton(
             onClick = {
                 if (foodInfoList.size == 1) {
-                    Toast.makeText(context, context.getString(R.string.only_one), Toast.LENGTH_SHORT).show()
+                    ToastUtil.show(onlyOneStr)
                     return@IconButton
                 }
                 coroutineScope.launch {
@@ -110,14 +119,13 @@ fun RollScreen() {
                             page = indexOfCard
                         )
 
-                        EffectUtil.playSoundEffect(context)
-                        EffectUtil.playVibrationEffect(context)
+                        EffectUtil.playSoundEffect()
+                        EffectUtil.playVibrationEffect()
 
                     }
                     isRollButtonEnabled = true
-                    EffectUtil.playNotification(context)
-                    Toast.makeText(context, context.getString(R.string.pick_it), Toast.LENGTH_SHORT)
-                        .show()
+                    EffectUtil.playNotification()
+                    ToastUtil.show(pickItStr)
                 }
             },
             modifier = Modifier
@@ -126,7 +134,7 @@ fun RollScreen() {
                 .background(MaterialTheme.colorScheme.primaryContainer),
             enabled = isRollButtonEnabled
         ) {
-            Icon(painter = painterResource(id = R.drawable.dice5_svg), null)
+            Icon(painter = painterResource(resource = Res.drawable.dice5_svg), null)
         }
     }
 }

@@ -1,7 +1,7 @@
 package lying.fengfeng.foodrecords.utils
 
-import lying.fengfeng.foodrecords.App
-import lying.fengfeng.foodrecords.repository.AppRepo
+import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import java.io.File
 
 actual object FileUtil {
@@ -11,5 +11,17 @@ actual object FileUtil {
 
     actual fun getPictureFilePath(uuid: String): String {
         return AppRepo.getPicturePath(uuid)
+    }
+
+    actual fun deleteFood(
+        appViewModel: FoodRecordsAppViewModel,
+        foodInfo: FoodInfo
+    ) {
+        File(AppRepo.getPicturePath(foodInfo.uuid)).also {
+            if (it.exists()) {
+                it.delete()
+            }
+        }
+        appViewModel.removeFoodInfo(foodInfo)
     }
 }

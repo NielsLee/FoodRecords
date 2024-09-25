@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -53,6 +54,7 @@ kotlin {
             implementation (libs.material.kolor)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.material.icons.extended)
 
 
 
@@ -106,6 +108,9 @@ android {
     dependencies {
         debugImplementation(compose.uiTooling)
     }
+    room {
+        schemaDirectory ("$projectDir/schemas")
+    }
 }
 dependencies {
     implementation (platform(libs.androidx.compose.bom))
@@ -120,11 +125,8 @@ dependencies {
     implementation (libs.kotlin.csv.jvm)
     implementation (libs.camposer)
     implementation (libs.glide)
+    implementation(libs.androidx.camera.core)
 
-    add("kspCommonMainMetadata", libs.androidx.room.compiler) // Run KSP on [commonMain] code
-    add("kspAndroid", libs.androidx.room.compiler)
-    add("kspIosX64", libs.androidx.room.compiler)
-    add("kspIosArm64", libs.androidx.room.compiler)
-    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 }
 

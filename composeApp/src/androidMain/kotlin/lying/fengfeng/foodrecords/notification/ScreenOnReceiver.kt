@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.utils.DateUtil
 
 class ScreenOnReceiver : BroadcastReceiver() {

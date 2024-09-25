@@ -1,9 +1,5 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -27,10 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
@@ -40,9 +32,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
-import java.io.File
+import lying.fengfeng.foodrecords.utils.CameraUtil
+import lying.fengfeng.foodrecords.utils.FileUtil
+import lying.fengfeng.foodrecords.utils.ImageUtil
 
 /**
  * 图片预览窗
@@ -50,12 +43,11 @@ import java.io.File
 @Composable
 fun FoodPreview(
     uuid: String,
-    context: Context,
     cameraState: CameraState,
     mutableCameraStatus: MutableState<CameraStatus>
 ) {
     val camSelector by rememberCamSelector(CamSelector.Back)
-    var cameraPermissionGranted by remember { mutableStateOf(checkCameraPermission(context)) }
+    var cameraPermissionGranted by remember { mutableStateOf(CameraUtil.checkCameraPermission()) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -69,20 +61,12 @@ fun FoodPreview(
                             mutableCameraStatus.value = CameraStatus.PREVIEWING
                         } else {
                             MainScope().launch {
-                                val permission = ContextCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.CAMERA
-                                )
-                                if (permission == PackageManager.PERMISSION_GRANTED) {
-                                    cameraPermissionGranted = true
+                                cameraPermissionGranted = CameraUtil.checkCameraPermission()
+                                if (cameraPermissionGranted) {
                                     mutableCameraStatus.value = CameraStatus.PREVIEWING
-                                } else {
-                                    ActivityCompat.requestPermissions(
-                                        context as Activity,
-                                        arrayOf(Manifest.permission.CAMERA),
-                                        888
-                                    )
                                 }
+
+                                CameraUtil.requestCameraPermission()
                             }
                         }
                     },
@@ -106,19 +90,14 @@ fun FoodPreview(
             }
             CameraStatus.IMAGE_READY -> {
                 val picturePath = AppRepo.getPicturePath(uuid)
-                var bitmap by remember { mutableStateOf(createPreviewBitmap()) }
-                val imageBitmap = bitmap.asImageBitmap()
+                var imageBitmap by remember { mutableStateOf(createPreviewBitmap().asImageBitmap()) }
                 val painter = BitmapPainter(imageBitmap)
 
                 LaunchedEffect(Unit) {
                     CoroutineScope(Dispatchers.IO).launch {
                         // make sure the picture file is not empty
-                        if (File(picturePath).exists() && File(picturePath).length() > 100) {
-                            bitmap = Glide.with(context).asBitmap()
-                                .load(picturePath)
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                                .skipMemoryCache(true)
-                                .submit().get()
+                        if (FileUtil.isFileExist(picturePath)) {
+                            imageBitmap = ImageUtil.getImageBitmapFromFile(picturePath)
                         } else {
                             mutableCameraStatus.value = CameraStatus.IDLE
                         }
@@ -145,12 +124,4 @@ private fun createPreviewBitmap(): Bitmap {
     canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
 
     return bitmap
-}
-
-private fun checkCameraPermission(context: Context): Boolean {
-    val permission = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.CAMERA
-    )
-    return permission == PackageManager.PERMISSION_GRANTED
 }

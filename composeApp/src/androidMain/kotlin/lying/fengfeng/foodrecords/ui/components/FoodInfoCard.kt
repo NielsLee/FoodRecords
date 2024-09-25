@@ -53,8 +53,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -62,11 +60,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.delete_record
+import fridgey_kmf.composeapp.generated.resources.eat
+import fridgey_kmf.composeapp.generated.resources.eat_svg
+import fridgey_kmf.composeapp.generated.resources.edit
+import fridgey_kmf.composeapp.generated.resources.expired
+import fridgey_kmf.composeapp.generated.resources.shelf_life_day
+import fridgey_kmf.composeapp.generated.resources.supplement
+import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
@@ -74,9 +79,10 @@ import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import lying.fengfeng.foodrecords.utils.FileUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
-import java.io.File
-import kotlin.math.absoluteValue
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun FoodInfoCard(
@@ -84,7 +90,6 @@ fun FoodInfoCard(
     modifier: Modifier = Modifier
 ) {
 
-    val context = LocalContext.current
     val appViewModel: FoodRecordsAppViewModel =
         viewModel(viewModelStoreOwner = AppViewModelOwner)
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
@@ -167,7 +172,7 @@ fun FoodInfoCard(
                         val bitmap = ImageUtil.preProcessImage(foodPicturePath)
                         // 切换回主线程更新UI
                         launch(Dispatchers.Main) {
-                            imageBitmap = bitmap?.asImageBitmap()
+                            imageBitmap = bitmap
                         }
                     }
                 }
@@ -233,7 +238,7 @@ fun FoodInfoCard(
                 IconButton(
                     onClick = {
                         dropDownMenuExpanded = true
-                        EffectUtil.playVibrationEffect(context)
+                        EffectUtil.playVibrationEffect()
                     },
                     modifier = Modifier
                 ) {
@@ -247,22 +252,22 @@ fun FoodInfoCard(
                     DropdownMenuItem(
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(id = R.drawable.eat_svg),
+                                painter = painterResource(resource = Res.drawable.eat_svg),
                                 null,
                             )
                         },
                         text = {
-                            Text(text = context.getString(R.string.eat))
+                            Text(stringResource(resource = Res.string.eat))
                         },
                         onClick = {
-                            EffectUtil.playVibrationEffect(context)
+                            EffectUtil.playVibrationEffect()
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
                                 if (foodInfo.amount > 1) {
                                     foodInfo.amount -= 1
                                     appViewModel.updateFoodInfo(foodInfo)
                                 } else {
-                                    deleteFood(appViewModel, foodInfo)
+                                    FileUtil.deleteFood(appViewModel, foodInfo)
                                 }
                             }
                         }
@@ -276,10 +281,10 @@ fun FoodInfoCard(
                             )
                         },
                         text = {
-                            Text(text = context.getString(R.string.supplement))
+                            Text(stringResource(resource = Res.string.supplement))
                         },
                         onClick = {
-                            EffectUtil.playVibrationEffect(context)
+                            EffectUtil.playVibrationEffect()
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
                                 foodInfo.amount += 1
@@ -296,10 +301,10 @@ fun FoodInfoCard(
                             )
                         },
                         text = {
-                            Text(text = context.getString(R.string.edit))
+                            Text(stringResource(resource = Res.string.edit))
                         },
                         onClick = {
-                            EffectUtil.playVibrationEffect(context)
+                            EffectUtil.playVibrationEffect()
                             isEditing = true
                             dropDownMenuExpanded = false
                         }
@@ -314,13 +319,13 @@ fun FoodInfoCard(
                             )
                         },
                         text = {
-                            Text(text = context.getString(R.string.delete_record),)
+                            Text(stringResource(resource = Res.string.delete_record))
                         },
                         onClick = {
-                            EffectUtil.playVibrationEffect(context)
+                            EffectUtil.playVibrationEffect()
                             dropDownMenuExpanded = false
                             coroutineScope.launch(Dispatchers.IO) {
-                                deleteFood(appViewModel, foodInfo)
+                                FileUtil.deleteFood(appViewModel, foodInfo)
                             }
                         }
                     )
@@ -381,22 +386,12 @@ fun FoodInfoCard(
     }
 }
 
-fun deleteFood(appViewModel: FoodRecordsAppViewModel, foodInfo: FoodInfo) {
-    File(AppRepo.getPicturePath(foodInfo.uuid)).also {
-        if (it.exists()) {
-            it.delete()
-        }
-    }
-    appViewModel.removeFoodInfo(foodInfo)
-}
-
 @Composable
 fun RemainingDaysWindow(
     foodInfo: FoodInfo,
     isHorizontal: Boolean = false
 ) {
     val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -406,9 +401,9 @@ fun RemainingDaysWindow(
         val fontSize = 32.sp
 
         val (remainingTitleColor, remainingTitleText) = if (!isExpired) {
-            ExpiredGreen to context.getString(R.string.valid_in)
+            ExpiredGreen to stringResource(resource = Res.string.valid_in)
         } else {
-            ExpiredRed to context.getString(R.string.expired)
+            ExpiredRed to stringResource(resource = Res.string.expired)
         }
 
         val contents = @Composable {
@@ -440,7 +435,7 @@ fun RemainingDaysWindow(
                 )
             )
 
-            Text(text = context.getString(R.string.shelf_life_day))
+            Text(stringResource(resource = Res.string.shelf_life_day))
         }
 
         if (isHorizontal) {

@@ -8,10 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import lying.fengfeng.foodrecords.AppContextDelegate
-import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel

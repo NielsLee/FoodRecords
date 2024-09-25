@@ -1,12 +1,10 @@
 package lying.fengfeng.foodrecords
 
+import AppRepo
 import android.app.Application
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
 import lying.fengfeng.foodrecords.notification.ScreenOnReceiver
-import lying.fengfeng.foodrecords.repository.AppRepo
 
 
 class FoodRecordsApplication : Application(){

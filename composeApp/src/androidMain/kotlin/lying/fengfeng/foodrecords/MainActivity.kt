@@ -18,7 +18,6 @@ import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.backup.ExportActivityResultContract
 import lying.fengfeng.foodrecords.backup.ImportActivityResultContract
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsApp
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
@@ -39,6 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        MainActivityDelegate.init(this)
         val screenParams = ScreenParams(this)
         setContent {
             appViewModel = viewModel()

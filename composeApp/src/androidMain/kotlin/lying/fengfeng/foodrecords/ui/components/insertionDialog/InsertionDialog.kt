@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,13 +70,24 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.ujizin.camposer.state.rememberCameraState
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.cancel
+import fridgey_kmf.composeapp.generated.resources.edit
+import fridgey_kmf.composeapp.generated.resources.ok
+import fridgey_kmf.composeapp.generated.resources.shelf_life_day
+import fridgey_kmf.composeapp.generated.resources.tips_title
+import fridgey_kmf.composeapp.generated.resources.title_add_new
+import fridgey_kmf.composeapp.generated.resources.title_expiration_date
+import fridgey_kmf.composeapp.generated.resources.title_name
+import fridgey_kmf.composeapp.generated.resources.title_production_date
+import fridgey_kmf.composeapp.generated.resources.title_shelf_life
+import fridgey_kmf.composeapp.generated.resources.title_type
+import fridgey_kmf.composeapp.generated.resources.toast_enter_name
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
 import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons
@@ -85,6 +95,8 @@ import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import lying.fengfeng.foodrecords.utils.ToastUtil
+import org.jetbrains.compose.resources.stringResource
 import java.io.File
 
 /**
@@ -155,7 +167,10 @@ fun InsertionDialog(
 
                 ) {
                     Text(
-                        text = if (existedFoodInfo == null) context.getString(R.string.title_add_new) else context.getString(R.string.edit),
+                        text = if (existedFoodInfo == null)
+                            stringResource(resource = Res.string.title_add_new)
+                        else
+                            stringResource(resource = Res.string.edit),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -187,7 +202,7 @@ fun InsertionDialog(
                                         foodName = newText
                                     },
                                     maxLines = 1,
-                                    label = { Text(text = context.getString(R.string.title_name)) },
+                                    label = { Text(text = stringResource(resource = Res.string.title_name)) },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .focusRequester(focusRequester),
@@ -211,7 +226,7 @@ fun InsertionDialog(
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = context.getString(R.string.title_production_date),
+                                        text = stringResource(resource = Res.string.title_production_date),
                                         fontSize = 10.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
@@ -236,7 +251,7 @@ fun InsertionDialog(
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = context.getString(R.string.title_expiration_date),
+                                        text = stringResource(resource = Res.string.title_expiration_date),
                                         fontSize = 10.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
@@ -312,7 +327,7 @@ fun InsertionDialog(
                                                     }
                                                 },
                                             ) {
-                                                Text(context.getString(R.string.ok))
+                                                Text(stringResource(resource = Res.string.ok))
                                             }
                                         },
                                         dismissButton = {
@@ -321,7 +336,7 @@ fun InsertionDialog(
                                                     openDialog = false
                                                 }
                                             ) {
-                                                Text(context.getString(R.string.cancel))
+                                                Text(stringResource(resource = Res.string.cancel))
                                             }
                                         },
                                         properties = DialogProperties(
@@ -352,11 +367,11 @@ fun InsertionDialog(
                                     value = if (isExpireDate) {
                                         "####"
                                     } else {
-                                        "$shelfLife ${context.getString(R.string.shelf_life_day)}"
+                                        "$shelfLife ${stringResource(resource = Res.string.shelf_life_day)}"
                                     },
                                     maxLines = 1,
                                     onValueChange = { },
-                                    label = { Text(text = context.getString(R.string.title_shelf_life)) },
+                                    label = { Text(text = stringResource(resource = Res.string.title_shelf_life)) },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(
                                             expanded = shelfLifeExpanded
@@ -385,9 +400,7 @@ fun InsertionDialog(
                                             text = {
                                                 Text(
                                                     text = "${selectionOption.life} ${
-                                                        context.getString(
-                                                            R.string.shelf_life_day
-                                                        )
+                                                        stringResource(resource = Res.string.shelf_life_day)
                                                     }"
                                                 )
                                             }
@@ -411,7 +424,7 @@ fun InsertionDialog(
                                     value = foodType,
                                     maxLines = 1,
                                     onValueChange = { },
-                                    label = { Text(text = context.getString(R.string.title_type)) },
+                                    label = { Text(text = stringResource(resource = Res.string.title_type)) },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(
                                             expanded = typeSelectionExpanded
@@ -455,13 +468,14 @@ fun InsertionDialog(
                                 .padding(top = 8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            val toastContent = stringResource(resource = Res.string.toast_enter_name)
 
                             OutlinedCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .aspectRatio(3f / 4f)
                             ) {
-                                FoodPreview(uuid, context, cameraState, mutableCameraStatus)
+                                FoodPreview(uuid, cameraState, mutableCameraStatus)
                             }
 
                             NumberPickerWithButtons(
@@ -480,11 +494,7 @@ fun InsertionDialog(
                                 cameraStatus = cameraStatus,
                                 onChecked = {
                                     if (foodName.isEmpty()) {
-                                        Toast.makeText(
-                                            context,
-                                            context.getString(R.string.toast_enter_name),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        ToastUtil.show(toastContent)
                                         return@IconButtonRow
                                     }
                                     val foodInfo = FoodInfo(
@@ -497,16 +507,16 @@ fun InsertionDialog(
                                         amount = amount,
                                         tips = tips
                                     )
-                                    EffectUtil.playVibrationEffect(context)
+                                    EffectUtil.playVibrationEffect()
                                     onDismiss.invoke()
                                     onFoodInfoCreated.invoke(foodInfo)
                                 },
                                 onClosed = {
-                                    EffectUtil.playVibrationEffect(context)
+                                    EffectUtil.playVibrationEffect()
                                     onDismiss.invoke()
                                 },
                                 onCameraCaptured = {
-                                    EffectUtil.playVibrationEffect(context)
+                                    EffectUtil.playVibrationEffect()
                                     val file = File(AppRepo.getPicturePath(uuid))
                                     dialogViewModel.uuid.value = uuid
                                     cameraState.takePicture(file) {
@@ -548,7 +558,7 @@ fun InsertionDialog(
                             )
                         },
                         title = {
-                            Text(text = context.getString(R.string.tips_title))
+                            Text(text = stringResource(resource = Res.string.tips_title))
                         },
                         text = {
                             OutlinedTextField(

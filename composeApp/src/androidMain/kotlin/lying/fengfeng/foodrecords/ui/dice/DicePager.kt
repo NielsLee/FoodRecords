@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.dice
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +17,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.dice_view_empty_title
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import lying.fengfeng.foodrecords.R
+import org.jetbrains.compose.resources.stringResource
 import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
@@ -64,15 +64,15 @@ fun EmptyView() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(id = R.string.dice_view_empty_title),
+            text = stringResource(resource = Res.string.dice_view_empty_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Boolean) {
     Column(

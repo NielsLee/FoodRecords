@@ -11,11 +11,11 @@ import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
 interface ShelfLifeInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(shelfLifeInfo: ShelfLifeInfo)
+    suspend fun insert(shelfLifeInfo: ShelfLifeInfo)
 
     @Query(" SELECT * FROM ShelfLifeInfo ")
-    fun getAll(): List<ShelfLifeInfo>
+    suspend fun getAll(): List<ShelfLifeInfo>
 
     @Delete
-    fun remove(shelfLifeInfo: ShelfLifeInfo)
+    suspend fun remove(shelfLifeInfo: ShelfLifeInfo)
 }

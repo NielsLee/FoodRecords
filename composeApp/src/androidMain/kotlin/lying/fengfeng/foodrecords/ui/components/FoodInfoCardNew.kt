@@ -48,23 +48,31 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.amount
+import fridgey_kmf.composeapp.generated.resources.delete_record
+import fridgey_kmf.composeapp.generated.resources.eat
+import fridgey_kmf.composeapp.generated.resources.eat_svg
+import fridgey_kmf.composeapp.generated.resources.edit
+import fridgey_kmf.composeapp.generated.resources.expired
+import fridgey_kmf.composeapp.generated.resources.shelf_life_day
+import fridgey_kmf.composeapp.generated.resources.supplement
+import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ext.scaleToHalfScreenWidth
-import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import lying.fengfeng.foodrecords.utils.FileUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 
 @Composable
@@ -82,7 +90,7 @@ fun FoodInfoCardNew(
     var imageBitmap by remember {
         mutableStateOf(
             ImageUtil.preProcessImage(foodPicturePath)?.let {
-                it.scaleToHalfScreenWidth(context)?.asImageBitmap()
+                it.scaleToHalfScreenWidth(context)
             }
         )
     }
@@ -157,12 +165,12 @@ fun FoodInfoCardNew(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.eat_svg),
+                                    painter = org.jetbrains.compose.resources.painterResource(resource = Res.drawable.eat_svg),
                                     null,
                                 )
                             },
                             text = {
-                                Text(text = context.getString(R.string.eat))
+                                Text(stringResource(resource = Res.string.eat))
                             },
                             onClick = {
                                 EffectUtil.playVibrationEffect(context)
@@ -172,7 +180,7 @@ fun FoodInfoCardNew(
                                         foodInfo.amount -= 1
                                         appViewModel.updateFoodInfo(foodInfo)
                                     } else {
-                                        deleteFood(appViewModel, foodInfo)
+                                        FileUtil.deleteFood(appViewModel, foodInfo)
                                     }
                                 }
                             }
@@ -186,7 +194,7 @@ fun FoodInfoCardNew(
                                 )
                             },
                             text = {
-                                Text(text = context.getString(R.string.supplement))
+                                Text(stringResource(resource = Res.string.supplement))
                             },
                             onClick = {
                                 EffectUtil.playVibrationEffect(context)
@@ -206,7 +214,7 @@ fun FoodInfoCardNew(
                                 )
                             },
                             text = {
-                                Text(text = context.getString(R.string.edit))
+                                Text(stringResource(resource = Res.string.edit))
                             },
                             onClick = {
                                 EffectUtil.playVibrationEffect(context)
@@ -224,13 +232,13 @@ fun FoodInfoCardNew(
                                 )
                             },
                             text = {
-                                Text(text = context.getString(R.string.delete_record))
+                                Text(stringResource(resource = Res.string.delete_record))
                             },
                             onClick = {
                                 EffectUtil.playVibrationEffect(context)
                                 dropDownMenuExpanded = false
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    deleteFood(appViewModel, foodInfo)
+                                    FileUtil.deleteFood(appViewModel, foodInfo)
                                 }
                             }
                         )
@@ -294,15 +302,15 @@ fun FoodInfoCardNew(
                                             fontSize = numberFontSize
                                         )
                                         Text(
-                                            text = stringResource(id = R.string.shelf_life_day),
+                                            text = stringResource(Res.string.shelf_life_day),
                                             fontSize = 12.sp
                                         )
                                     }
 
                                     Text(
                                         text =
-                                        if (isExpired) stringResource(id = R.string.expired)
-                                        else stringResource(id = R.string.valid_in),
+                                        if (isExpired) stringResource(Res.string.expired)
+                                        else stringResource(Res.string.valid_in),
                                         color =
                                         if (isExpired) MaterialTheme.colorScheme.onError
                                         else MaterialTheme.colorScheme.onPrimary,
@@ -330,7 +338,7 @@ fun FoodInfoCardNew(
                                         fontSize = numberFontSize
                                     )
                                     Text(
-                                        text = stringResource(id = R.string.amount),
+                                        text = stringResource(Res.string.amount),
                                         color = MaterialTheme.colorScheme.onPrimary,
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(16.dp))

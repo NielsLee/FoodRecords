@@ -2,8 +2,11 @@ package lying.fengfeng.foodrecords.ext
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 
-fun Bitmap?.scaleToHalfScreenWidth(context: Context): Bitmap? {
+fun ImageBitmap?.scaleToHalfScreenWidth(context: Context): ImageBitmap? {
     if (this == null) return null
 
     val displayMetrics = context.resources.displayMetrics
@@ -13,5 +16,5 @@ fun Bitmap?.scaleToHalfScreenWidth(context: Context): Bitmap? {
     val aspectRatio = this.height.toFloat() / this.width.toFloat()
     val newHeight = (newWidth * aspectRatio).toInt()
 
-    return Bitmap.createScaledBitmap(this, newWidth, newHeight, true)
+    return Bitmap.createScaledBitmap(this.asAndroidBitmap(), newWidth, newHeight, true).asImageBitmap()
 }

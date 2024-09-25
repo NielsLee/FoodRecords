@@ -11,12 +11,12 @@ import lying.fengfeng.foodrecords.entities.FoodInfo
 interface FoodInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(foodInfo: FoodInfo)
+    suspend fun insert(foodInfo: FoodInfo)
 
     @Query(" SELECT * FROM FOODINFO ")
-    fun getAll(): List<FoodInfo>
+    suspend fun getAll(): List<FoodInfo>
 
     @Delete
-    fun remove(foodInfo: FoodInfo)
+    suspend fun remove(foodInfo: FoodInfo)
 
 }
