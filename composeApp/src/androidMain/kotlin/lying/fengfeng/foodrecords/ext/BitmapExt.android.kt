@@ -1,13 +1,15 @@
 package lying.fengfeng.foodrecords.ext
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import lying.fengfeng.foodrecords.MainActivityDelegate
 
-fun ImageBitmap?.scaleToHalfScreenWidth(context: Context): ImageBitmap? {
+actual fun ImageBitmap?.scaleToHalfScreenWidth(): ImageBitmap? {
     if (this == null) return null
+
+    val context = MainActivityDelegate.context
 
     val displayMetrics = context.resources.displayMetrics
     val screenWidth = displayMetrics.widthPixels

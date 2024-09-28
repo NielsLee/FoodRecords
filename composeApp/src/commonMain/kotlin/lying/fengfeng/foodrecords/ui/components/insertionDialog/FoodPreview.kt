@@ -1,10 +1,7 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.util.Size
-import androidx.camera.view.CameraController
+
+import AppRepo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,17 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import com.ujizin.camposer.CameraPreview
-import com.ujizin.camposer.state.CamSelector
-import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ImageTargetSize
-import com.ujizin.camposer.state.rememberCamSelector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.camera.CameraController
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
 import lying.fengfeng.foodrecords.utils.CameraUtil
 import lying.fengfeng.foodrecords.utils.FileUtil
@@ -43,10 +36,9 @@ import lying.fengfeng.foodrecords.utils.ImageUtil
 @Composable
 fun FoodPreview(
     uuid: String,
-    cameraState: CameraState,
+    cameraController: CameraController,
     mutableCameraStatus: MutableState<CameraStatus>
 ) {
-    val camSelector by rememberCamSelector(CamSelector.Back)
     var cameraPermissionGranted by remember { mutableStateOf(CameraUtil.checkCameraPermission()) }
 
     Box(
@@ -77,20 +69,24 @@ fun FoodPreview(
             }
             CameraStatus.PREVIEWING -> {
 
-                CameraPreview(
-                    cameraState = cameraState,
-                    camSelector = camSelector,
-                    modifier = Modifier.fillMaxSize(),
-                    isFocusOnTapEnabled = false,
-                    imageCaptureTargetSize = ImageTargetSize(
-                        outputSize = CameraController.OutputSize(Size(480, 640)))
-                ) {
+//                CameraPreview(
+//                    cameraState = cameraState,
+//                    camSelector = camSelector,
+//                    modifier = Modifier.fillMaxSize(),
+//                    isFocusOnTapEnabled = false,
+//                    imageCaptureTargetSize = ImageTargetSize(
+//                        outputSize = CameraController.OutputSize(Size(480, 640)))
+//                ) {
+//
+//                }
 
-                }
+                CameraPreview(
+                    cameraController = cameraController
+                )
             }
             CameraStatus.IMAGE_READY -> {
                 val picturePath = AppRepo.getPicturePath(uuid)
-                var imageBitmap by remember { mutableStateOf(createPreviewBitmap().asImageBitmap()) }
+                var imageBitmap by remember { mutableStateOf(ImageUtil.createPreviewBitmap()) }
                 val painter = BitmapPainter(imageBitmap)
 
                 LaunchedEffect(Unit) {
@@ -114,14 +110,7 @@ fun FoodPreview(
     }
 }
 
-private fun createPreviewBitmap(): Bitmap {
-
-    val bitmap = Bitmap.createBitmap(1200, 1600, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    val paint = android.graphics.Paint().apply {
-        color = Color.argb(0, 0, 0, 0)
-    }
-    canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
-
-    return bitmap
-}
+@Composable
+expect fun CameraPreview(
+    cameraController: CameraController
+)

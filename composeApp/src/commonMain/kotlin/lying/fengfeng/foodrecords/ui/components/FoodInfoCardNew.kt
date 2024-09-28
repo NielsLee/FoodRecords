@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components
 
+import AppRepo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
@@ -46,9 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -63,6 +61,7 @@ import fridgey_kmf.composeapp.generated.resources.shelf_life_day
 import fridgey_kmf.composeapp.generated.resources.supplement
 import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ext.scaleToHalfScreenWidth
@@ -74,6 +73,7 @@ import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import lying.fengfeng.foodrecords.utils.FileUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FoodInfoCardNew(
@@ -81,7 +81,6 @@ fun FoodInfoCardNew(
     modifier: Modifier = Modifier
 ) {
 
-    val context = LocalContext.current
     val screenParams = LocalScreenParams.current
     val appViewModel: FoodRecordsAppViewModel =
         viewModel(viewModelStoreOwner = AppViewModelOwner)
@@ -90,7 +89,7 @@ fun FoodInfoCardNew(
     var imageBitmap by remember {
         mutableStateOf(
             ImageUtil.preProcessImage(foodPicturePath)?.let {
-                it.scaleToHalfScreenWidth(context)
+                it.scaleToHalfScreenWidth()
             }
         )
     }
@@ -146,7 +145,7 @@ fun FoodInfoCardNew(
                     IconButton(
                         onClick = {
                             dropDownMenuExpanded = true
-                            EffectUtil.playVibrationEffect(context)
+                            EffectUtil.playVibrationEffect()
                         },
                         modifier = Modifier
                             .size(iconButtonSize)
@@ -173,7 +172,7 @@ fun FoodInfoCardNew(
                                 Text(stringResource(resource = Res.string.eat))
                             },
                             onClick = {
-                                EffectUtil.playVibrationEffect(context)
+                                EffectUtil.playVibrationEffect()
                                 dropDownMenuExpanded = false
                                 coroutineScope.launch(Dispatchers.IO) {
                                     if (foodInfo.amount > 1) {
@@ -197,7 +196,7 @@ fun FoodInfoCardNew(
                                 Text(stringResource(resource = Res.string.supplement))
                             },
                             onClick = {
-                                EffectUtil.playVibrationEffect(context)
+                                EffectUtil.playVibrationEffect()
                                 dropDownMenuExpanded = false
                                 coroutineScope.launch(Dispatchers.IO) {
                                     foodInfo.amount += 1
@@ -217,7 +216,7 @@ fun FoodInfoCardNew(
                                 Text(stringResource(resource = Res.string.edit))
                             },
                             onClick = {
-                                EffectUtil.playVibrationEffect(context)
+                                EffectUtil.playVibrationEffect()
                                 isEditing = true
                                 dropDownMenuExpanded = false
                             }
@@ -235,7 +234,7 @@ fun FoodInfoCardNew(
                                 Text(stringResource(resource = Res.string.delete_record))
                             },
                             onClick = {
-                                EffectUtil.playVibrationEffect(context)
+                                EffectUtil.playVibrationEffect()
                                 dropDownMenuExpanded = false
                                 coroutineScope.launch(Dispatchers.IO) {
                                     FileUtil.deleteFood(appViewModel, foodInfo)

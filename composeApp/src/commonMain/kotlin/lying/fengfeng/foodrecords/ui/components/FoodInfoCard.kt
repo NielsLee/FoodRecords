@@ -52,7 +52,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +69,7 @@ import fridgey_kmf.composeapp.generated.resources.shelf_life_day
 import fridgey_kmf.composeapp.generated.resources.supplement
 import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner

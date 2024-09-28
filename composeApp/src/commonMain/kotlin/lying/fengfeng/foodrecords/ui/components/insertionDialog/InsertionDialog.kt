@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.components.insertionDialog
 
+import AppRepo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,7 +61,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.ujizin.camposer.state.rememberCameraState
 import fridgey_kmf.composeapp.generated.resources.Res
 import fridgey_kmf.composeapp.generated.resources.cancel
 import fridgey_kmf.composeapp.generated.resources.edit
@@ -85,6 +84,7 @@ import fridgey_kmf.composeapp.generated.resources.title_type
 import fridgey_kmf.composeapp.generated.resources.toast_enter_name
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import lying.fengfeng.foodrecords.camera.CameraController
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
@@ -97,7 +97,6 @@ import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import lying.fengfeng.foodrecords.utils.ToastUtil
 import org.jetbrains.compose.resources.stringResource
-import java.io.File
 
 /**
  * 添加食物记录的弹窗
@@ -111,8 +110,6 @@ fun InsertionDialog(
     onFoodInfoCreated: (FoodInfo) -> Unit,
     existedFoodInfo: FoodInfo? = null
 ) {
-    val context = LocalContext.current
-
     // viewModel's lifecycle is the same as this dialog
     // fill existed params or create a set of new params
     val dialogViewModel = InsertionDialogViewModel(existedFoodInfo)
@@ -138,7 +135,7 @@ fun InsertionDialog(
     var tipsInputShown by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
-    val cameraState = rememberCameraState()
+    val cameraController = CameraController()
     val mutableCameraStatus = dialogViewModel.cameraStatus
     CompositionLocalProvider(LocalUUID provides uuid) {
 
@@ -475,7 +472,7 @@ fun InsertionDialog(
                                     .fillMaxWidth()
                                     .aspectRatio(3f / 4f)
                             ) {
-                                FoodPreview(uuid, cameraState, mutableCameraStatus)
+                                FoodPreview(uuid, cameraController, mutableCameraStatus)
                             }
 
                             NumberPickerWithButtons(
@@ -517,11 +514,10 @@ fun InsertionDialog(
                                 },
                                 onCameraCaptured = {
                                     EffectUtil.playVibrationEffect()
-                                    val file = File(AppRepo.getPicturePath(uuid))
-                                    dialogViewModel.uuid.value = uuid
-                                    cameraState.takePicture(file) {
+                                    cameraController.takePicture(AppRepo.getPicturePath(uuid)) {
                                         cameraStatus = CameraStatus.IMAGE_READY
                                     }
+                                    dialogViewModel.uuid.value = uuid
                                 }
                             )
                         }

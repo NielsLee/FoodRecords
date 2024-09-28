@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.dice
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import fridgey_kmf.composeapp.generated.resources.Res
 import fridgey_kmf.composeapp.generated.resources.dice_view_empty_title
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
 import lying.fengfeng.foodrecords.entities.FoodInfo
@@ -32,6 +34,7 @@ import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCardNew
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DicePager(
     pagerState: PagerState
@@ -73,6 +76,7 @@ fun EmptyView() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Boolean) {
     Column(

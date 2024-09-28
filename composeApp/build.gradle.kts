@@ -119,13 +119,11 @@ dependencies {
     implementation (libs.androidx.navigation.compose)
     implementation (libs.androidx.room.runtime)
     implementation(libs.androidx.room.common)
-    implementation(libs.androidx.material3.android)
     implementation (libs.androidx.material.icons.extended)
 
     implementation (libs.kotlin.csv.jvm)
     implementation (libs.camposer)
     implementation (libs.glide)
-    implementation(libs.androidx.camera.core)
 
     ksp(libs.androidx.room.compiler)
 }

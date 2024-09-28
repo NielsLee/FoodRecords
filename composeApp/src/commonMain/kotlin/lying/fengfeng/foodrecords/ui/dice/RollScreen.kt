@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.dice
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,8 +35,8 @@ import fridgey_kmf.composeapp.generated.resources.roll_title_primary
 import fridgey_kmf.composeapp.generated.resources.roll_title_secondary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.painterResource
-import lying.fengfeng.foodrecords.MainActivityDelegate
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
@@ -44,10 +45,9 @@ import lying.fengfeng.foodrecords.utils.ToastUtil
 import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RollScreen() {
-
-    val context = MainActivityDelegate.context
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -141,7 +141,7 @@ fun RollScreen() {
 
 fun <T> selectRandomElements(givenList: List<T>, count: Int): List<T> {
     val selectedList = mutableListOf<T>()
-    val random = Random(System.currentTimeMillis())
+    val random = Random(Clock.System.now().toEpochMilliseconds())
 
     if (givenList.size < count) {
         selectedList.addAll(givenList)

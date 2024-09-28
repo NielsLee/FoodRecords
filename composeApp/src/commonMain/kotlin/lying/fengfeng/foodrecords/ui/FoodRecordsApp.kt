@@ -11,15 +11,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import lying.fengfeng.foodrecords.R
+import fridgey_kmf.composeapp.generated.resources.Res
+import fridgey_kmf.composeapp.generated.resources.app_name
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.FoodRecordsTheme
 import lying.fengfeng.foodrecords.utils.EffectUtil
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FoodRecordsApp() {
@@ -41,7 +42,7 @@ fun FoodRecordsApp() {
                 SnackbarHost(hostState = snackBarHostState)
             },
             topBar = {
-                FoodRecordsTopBar(stringResource(R.string.app_name))
+                FoodRecordsTopBar(stringResource(Res.string.app_name))
             },
             bottomBar = {
                 FoodRecordsBottomBar(

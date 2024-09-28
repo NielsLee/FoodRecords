@@ -3,6 +3,8 @@ package lying.fengfeng.foodrecords.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -15,7 +17,7 @@ import java.io.FileNotFoundException
 
 actual object ImageUtil {
 
-    fun preProcessImage(imageFilePath: String): ImageBitmap? {
+    actual fun preProcessImage(imageFilePath: String): ImageBitmap? {
         try {
             // 从指定路径下读取图片，并获取其EXIF信息
             val exifInterface = ExifInterface(imageFilePath)
@@ -99,5 +101,16 @@ actual object ImageUtil {
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .skipMemoryCache(true)
             .submit().get().asImageBitmap()
+    }
+
+    actual fun createPreviewBitmap(): ImageBitmap {
+        val bitmap = Bitmap.createBitmap(1200, 1600, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = android.graphics.Paint().apply {
+            color = Color.argb(0, 0, 0, 0)
+        }
+        canvas.drawRect(0f, 0f, 1200f, 1600f, paint)
+
+        return bitmap.asImageBitmap()
     }
 }
