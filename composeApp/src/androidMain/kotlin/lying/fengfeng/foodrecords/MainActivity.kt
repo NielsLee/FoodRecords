@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.backup.ExportActivityResultContract
 import lying.fengfeng.foodrecords.backup.ImportActivityResultContract
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
 import lying.fengfeng.foodrecords.ui.FoodRecordsApp
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams

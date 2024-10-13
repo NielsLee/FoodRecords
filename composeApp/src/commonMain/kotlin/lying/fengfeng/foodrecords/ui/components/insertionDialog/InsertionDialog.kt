@@ -85,9 +85,9 @@ import fridgey_kmf.composeapp.generated.resources.toast_enter_name
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.camera.CameraController
-import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.entities.FoodTypeInfo
-import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodTypeInfo
+import lying.fengfeng.foodrecords.entity.ShelfLifeInfo
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialogViewModel.CameraStatus
 import lying.fengfeng.foodrecords.ui.settings.NumberPickerWithButtons

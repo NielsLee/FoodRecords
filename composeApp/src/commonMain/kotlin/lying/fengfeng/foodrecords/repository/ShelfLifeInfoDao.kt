@@ -1,13 +1,12 @@
 package lying.fengfeng.foodrecords.repository
 
-import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.entity.ShelfLifeInfo
 
-@Dao
+//@Dao
 interface ShelfLifeInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

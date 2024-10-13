@@ -1,22 +1,18 @@
-package lying.fengfeng.foodrecords.entities
+package lying.fengfeng.foodrecords.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.datetime.Clock
 import lying.fengfeng.foodrecords.utils.FileUtil
 import kotlin.math.absoluteValue
 
-@Entity
 data class FoodInfo(
-    @ColumnInfo val foodName: String,
-    @ColumnInfo val productionDate: String,
-    @ColumnInfo val foodType: String,
-    @ColumnInfo val shelfLife: String,
-    @ColumnInfo val expirationDate: String,
-    @PrimaryKey val uuid: String,
-    @ColumnInfo var amount: Int,
-    @ColumnInfo val tips: String = ""
+    val foodName: String,
+    val productionDate: String,
+    val foodType: String,
+    val shelfLife: String,
+    val expirationDate: String,
+    val uuid: String,
+    var amount: Int,
+    val tips: String = ""
 ) {
     fun getSortIndex(): Int {
         var (remainingDate, isExpired) = getRemainingDays(this)

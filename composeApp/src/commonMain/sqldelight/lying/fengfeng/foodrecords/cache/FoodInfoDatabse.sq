@@ -1,0 +1,54 @@
+CREATE TABLE IF NOT EXISTS food_info (
+    foodName TEXT NOT NULL,
+    productionDate TEXT NOT NULL,
+    foodType TEXT NOT NULL,
+    shelfLife TEXT NOT NULL,
+    expirationDate TEXT NOT NULL,
+    uuid TEXT NOT NULL,
+    amount INTEGER NOT NULL,
+    tips TEXT NOT NULL,
+    PRIMARY KEY(uuid)
+);
+
+insertFoodInfo:
+INSERT OR REPLACE INTO food_info (foodName, productionDate, foodType, shelfLife, expirationDate, uuid, amount, tips)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+getAllFoodInfo:
+SELECT * FROM food_info;
+
+deleteFoodInfo:
+DELETE FROM food_info
+WHERE uuid = ?;
+
+CREATE TABLE food_type_info (
+    type TEXT NOT NULL,
+    PRIMARY KEY(type)
+);
+
+insertFoodTypeInfo:
+INSERT OR IGNORE INTO food_type_info (type)
+VALUES (?);
+
+selectAllFoodTypeInfo:
+SELECT * FROM food_type_info;
+
+deleteFoodTypeInfo:
+DELETE FROM food_type_info
+WHERE type = ?;
+
+CREATE TABLE shelf_life_info (
+    life TEXT NOT NULL,
+    PRIMARY KEY(life)
+);
+
+insertShelfLifeInfo:
+INSERT OR IGNORE INTO shelf_life_info (life)
+VALUES (?);
+
+selectAllShelfLifeInfo:
+SELECT * FROM shelf_life_info;
+
+deleteShelfLifeInfo:
+DELETE FROM shelf_life_info
+WHERE life = ?;

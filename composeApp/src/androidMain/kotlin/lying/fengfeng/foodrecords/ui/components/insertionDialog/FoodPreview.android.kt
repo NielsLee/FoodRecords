@@ -10,8 +10,6 @@ import lying.fengfeng.foodrecords.camera.CameraController
 
 @Composable
 actual fun CameraPreview(cameraController: CameraController) {
-
-
     com.ujizin.camposer.CameraPreview(
         cameraState = cameraController.cameraState,
         camSelector = CamSelector.Back,

@@ -1,6 +1,6 @@
 package lying.fengfeng.foodrecords.utils
 
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -40,11 +40,11 @@ actual object DateUtil {
             val productionTimeMillis = productionDate.toLong()
             val expirationTimeMillis = productionTimeMillis + shelfLife.toLong() * (24 * 60 * 60 * 1000)
             val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
-            if (result > 0) return Pair(result, false) else return Pair(-result, true)
+            return if (result > 0) Pair(result, false) else Pair(-result, true)
         } else {
             val expirationTimeMillis = expirationDate.toLong()
             val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
-            if (result > 0) return Pair(result, false) else return Pair(-result, true)
+            return if (result > 0) Pair(result, false) else Pair(-result, true)
         }
     }
 

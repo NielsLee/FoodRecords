@@ -106,8 +106,9 @@ import fridgey_kmf.composeapp.generated.resources.wechat_svg
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.entities.FoodTypeInfo
-import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.entity.FoodTypeInfo
+import lying.fengfeng.foodrecords.entity.ShelfLifeInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
@@ -128,10 +129,9 @@ fun SettingsScreen(
     ) {
 
         val appViewModel: FoodRecordsAppViewModel =
-            viewModel(AppViewModelOwner)
+            viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
 
-        val iconSize = 36.dp
-        val subIconSize = 24.dp
+        val iconSize = 24.dp
         val titleFontSize = 18.sp
         val titlePadding = PaddingValues(start = 8.dp)
 
@@ -520,7 +520,8 @@ fun SettingsScreen(
                 Column {
 
                     Row(
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(
@@ -546,7 +547,8 @@ fun SettingsScreen(
                     }
 
                     Row(
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(

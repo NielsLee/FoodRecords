@@ -1,6 +1,7 @@
-import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.entities.FoodTypeInfo
-import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import androidx.compose.runtime.Composable
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodTypeInfo
+import lying.fengfeng.foodrecords.entity.ShelfLifeInfo
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 
 expect object AppRepo {
@@ -54,4 +55,7 @@ expect object AppRepo {
     fun setNewUITried(isTried: Boolean)
 
     fun isNewUITried(): Boolean
+
+    @Composable
+    fun addInitializedData()
 }

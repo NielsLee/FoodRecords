@@ -48,6 +48,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lying.fengfeng.foodrecords.backup.BackupLauncherDelegate
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.utils.DateUtil
@@ -139,7 +140,7 @@ fun FoodRecordsBottomBar(
     fabOnClick: () -> Unit
 ) {
 
-    val appViewModel: FoodRecordsAppViewModel = viewModel(AppViewModelOwner)
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
     val isNewUITried by remember { appViewModel.isNewUITried }
 
     BottomAppBar(

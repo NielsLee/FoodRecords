@@ -1,6 +1,6 @@
 package lying.fengfeng.foodrecords.utils
 
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
 
 expect object DateUtil {
 

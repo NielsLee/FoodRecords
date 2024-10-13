@@ -28,7 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
@@ -40,7 +41,7 @@ fun DicePager(
     pagerState: PagerState
 ) {
 
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner)
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
     var isCardListEmpty by remember { mutableStateOf(false) }
 
     var foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }

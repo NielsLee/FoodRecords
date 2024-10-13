@@ -11,9 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import lying.fengfeng.foodrecords.entities.FoodInfo
-import lying.fengfeng.foodrecords.entities.FoodTypeInfo
-import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodTypeInfo
+import lying.fengfeng.foodrecords.entity.ShelfLifeInfo
 import lying.fengfeng.foodrecords.notification.NotificationDelegate
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
 

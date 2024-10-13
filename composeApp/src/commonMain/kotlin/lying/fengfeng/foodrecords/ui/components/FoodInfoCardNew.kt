@@ -63,8 +63,9 @@ import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
 import lying.fengfeng.foodrecords.ext.scaleToHalfScreenWidth
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalScreenParams
@@ -83,7 +84,7 @@ fun FoodInfoCardNew(
 
     val screenParams = LocalScreenParams.current
     val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = AppViewModelOwner)
+        viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     val foodPicturePath = AppRepo.getPicturePath(foodInfo.uuid)
     var imageBitmap by remember {
@@ -361,7 +362,7 @@ fun FoodInfoCardNew(
                     )
                     Text(
                         text = ": ${DateUtil.getExpirationDate(foodInfo)}",
-                        fontSize = 22.sp,
+                        fontSize = 16.sp,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }

@@ -71,7 +71,8 @@ import fridgey_kmf.composeapp.generated.resources.valid_in
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
@@ -91,7 +92,7 @@ fun FoodInfoCard(
 ) {
 
     val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = AppViewModelOwner)
+        viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
 

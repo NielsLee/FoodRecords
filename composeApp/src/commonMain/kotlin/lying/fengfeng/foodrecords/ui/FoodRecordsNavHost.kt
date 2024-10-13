@@ -29,9 +29,9 @@ fun FoodRecordsNavHost(
     modifier: Modifier
 ) {
 
-    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner)
+    val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
 
-    val foodInfoList = remember { appViewModel.foodInfoList }.sortedBy { it.getSortIndex() }
+    val foodInfoList = remember { appViewModel.foodInfoList }.apply { sortBy { it.getSortIndex() } }
 
     NavHost(
         navController = navController,

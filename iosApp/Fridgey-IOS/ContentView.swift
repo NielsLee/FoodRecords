@@ -9,19 +9,23 @@ import SwiftUI
 import ComposeApp
 
 struct ContentView: View {
-    var count = ComposeApp.ScreenParams(androidContext:nil).getListColumnCount()
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-            Text(String(count))
+            ComposeViewController()
         }
-        .padding()
+        .ignoresSafeArea()
     }
 }
 
 #Preview {
     ContentView()
+}
+
+struct ComposeViewController: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        return MainViewControllerKt.MainViewController()
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    }
 }

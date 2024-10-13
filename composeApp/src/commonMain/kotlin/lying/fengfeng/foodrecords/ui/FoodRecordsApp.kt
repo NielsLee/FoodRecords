@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui
 
+import AppRepo
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -26,7 +27,7 @@ import org.jetbrains.compose.resources.stringResource
 fun FoodRecordsApp() {
 
     val appViewModel: FoodRecordsAppViewModel =
-        viewModel(viewModelStoreOwner = AppViewModelOwner)
+        viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
 
     var showDialog by remember { appViewModel.isDialogShown }
     val navController = rememberNavController()
@@ -37,6 +38,9 @@ fun FoodRecordsApp() {
     FoodRecordsTheme(
         themeOption = themeOption
     ) {
+
+        AppRepo.addInitializedData()
+
         Scaffold(
             snackbarHost = {
                 SnackbarHost(hostState = snackBarHostState)
@@ -79,5 +83,5 @@ fun FoodRecordsApp() {
 }
 
 val LocalScreenParams = compositionLocalOf<ScreenParams> {
-    error("No LocalScreenParams provided")
+    ScreenParams(null)
 }

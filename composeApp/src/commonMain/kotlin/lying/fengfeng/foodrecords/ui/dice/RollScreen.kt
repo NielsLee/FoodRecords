@@ -37,7 +37,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.painterResource
-import lying.fengfeng.foodrecords.entities.FoodInfo
+import lying.fengfeng.foodrecords.entity.FoodInfo
+import lying.fengfeng.foodrecords.ui.AppViewModelFactory
 import lying.fengfeng.foodrecords.ui.AppViewModelOwner
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.utils.EffectUtil
@@ -56,7 +57,7 @@ fun RollScreen() {
 
         val coroutineScope = rememberCoroutineScope()
         val appViewModel: FoodRecordsAppViewModel =
-            viewModel(AppViewModelOwner)
+            viewModel(viewModelStoreOwner = AppViewModelOwner, factory = AppViewModelFactory())
         val foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }
         val pagerState = rememberPagerState(pageCount = {
             foodInfoList.size

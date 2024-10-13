@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,16 +8,26 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
+    iosArm64()
+    iosSimulatorArm64()
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        // Common compiler options applied to all Kotlin source sets
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -35,10 +44,17 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.android.driver)
         }
+
+        iosMain.dependencies {
+            implementation(libs.native.driver)
+        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -55,9 +71,6 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
             implementation(libs.material.icons.extended)
-
-
-
         }
     }
 }
@@ -98,20 +111,26 @@ android {
             isMinifyEnabled = false
         }
     }
+
     compileOptions {
+
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
     }
+
     dependencies {
         debugImplementation(compose.uiTooling)
     }
+
     room {
         schemaDirectory ("$projectDir/schemas")
     }
 }
+
 dependencies {
     implementation (platform(libs.androidx.compose.bom))
 
@@ -128,3 +147,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 }
 
+sqldelight {
+    databases {
+        create("FoodRecordDatabase") {
+            packageName.set("lying.fengfeng.foodrecords")
+        }
+    }
+}
