@@ -1,5 +1,7 @@
 <span>[中文](README.zh.md)</span> | <span>[Français](README.fr.md)</span> | <span>[English](README.md)</span> <span>[Português](README.pt.md)</span>
 
+***Branch [kmp](https://github.com/NielsLee/FoodRecords/tree/kmp) is tring to convert this Android project to Kotlin-Multiplatform project, If you are interested with KMP, give it a try!***
+
 # Fridgey
 
 A simple recording app for keeping track of the ingredients at home; with just a few simple setup steps, you can start recording. The app will notify you when ingredients are nearing their expiration, so you no longer have to worry about food spoilage at home!
