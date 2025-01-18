@@ -1,0 +1,1 @@
+Fixed the issue where the screen opening animation was a white background in dark mode

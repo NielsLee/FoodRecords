@@ -1,0 +1,1 @@
+Corrigido o problema em que a animação de abertura da tela era um fundo branco no modo escuro

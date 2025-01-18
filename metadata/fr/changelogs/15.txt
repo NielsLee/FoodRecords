@@ -1,0 +1,1 @@
+Correction du problème où l'animation d'ouverture de l'écran était un fond blanc en mode sombre
