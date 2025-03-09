@@ -69,6 +69,14 @@ android {
     sourceSets {
         getByName("androidTest").assets.srcDir("$projectDir/schemas")
     }
+
+    android {
+        dependenciesInfo {
+            // for F-droid
+            includeInApk = false
+            includeInBundle = false
+        }
+    }
 }
 
 dependencies {

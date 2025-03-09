@@ -62,18 +62,6 @@ class FoodRecordsAppViewModel: ViewModel() {
         }
     }
 
-    fun getFoodInfoList(): List<FoodInfo> {
-        return foodInfoList
-    }
-
-    fun getFoodTypeList(): List<FoodTypeInfo> {
-        return foodTypeList
-    }
-
-    fun getShelfLifeList(): List<ShelfLifeInfo> {
-        return shelfLifeList
-    }
-
     fun addOrUpdateFoodInfo(foodInfo: FoodInfo) {
         AppRepo.addFoodInfo(foodInfo)
         foodInfoList.also { list ->

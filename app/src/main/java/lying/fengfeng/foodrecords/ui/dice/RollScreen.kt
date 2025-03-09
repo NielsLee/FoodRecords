@@ -6,9 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -16,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +42,8 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
+import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
+import lying.fengfeng.foodrecords.ui.components.FoodInfoCardNew
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import kotlin.random.Random
 
@@ -56,11 +62,13 @@ fun RollScreen() {
         val activityContext = LocalActivityContext.current
         val appViewModel: FoodRecordsAppViewModel =
             viewModel(viewModelStoreOwner = (activityContext as MainActivity))
-        val foodInfoList: List<FoodInfo> = remember { appViewModel.foodInfoList }
+        val foodInfoList: List<FoodInfo> = appViewModel.foodInfoList
+
         val pagerState = rememberPagerState(pageCount = {
             foodInfoList.size
         })
-        var isRollButtonEnabled by remember { mutableStateOf(foodInfoList.isNotEmpty()) }
+        var isFoodInfoEmpty by remember { mutableStateOf(foodInfoList.isEmpty()) }
+        val isNewUI by remember { appViewModel.isNewUI }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,7 +97,15 @@ fun RollScreen() {
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            DicePager(pagerState)
+            LaunchedEffect(key1 = foodInfoList.size) {
+                isFoodInfoEmpty = foodInfoList.isEmpty()
+            }
+
+            if (isFoodInfoEmpty) {
+                EmptyView()
+            } else {
+                DiceView(cardDataList = foodInfoList, pagerState = pagerState, isNewUI = isNewUI)
+            }
         }
 
         IconButton(
@@ -99,7 +115,6 @@ fun RollScreen() {
                     return@IconButton
                 }
                 coroutineScope.launch {
-                    isRollButtonEnabled = false
                     val pageList = selectRandomElements(foodInfoList, 13)
                     val smoothList = generateDeceleratedSequence(
                         100,
@@ -119,7 +134,6 @@ fun RollScreen() {
                         EffectUtil.playVibrationEffect(context)
 
                     }
-                    isRollButtonEnabled = true
                     EffectUtil.playNotification(context)
                     Toast.makeText(context, context.getString(R.string.pick_it), Toast.LENGTH_SHORT)
                         .show()
@@ -129,10 +143,62 @@ fun RollScreen() {
                 .padding(32.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),
-            enabled = isRollButtonEnabled
+            enabled = !isFoodInfoEmpty
         ) {
             Icon(painter = painterResource(id = R.drawable.dice5_svg), null)
         }
+    }
+}
+
+@Composable
+fun EmptyView() {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.dice_view_empty_title),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DiceView(cardDataList: List<FoodInfo>, pagerState: PagerState, isNewUI: Boolean) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = false,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isNewUI) {
+                        FoodInfoCardNew(foodInfo = cardDataList[page])
+                    } else {
+                        FoodInfoCard(foodInfo = cardDataList[page], modifier = Modifier.fillMaxWidth(0.6f))
+                    }
+                }
+            }
+        }
+
     }
 }
 
