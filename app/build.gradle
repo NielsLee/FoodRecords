@@ -5,6 +5,21 @@ plugins {
     id 'androidx.room'
 }
 
+def loadVersionProperties() {
+    def props = new Properties()
+    def propFilePath = rootProject.file("version.properties")
+    if (propFilePath.exists()) {
+        props.load(propFilePath.newInputStream())
+    } else {
+        throw new FileNotFoundException("version.properties not found with: ${propFilePath}")
+    }
+    return props
+}
+
+def versionProps = loadVersionProperties()
+def appVersionName = versionProps.getProperty("version.name", "1.0.0")
+def appVersionCode = Integer.parseInt(versionProps.getProperty("version.code", "1"))
+
 android {
     namespace 'lying.fengfeng.foodrecords'
     compileSdk 34
@@ -13,8 +28,8 @@ android {
         applicationId "lying.fengfeng.foodrecords"
         minSdk 26
         targetSdk 34
-        versionCode 15
-        versionName "2.2.1"
+        versionCode appVersionCode
+        versionName appVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

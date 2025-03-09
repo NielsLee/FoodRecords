@@ -5,3 +5,32 @@ plugins {
     id 'com.google.devtools.ksp' version '1.9.0-1.0.13' apply false
     id 'androidx.room' version "2.6.1" apply false
 }
+
+task createMetadataFile {
+    doLast {
+        // 读取配置文件
+        def props = new Properties()
+        def propFilePath = file("version.properties")
+        if (!propFilePath.exists()) {
+            throw new FileNotFoundException("version.properties not found with: ${propFilePath}")
+        }
+        props.load(propFilePath.newInputStream())
+
+        def versionCodeStr = props.getProperty("version.code", "1")
+
+        def metadataDir = file("metadata")
+        def subdirs = metadataDir.listFiles(new FileFilter() {
+            @Override
+            boolean accept(File file) {
+                return file.isDirectory()
+            }
+        })
+
+        subdirs.each { subdir ->
+            def changelogsDir = new File(subdir, "changelogs")
+            def outputFile = new File(changelogsDir, "${versionCodeStr}.txt")
+            outputFile.createNewFile()
+            println("Empty change log created: ${outputFile.path}")
+        }
+    }
+}

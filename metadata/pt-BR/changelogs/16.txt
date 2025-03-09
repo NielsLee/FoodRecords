@@ -1,0 +1,2 @@
+Corrigido o problema em que a exclusão de cartas da página de dados causava uma falha
+A nova interface do usuário é usada por padrão

@@ -1,0 +1,2 @@
+Correction du problème qui provoquait un plantage lors de la suppression de cartes de la page des dés.
+La nouvelle interface utilisateur est utilisée par défaut

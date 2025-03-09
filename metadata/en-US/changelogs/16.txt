@@ -1,0 +1,2 @@
+Fixed the issue that deleting cards on the dice page caused a crash
+The new UI is used by default
