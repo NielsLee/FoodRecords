@@ -192,7 +192,7 @@ object AppRepo {
     }
 
     fun isNewUI(): Boolean {
-        return sp.getBoolean("is_new_ui", false)
+        return sp.getBoolean("is_new_ui", true)
     }
 
     fun setNewUITried(isTried: Boolean) {
