@@ -1,6 +1,7 @@
 package lying.fengfeng.foodrecords
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +44,10 @@ class MainActivity : ComponentActivity() {
         }
 
         exportLauncher = registerForActivityResult(ExportActivityResultContract()) { contentUriStr ->
+            if (contentUriStr == "Empty") {
+                return@registerForActivityResult
+            }
+
             lifecycleScope.launch {
                 val descriptor = contentResolver.openFileDescriptor(contentUriStr.toUri(), "w")
                 val foodInfoList = withContext(Dispatchers.IO) {
@@ -80,6 +85,10 @@ class MainActivity : ComponentActivity() {
         }
 
         importLauncher = registerForActivityResult(ImportActivityResultContract()) { contentUriStr ->
+            if (contentUriStr == "Empty") {
+                return@registerForActivityResult
+            }
+
             lifecycleScope.launch {
                 val descriptor = contentResolver.openFileDescriptor(contentUriStr.toUri(), "r")
                 try {
