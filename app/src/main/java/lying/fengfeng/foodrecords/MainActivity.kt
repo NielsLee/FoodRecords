@@ -99,7 +99,12 @@ class MainActivity : ComponentActivity() {
                         charset = "GBK"
                     }
                     reader.open(inputStream) {
-                        lineList = readAllAsSequence().toList()
+                        lineList = try {
+                            readAllAsSequence().toList()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            listOf()
+                        }
                     }
 
                     withContext(Dispatchers.IO) {
