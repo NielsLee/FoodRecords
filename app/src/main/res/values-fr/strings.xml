@@ -56,4 +56,5 @@
     <string name="badge_new">nouveau</string>
     <string name="search">recherche</string>
     <string name="search_placeholder">Rechercher par nom ou par type</string>
+    <string name="buy_author_coffee">Offrez une tasse de café à l\'auteur</string>
 </resources>

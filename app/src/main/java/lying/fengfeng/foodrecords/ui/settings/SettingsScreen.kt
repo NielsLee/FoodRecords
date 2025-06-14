@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Mail
@@ -750,6 +751,26 @@ fun SettingsScreen(
                             EmailButton()
                         }
                     }
+
+                    Row(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        Spacer(modifier = Modifier.size(iconSize))
+
+                        Text(
+                            text = stringResource(id = R.string.buy_author_coffee),
+                            fontSize = titleFontSize,
+                            modifier = Modifier.padding(paddingValues = titlePadding)
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier.size(iconSize)
+                        ) {
+                            KofiButton()
+                        }
+                    }
                 }
             }
         }
@@ -1054,6 +1075,20 @@ fun GitHubButton() {
             painter = painterResource(id = R.drawable.github_mark_svg),
             contentDescription = null
         )
+    }
+}
+
+@Composable
+fun KofiButton() {
+    val context = LocalContext.current
+
+    val kofiUri = Uri.parse("https://ko-fi.com/nielslee")
+
+    IconButton(onClick = {
+        val webIntent = Intent(Intent.ACTION_VIEW, kofiUri)
+        context.startActivity(webIntent)
+    }) {
+        Icon(Icons.Filled.Coffee, "Buy author a coffee")
     }
 }
 
