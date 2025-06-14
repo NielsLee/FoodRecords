@@ -3,10 +3,11 @@ package lying.fengfeng.foodrecords.ui
 import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -22,16 +23,19 @@ import androidx.navigation.compose.rememberNavController
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsBottomBar
 import lying.fengfeng.foodrecords.ui.components.FoodRecordsTopBar
+import lying.fengfeng.foodrecords.ui.components.SearchBottomSheet
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.FoodRecordsTheme
 import lying.fengfeng.foodrecords.utils.EffectUtil
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodRecordsApp() {
 
     val appViewModel: FoodRecordsAppViewModel = viewModel()
 
     var showDialog by remember { appViewModel.isDialogShown }
+    var showSearchDialog by remember { appViewModel.isSearchDialogShown }
 
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -65,7 +69,11 @@ fun FoodRecordsApp() {
                             showDialog = true
                             EffectUtil.playSoundEffect(context)
                             EffectUtil.playVibrationEffect(context)
-                        })
+                        },
+                        searchFabOnClick = {
+                            showSearchDialog = true
+                        }
+                    )
                 }
             ) { paddingValues ->
                 FoodRecordsNavHost(
@@ -86,6 +94,18 @@ fun FoodRecordsApp() {
                         onFoodInfoCreated = {
                             appViewModel.addOrUpdateFoodInfo(it)
                         }
+                    )
+                }
+
+                if (showSearchDialog) {
+                    SearchBottomSheet(
+                        onDismiss = {
+                            showSearchDialog = false
+                        },
+                        onSearchFilterChange = { newFilterStr ->
+                            appViewModel.filterStr.value = newFilterStr
+                        },
+                        snackBarHostState = snackBarHostState
                     )
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.ImportExport
 import androidx.compose.material3.Badge
@@ -135,7 +136,8 @@ fun FoodRecordsTopBar(title: String) {
 @Composable
 fun FoodRecordsBottomBar(
     navController: NavController,
-    fabOnClick: () -> Unit
+    fabOnClick: () -> Unit,
+    searchFabOnClick: ()-> Unit
 ) {
 
     val context = LocalContext.current
@@ -187,13 +189,25 @@ fun FoodRecordsBottomBar(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = fabOnClick,
-                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-            ) {
-                Icon(Icons.Filled.Add, "Localized description")
+            Row {
+                FloatingActionButton(
+                    modifier = Modifier.padding(2.dp),
+                    onClick = searchFabOnClick,
+                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                ) {
+                    Icon(Icons.Filled.Search, contentDescription = "search")
+                }
+                FloatingActionButton(
+                    modifier = Modifier.padding(2.dp),
+                    onClick = fabOnClick,
+                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                ) {
+                    Icon(Icons.Filled.Add, "Localized description")
+                }
             }
+
         },
         modifier = Modifier
     )

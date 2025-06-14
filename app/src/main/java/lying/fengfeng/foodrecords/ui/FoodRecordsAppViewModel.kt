@@ -28,6 +28,7 @@ import lying.fengfeng.foodrecords.utils.DateUtil
 class FoodRecordsAppViewModel: ViewModel() {
 
     var isDialogShown: MutableState<Boolean> = mutableStateOf(false)
+    var isSearchDialogShown: MutableState<Boolean> = mutableStateOf(false)
 
     var foodInfoList = mutableStateListOf<FoodInfo>()
     var foodTypeList = mutableStateListOf<FoodTypeInfo>()
@@ -40,6 +41,8 @@ class FoodRecordsAppViewModel: ViewModel() {
     var isNewUITried = mutableStateOf(AppRepo.isNewUITried())
 
     var isNewUI = mutableStateOf(AppRepo.isNewUI())
+
+    var filterStr: MutableState<String?> = mutableStateOf(null)
 
     init {
         CoroutineScope(Dispatchers.Main).launch {

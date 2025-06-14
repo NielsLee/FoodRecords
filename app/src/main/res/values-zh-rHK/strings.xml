@@ -55,4 +55,6 @@
     <string name="amount">數量</string>
     <string name="use_new_ui">使用新的UI</string>
     <string name="badge_new">新</string>
+    <string name="search">搜尋</string>
+    <string name="search_placeholder">搜尋名稱或種類</string>
 </resources>

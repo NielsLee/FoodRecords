@@ -55,4 +55,6 @@
     <string name="amount">Qtd.</string>
     <string name="use_new_ui">Usar nova interface</string>
     <string name="badge_new">novo</string>
+    <string name="search">procurar</string>
+    <string name="search_placeholder">Pesquisar por nome ou tipo</string>
 </resources>

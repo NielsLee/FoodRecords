@@ -4,12 +4,9 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -19,10 +16,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import lying.fengfeng.foodrecords.MainActivity
+import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.ui.dice.RollScreen
 import lying.fengfeng.foodrecords.ui.home.HomeScreen
 import lying.fengfeng.foodrecords.ui.settings.SettingsScreen
-import lying.fengfeng.foodrecords.utils.DateUtil
 
 val routeList = listOf("home", "dice", "settings")
 
@@ -35,7 +32,7 @@ fun FoodRecordsNavHost(
 
     val activityContext = LocalActivityContext.current
     val appViewModel: FoodRecordsAppViewModel = viewModel(viewModelStoreOwner = (activityContext as MainActivity))
-    val foodInfoList =  appViewModel.foodInfoList.sortedBy { it.getSortIndex() }
+    val foodInfoList =  preprocessFoodList(appViewModel.foodInfoList, appViewModel.filterStr.value)
 
     NavHost(
         navController = navController,
@@ -84,5 +81,16 @@ fun getSlideDirection(initialState: NavBackStackEntry, targetState: NavBackStack
         AnimatedContentTransitionScope.SlideDirection.Start
     } else {
         AnimatedContentTransitionScope.SlideDirection.End
+    }
+}
+
+fun preprocessFoodList(foodList: List<FoodInfo>, filterStr: String?): List<FoodInfo> {
+    if (filterStr == null) {
+        return foodList.sortedBy { it.getSortIndex() }
+    } else {
+        val filteredList = foodList.filter{
+            it.foodName.lowercase().contains(filterStr.lowercase()) or it.foodType.lowercase().contains(filterStr.lowercase())
+        }
+        return filteredList.sortedBy { it.getSortIndex() }
     }
 }
