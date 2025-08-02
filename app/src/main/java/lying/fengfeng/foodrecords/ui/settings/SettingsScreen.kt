@@ -812,6 +812,7 @@ fun SettingsScreen(
 
         if (foodTypeDialogShown) {
             var input by remember { mutableStateOf("") }
+            var isInputError by remember { mutableStateOf(false) }
             AlertDialog(
                 icon = {
                     Icon(
@@ -826,8 +827,12 @@ fun SettingsScreen(
                 text = {
                     OutlinedTextField(
                         value = input,
-                        onValueChange = { input = it },
-                        modifier = Modifier.focusRequester(focusRequester)
+                        onValueChange = {
+                            isInputError = it.isNotEmpty() && it.isBlank()
+                            input = it
+                        },
+                        modifier = Modifier.focusRequester(focusRequester),
+                        isError = isInputError
                     )
                 },
                 onDismissRequest = {
@@ -835,6 +840,7 @@ fun SettingsScreen(
                 },
                 confirmButton = {
                     TextButton(
+                        enabled = input.isNotEmpty() && !isInputError,
                         onClick = {
                             appViewModel.addFoodTypeInfo(FoodTypeInfo(type = input))
                             foodTypeDialogShown = false

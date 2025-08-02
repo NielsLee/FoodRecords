@@ -45,7 +45,7 @@
     <string name="notification_permisson_failed">Falha ao solicitar permissão de notificação, certifique-se de que você permitiu notificações para este aplicativo</string>
     <string name="export_data">Exportar dados</string>
     <string name="import_data">Importar dados</string>
-    <string name="toast_enter_name">Por favor, insira o nome</string>
+    <string name="toast_enter_name">"Por favor, insira um nome válido "</string>
     <string name="date_format_option">Configuração de formato de data</string>
     <string name="only_one">Só tem este, não precisa escolher :)</string>
     <string name="eat">Comer tudo</string>

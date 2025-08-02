@@ -140,6 +140,8 @@ fun InsertionDialog(
                 dismissOnClickOutside = false
             ),
         ) {
+            var isNameInputError by remember { mutableStateOf(false) }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -183,9 +185,11 @@ fun InsertionDialog(
                             ) {
                                 OutlinedTextField(
                                     value = foodName,
-                                    onValueChange = { newText ->
-                                        foodName = newText
+                                    onValueChange = { newName ->
+                                        isNameInputError = newName.isNotEmpty() && newName.isBlank()
+                                        foodName = newName
                                     },
+                                    isError = isNameInputError,
                                     maxLines = 1,
                                     label = { Text(text = context.getString(R.string.title_name)) },
                                     modifier = Modifier
@@ -479,7 +483,7 @@ fun InsertionDialog(
                                     .padding(vertical = 4.dp),
                                 cameraStatus = cameraStatus,
                                 onChecked = {
-                                    if (foodName.isEmpty()) {
+                                    if (foodName.isEmpty() || foodName.isBlank()) {
                                         Toast.makeText(
                                             context,
                                             context.getString(R.string.toast_enter_name),
