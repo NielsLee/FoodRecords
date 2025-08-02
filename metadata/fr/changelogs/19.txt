@@ -1,0 +1,3 @@
+Réparer le problème d'affichage du bouton de recherche
+Ajouter une vérification des entrées pour le nom et le type de nourriture
+Corriger la logique d'affichage de la date de péremption : désormais, l'application considère qu'un aliment n'est pas périmé le jour même de sa date de péremption

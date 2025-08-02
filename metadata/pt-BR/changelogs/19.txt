@@ -1,0 +1,3 @@
+Corrigir o problema de exibição do botão de pesquisa
+Adicionar verificação de entrada para o nome e o tipo de alimento
+Corrigir a lógica de exibição da data de validade: agora o aplicativo considera que um alimento não está vencido no próprio dia da validade

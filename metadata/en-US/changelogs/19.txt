@@ -1,0 +1,3 @@
+Fix the display issue of the search button
+Add input validation for food names and food types
+Fix the shelf-life display logic: now the app will consider that food is not expired on the same day as its shelf life
