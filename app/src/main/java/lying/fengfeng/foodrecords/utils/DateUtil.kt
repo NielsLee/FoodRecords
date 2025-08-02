@@ -13,6 +13,8 @@ import java.util.Locale
 
 object DateUtil {
 
+    val oneDayMillis = 24 * 3600 * 1000
+
     fun dateWithFormat(date: Long, format: String): String {
         if (date == 0L) return ""
         val dateFormatter = SimpleDateFormat(format, Locale.getDefault())
@@ -36,15 +38,16 @@ object DateUtil {
         val productionDate = foodInfo.productionDate
         val shelfLife = foodInfo.shelfLife
         val expirationDate = foodInfo.expirationDate
+        // 加1是因爲保質期當天不算過期
         if (expirationDate == "0") {
-            val productionTimeMillis = productionDate.toLong()
-            val expirationTimeMillis = productionTimeMillis + shelfLife.toLong() * (24 * 60 * 60 * 1000)
-            val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
-            if (result > 0) return Pair(result, false) else return Pair(-result, true)
+            val todayBeginningMillis = getBeginningMillis(System.currentTimeMillis())
+            val expirationTimeMillis = getBeginningMillis(productionDate.toLong()) + shelfLife.toLong() * oneDayMillis
+            val result = ((expirationTimeMillis - todayBeginningMillis) / oneDayMillis).toInt() + 1
+            return if (result > 0) Pair(result, false) else Pair(-result, true)
         } else {
-            val expirationTimeMillis = expirationDate.toLong()
-            val result = ((expirationTimeMillis - System.currentTimeMillis()) / (24 * 60 * 60 * 1000)).toInt()
-            if (result > 0) return Pair(result, false) else return Pair(-result, true)
+            val result = ((getBeginningMillis(expirationDate.toLong()) - getBeginningMillis(System.currentTimeMillis()))/ oneDayMillis)
+                .toInt() + 1
+            return if (result > 0) Pair(result, false) else Pair(-result, true)
         }
     }
 
@@ -83,5 +86,9 @@ object DateUtil {
             notificationTime.add(Calendar.DAY_OF_YEAR, 1)
         }
         return notificationTime.timeInMillis - currentTime.timeInMillis
+    }
+
+    private fun getBeginningMillis(ts: Long): Long {
+        return (ts - (ts % oneDayMillis))
     }
 }
