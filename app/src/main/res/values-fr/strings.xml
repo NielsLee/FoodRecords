@@ -57,4 +57,5 @@
     <string name="search">recherche</string>
     <string name="search_placeholder">Rechercher par nom ou par type</string>
     <string name="buy_author_coffee">Offrez une tasse de café à l\'auteur</string>
+    <string name="author_notice">Ce logiciel est entièrement open-source, et l\'auteur n\'a autorisé aucun canal à l\'utiliser en contrepartie d\'un paiement.</string>
 </resources>

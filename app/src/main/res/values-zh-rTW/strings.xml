@@ -58,4 +58,5 @@
     <string name="search">搜尋</string>
     <string name="search_placeholder">搜尋名稱或種類</string>
     <string name="buy_author_coffee">買杯咖啡給作者</string>
+    <string name="author_notice">本軟體完全開源，作者並未授權任何管道進行收費使用哦~</string>
 </resources>

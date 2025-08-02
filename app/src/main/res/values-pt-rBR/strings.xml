@@ -58,4 +58,5 @@
     <string name="search">procurar</string>
     <string name="search_placeholder">Pesquisar por nome ou tipo</string>
     <string name="buy_author_coffee">Compre uma xícara de café para o autor</string>
+    <string name="author_notice">Este software é totalmente open-source, e o autor não autorizou nenhum canal a usá-lo com cobrança.</string>
 </resources>

@@ -801,7 +801,7 @@ fun SettingsScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(text = "(✿´‿`)")
-                                    Text(text = "添加请注明来意哦")
+                                    Text(text = stringResource(R.string.author_notice))
                                 }
                             }
                         }
