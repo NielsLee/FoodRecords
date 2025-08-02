@@ -4,8 +4,11 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -85,7 +88,7 @@ fun SearchBottomSheet(
                     }
                 }
             }) {
-                Text(text = "Search")
+                Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
             }
         }
 
