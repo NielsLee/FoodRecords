@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.FoodRecords.SplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#00000000</item>
         <item name="postSplashScreenTheme">@style/Theme.FoodRecords</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/launcher_splash</item>
     </style>
     <style name="Theme.FoodRecords" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
