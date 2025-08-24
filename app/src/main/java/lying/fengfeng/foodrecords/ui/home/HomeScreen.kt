@@ -1,6 +1,7 @@
 package lying.fengfeng.foodrecords.ui.home
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Composable
@@ -29,7 +30,7 @@ fun HomeScreen(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(LocalScreenParams.current.listColumnNum),
         contentPadding = PaddingValues(3.dp),
-        modifier = Modifier
+        modifier = Modifier.fillMaxSize()
     ) {
 
         items(

@@ -42,6 +42,8 @@ class FoodRecordsAppViewModel: ViewModel() {
 
     var isNewUI = mutableStateOf(AppRepo.isNewUI())
 
+    var isExtraColumnLayout = mutableStateOf(AppRepo.isExtraColumnLayout())
+
     var filterStr: MutableState<String?> = mutableStateOf(null)
 
     init {
@@ -179,6 +181,11 @@ class FoodRecordsAppViewModel: ViewModel() {
     fun setIsNewUITried(isNewUITried: Boolean) {
         this.isNewUITried.value = isNewUITried
         AppRepo.setNewUITried(isNewUITried)
+    }
+
+    fun setIsExtraColumnLayout(isExtraColumn: Boolean) {
+        this.isExtraColumnLayout.value = isExtraColumn
+        AppRepo.setIsExtraColumnLayout(isExtraColumn)
     }
 
     private fun setNotificationEnabled(boolean: Boolean) {

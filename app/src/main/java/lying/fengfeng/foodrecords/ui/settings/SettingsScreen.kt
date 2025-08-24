@@ -594,21 +594,37 @@ fun SettingsScreen(
 
             AnimatedVisibility(visible = themeOptionExpanded) {
                 Column {
-                    
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(12.dp)
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
                         Text(text = stringResource(id = R.string.use_new_ui))
-                        Badge(
-                            modifier = Modifier.padding(start = 8.dp)
-                        ) { Text(text = stringResource(id = R.string.badge_new)) }
+
                         Spacer(modifier = Modifier.weight(1f))
                         Switch(
                             checked = isNewUI,
                             onCheckedChange = {
                                 appViewModel.setIsNewUI(it)
+                            },
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    ) {
+                        Spacer(modifier = Modifier.size(iconSize))
+                        Text(text = stringResource(id = R.string.extra_column_layout))
+                        Badge(
+                            modifier = Modifier.padding(start = 8.dp)
+                        ) { Text(text = stringResource(id = R.string.badge_new)) }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = appViewModel.isExtraColumnLayout.value,
+                            onCheckedChange = {
+                                appViewModel.setIsExtraColumnLayout(it)
                                 appViewModel.setIsNewUITried(true) // no need to switch back
                             },
                         )
@@ -617,7 +633,7 @@ fun SettingsScreen(
                     Row {
                         LazyHorizontalStaggeredGrid(
                             rows = StaggeredGridCells.Fixed(1),
-                            modifier = Modifier.heightIn(max = bigIconSize),
+                            modifier = Modifier.padding(top = 12.dp).heightIn(max = bigIconSize),
                             contentPadding = PaddingValues(horizontal = iconSize),
                             horizontalItemSpacing = 24.dp
                         ) {

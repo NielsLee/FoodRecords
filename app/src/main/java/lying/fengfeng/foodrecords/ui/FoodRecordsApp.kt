@@ -47,7 +47,8 @@ fun FoodRecordsApp() {
     val dpi = LocalContext.current.resources.displayMetrics.densityDpi
     val widthDp = widthPixels / (dpi / 160f)
     screenParams.widthDp = widthDp.dp
-    screenParams.listColumnNum = if (widthDp > 600) 3 else 2
+    val baseColumnNum = if (widthDp > 600) 3 else 2
+    screenParams.listColumnNum = if (appViewModel.isExtraColumnLayout.value) baseColumnNum + 1 else baseColumnNum
     screenParams.insertDialogWidthPercent = if (widthDp > 600) 0.6f else 1f
     val themeOption by remember{ appViewModel.themeOption }
 

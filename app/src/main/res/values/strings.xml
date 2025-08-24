@@ -54,6 +54,7 @@
     <string name="amount">Amt.</string>
     <string name="use_new_ui">Use new UI</string>
     <string name="badge_new">New</string>
+    <string name="extra_column_layout">Add Extra Column</string>
     <string name="search">Search</string>
     <string name="search_placeholder">Search by name or type</string>
     <string name="buy_author_coffee">Buy the author a cup of coffee</string>

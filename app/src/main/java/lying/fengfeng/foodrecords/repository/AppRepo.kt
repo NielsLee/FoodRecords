@@ -94,6 +94,9 @@ object AppRepo {
         if (!sp.getBoolean("hasInitialized", false)) {
             addInitializedData()
         }
+
+        // 检查版本更新并重置新UI试用状态 后面也许会改成一个更新通告的弹窗
+        checkVersionUpdateAndResetUITried()
     }
 
     fun getPicturePath(uuid: String): String {
@@ -203,6 +206,14 @@ object AppRepo {
         return sp.getBoolean("is_new_ui_tried", false)
     }
 
+    fun setIsExtraColumnLayout(isExtraColumn: Boolean) {
+        sp.edit().putBoolean("is_extra_column_layout", isExtraColumn).apply()
+    }
+
+    fun isExtraColumnLayout(): Boolean {
+        return sp.getBoolean("is_extra_column_layout", false)
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -223,6 +234,29 @@ object AppRepo {
             shelfLifeDao.insert(ShelfLifeInfo(life = "360"))
 
             sp.edit().putBoolean("hasInitialized", true).commit()
+        }
+    }
+
+    private fun checkVersionUpdateAndResetUITried() {
+        try {
+            val packageInfo = app.packageManager.getPackageInfo(app.packageName, 0)
+            val currentVersionCode = packageInfo.longVersionCode
+            val savedVersionCode = sp.getLong("last_version_code", -1L)
+
+            if (savedVersionCode != -1L && savedVersionCode < currentVersionCode) {
+                // 版本更新了
+                sp.edit()
+                    .putBoolean("is_new_ui_tried", false)
+                    .putLong("last_version_code", currentVersionCode)
+                    .apply()
+            } else if (savedVersionCode == -1L) {
+                // 首次安装，保存当前版本号
+                sp.edit()
+                    .putLong("last_version_code", currentVersionCode)
+                    .apply()
+            }
+        } catch (e: Exception) {
+            // do nothing
         }
     }
 }

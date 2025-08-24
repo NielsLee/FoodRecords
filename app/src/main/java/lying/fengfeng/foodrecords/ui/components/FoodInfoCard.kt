@@ -69,6 +69,7 @@ import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodInfo
 import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
+import lying.fengfeng.foodrecords.ui.LocalScreenParams
 import lying.fengfeng.foodrecords.ui.components.insertionDialog.InsertionDialog
 import lying.fengfeng.foodrecords.ui.theme.ExpiredGreen
 import lying.fengfeng.foodrecords.ui.theme.ExpiredRed
@@ -97,9 +98,12 @@ fun FoodInfoCard(
     var isEditing by remember { mutableStateOf(false) }
 
 
+    val screenParams = LocalScreenParams.current
+
     Card(
         modifier = modifier
             .padding(3.dp)
+            .fillMaxWidth(1f / screenParams.listColumnNum)
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(12.dp),
@@ -187,20 +191,128 @@ fun FoodInfoCard(
 
             Column(
                 Modifier
-                    .padding(horizontal = 8.dp)
-                    .fillMaxWidth(0.7f)
+                    .padding(start = 2.dp)
             ) {
-                val scrollState = rememberScrollState()
+                val l1ScrollState = rememberScrollState()
+                val l2ScrollState = rememberScrollState()
+                val l3ScrollState = rememberScrollState()
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
                 ) {
                     Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null)
                     Text(
                         text = foodInfo.amount.toString(),
                         fontStyle = FontStyle.Italic,
-                        modifier = Modifier.horizontalScroll(scrollState)
+                        modifier = Modifier.horizontalScroll(l1ScrollState)
                     )
+
+                    // 把旧版卡片的设置按钮放到数量这一行,这样不容易被挤走
+                    Spacer(modifier = modifier.weight(1f))
+
+                    Box(
+                        contentAlignment = Alignment.CenterEnd,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .background(Color.Gray.copy(alpha = 0.25f), RoundedCornerShape(50))
+                    ) {
+                        IconButton(
+                            onClick = {
+                                dropDownMenuExpanded = true
+                                EffectUtil.playVibrationEffect(context)
+                            },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(Icons.Outlined.MoreHoriz, null, modifier = Modifier.size(24.dp))
+                        }
+
+                        DropdownMenu(
+                            expanded = dropDownMenuExpanded,
+                            onDismissRequest = { dropDownMenuExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.eat_svg),
+                                        null,
+                                    )
+                                },
+                                text = {
+                                    Text(text = context.getString(R.string.eat))
+                                },
+                                onClick = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    dropDownMenuExpanded = false
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        if (foodInfo.amount > 1) {
+                                            foodInfo.amount -= 1
+                                            appViewModel.updateFoodInfo(foodInfo)
+                                        } else {
+                                            deleteFood(appViewModel, foodInfo)
+                                        }
+                                    }
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.AddShoppingCart,
+                                        null,
+                                    )
+                                },
+                                text = {
+                                    Text(text = context.getString(R.string.supplement))
+                                },
+                                onClick = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    dropDownMenuExpanded = false
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        foodInfo.amount += 1
+                                        appViewModel.updateFoodInfo(foodInfo)
+                                    }
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        null,
+                                    )
+                                },
+                                text = {
+                                    Text(text = context.getString(R.string.edit))
+                                },
+                                onClick = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    isEditing = true
+                                    dropDownMenuExpanded = false
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Delete,
+                                        null,
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                },
+                                text = {
+                                    Text(text = context.getString(R.string.delete_record),)
+                                },
+                                onClick = {
+                                    EffectUtil.playVibrationEffect(context)
+                                    dropDownMenuExpanded = false
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        deleteFood(appViewModel, foodInfo)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
 
                 Row(
@@ -210,7 +322,7 @@ fun FoodInfoCard(
                     Text(
                         text = foodInfo.foodType,
                         fontStyle = FontStyle.Italic,
-                        modifier = Modifier.horizontalScroll(scrollState)
+                        modifier = Modifier.horizontalScroll(l2ScrollState)
                     )
                 }
 
@@ -220,109 +332,8 @@ fun FoodInfoCard(
                     Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null)
                     Text(
                         text = DateUtil.getExpirationDate(foodInfo),
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                }
-            }
-
-            Spacer(modifier = modifier.weight(1f))
-
-            Box(
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                IconButton(
-                    onClick = {
-                        dropDownMenuExpanded = true
-                        EffectUtil.playVibrationEffect(context)
-                    },
-                    modifier = Modifier
-                ) {
-                    Icon(Icons.Outlined.MoreHoriz, null, modifier = Modifier.size(36.dp))
-                }
-
-                DropdownMenu(
-                    expanded = dropDownMenuExpanded,
-                    onDismissRequest = { dropDownMenuExpanded = false }
-                ) {
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.eat_svg),
-                                null,
-                            )
-                        },
-                        text = {
-                            Text(text = context.getString(R.string.eat))
-                        },
-                        onClick = {
-                            EffectUtil.playVibrationEffect(context)
-                            dropDownMenuExpanded = false
-                            coroutineScope.launch(Dispatchers.IO) {
-                                if (foodInfo.amount > 1) {
-                                    foodInfo.amount -= 1
-                                    appViewModel.updateFoodInfo(foodInfo)
-                                } else {
-                                    deleteFood(appViewModel, foodInfo)
-                                }
-                            }
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.AddShoppingCart,
-                                null,
-                            )
-                        },
-                        text = {
-                            Text(text = context.getString(R.string.supplement))
-                        },
-                        onClick = {
-                            EffectUtil.playVibrationEffect(context)
-                            dropDownMenuExpanded = false
-                            coroutineScope.launch(Dispatchers.IO) {
-                                foodInfo.amount += 1
-                                appViewModel.updateFoodInfo(foodInfo)
-                            }
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Edit,
-                                null,
-                            )
-                        },
-                        text = {
-                            Text(text = context.getString(R.string.edit))
-                        },
-                        onClick = {
-                            EffectUtil.playVibrationEffect(context)
-                            isEditing = true
-                            dropDownMenuExpanded = false
-                        }
-                    )
-
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                null,
-                                modifier = Modifier.padding(1.dp)
-                            )
-                        },
-                        text = {
-                            Text(text = context.getString(R.string.delete_record),)
-                        },
-                        onClick = {
-                            EffectUtil.playVibrationEffect(context)
-                            dropDownMenuExpanded = false
-                            coroutineScope.launch(Dispatchers.IO) {
-                                deleteFood(appViewModel, foodInfo)
-                            }
-                        }
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.horizontalScroll(l3ScrollState)
                     )
                 }
             }
@@ -342,7 +353,7 @@ fun FoodInfoCard(
             )
         }
     }
-    
+
     AnimatedVisibility(
         visible = tipsShown,
         enter = slideInVertically(
