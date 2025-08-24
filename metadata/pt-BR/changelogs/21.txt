@@ -1,0 +1,2 @@
+1. Ajustou ligeiramente os estilos dos cartões
+2. Adicionou uma opção para adicionar uma coluna extra na página inicial

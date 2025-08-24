@@ -1,0 +1,2 @@
+1. Ajusté légèrement les styles de cartes
+2. Ajouté une option pour ajouter une colonne supplémentaire sur la page d'accueil

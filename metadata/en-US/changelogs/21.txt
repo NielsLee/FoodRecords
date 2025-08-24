@@ -1,0 +1,2 @@
+1. Slightly adjusted card styles
+2. Added an option to add an extra column on the home page
