@@ -46,6 +46,7 @@ jobs:
         RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
         RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
         RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        BACKEND_HOST: ${{ vars.BACKEND_HOST }}
       run: ./gradlew assembleRelease --stacktrace
 
     - name: Get release file apk path
