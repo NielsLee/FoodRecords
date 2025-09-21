@@ -1,0 +1,1 @@
+The author added startup statistics to track how many people are using this app. It does not collect any personal information from users.

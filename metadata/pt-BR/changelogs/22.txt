@@ -1,0 +1,1 @@
+O autor adicionou estatísticas de inicialização para rastrear quantas pessoas estão usando este aplicativo. Ele não coleta nenhuma informação pessoal dos usuários.

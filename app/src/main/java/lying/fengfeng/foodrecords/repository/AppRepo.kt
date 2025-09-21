@@ -214,6 +214,16 @@ object AppRepo {
         return sp.getBoolean("is_extra_column_layout", false)
     }
 
+    fun getOrCreateUuid(): String {
+        val uuid = sp.getString("uuid", null)
+        if (uuid != null) {
+            return uuid
+        }
+        val newUuid = java.util.UUID.randomUUID().toString()
+        sp.edit().putString("uuid", newUuid).apply()
+        return newUuid
+    }
+
     private fun addInitializedData() {
         CoroutineScope(Dispatchers.IO).launch {
 
