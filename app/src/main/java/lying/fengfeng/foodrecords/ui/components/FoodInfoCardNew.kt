@@ -275,8 +275,10 @@ fun FoodInfoCardNew(
                                     brush = Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            MaterialTheme.colorScheme.primaryContainer
-                                        )
+                                            MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
+                                            MaterialTheme.colorScheme.primaryContainer.copy(0.7f),
+                                            MaterialTheme.colorScheme.primaryContainer.copy(0.8f)
+                                        ),
                                     )
                                 )
                         ) {
@@ -307,23 +309,26 @@ fun FoodInfoCardNew(
                                         )
                                     }
 
-                                    Text(
-                                        text =
-                                        if (isExpired) stringResource(id = R.string.expired)
-                                        else stringResource(id = R.string.valid_in),
-                                        color =
-                                        if (isExpired) MaterialTheme.colorScheme.onError
-                                        else MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(16.dp))
-                                            .background(
-                                                if (isExpired) MaterialTheme.colorScheme.error
-                                                else MaterialTheme.colorScheme.primary
-                                            )
-                                            .padding(0.dp) //outer padding
-                                            .padding(horizontal = 8.dp),
-                                        fontSize = 12.sp
-                                    )
+                                    // 三行的情况下数字标签可能会换行 所以只在两行的情况下显示
+                                    if (screenParams.listColumnNum == 2) {
+                                        Text(
+                                            text =
+                                            if (isExpired) stringResource(id = R.string.expired)
+                                            else stringResource(id = R.string.valid_in),
+                                            color =
+                                            if (isExpired) MaterialTheme.colorScheme.onError
+                                            else MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(
+                                                    if (isExpired) MaterialTheme.colorScheme.error
+                                                    else MaterialTheme.colorScheme.primary
+                                                )
+                                                .padding(0.dp) //outer padding
+                                                .padding(horizontal = 8.dp),
+                                            fontSize = 12.sp
+                                        )
+                                    }
                                 }
 
                                 Spacer(modifier = Modifier.weight(1f))
@@ -333,21 +338,36 @@ fun FoodInfoCardNew(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     modifier = Modifier.padding(8.dp)
                                 ) {
-                                    Text(
-                                        text = foodInfo.amount.toString(),
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        fontSize = numberFontSize
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.amount),
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(16.dp))
-                                            .background(MaterialTheme.colorScheme.primary)
-                                            .padding(0.dp) //outer padding
-                                            .padding(horizontal = 8.dp), // inner padding
-                                        fontSize = 12.sp
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.Bottom
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.Bottom
+                                        ) {
+                                            Text(
+                                                text = "x",
+                                                fontSize = 12.sp
+                                            )
+                                        }
+                                            Text(
+                                                text = foodInfo.amount.toString(),
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                fontSize = numberFontSize
+                                            )
+                                        }
+                                    // 三行的情况下数字标签可能会换行 所以只在两行的情况下显示
+                                    if (screenParams.listColumnNum == 2) {
+                                        Text(
+                                            text = stringResource(id = R.string.amount),
+                                            color = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(MaterialTheme.colorScheme.primary)
+                                                .padding(0.dp) //outer padding
+                                                .padding(horizontal = 8.dp), // inner padding
+                                            fontSize = 12.sp
+                                        )
+                                    }
                                 }
                             }
                         }
