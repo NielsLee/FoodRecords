@@ -1,6 +1,5 @@
 package lying.fengfeng.foodrecords.ui.components
 
-import android.graphics.Paint.Align
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
@@ -15,13 +14,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,15 +46,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -109,6 +101,10 @@ fun FoodInfoCardNew(
             .fillMaxWidth(1f / screenParams.listColumnNum),
         shape = RoundedCornerShape(12.dp)
     ) {
+
+        val foodNameScrollState = rememberScrollState()
+        val expirationDateScrollState = rememberScrollState()
+
         // inner card for padding
         Card(
             modifier = Modifier.padding(8.dp)
@@ -133,7 +129,6 @@ fun FoodInfoCardNew(
                         }
                     }
 
-                    val foodNameScrollState = rememberScrollState()
                     Text(
                         text = foodInfo.foodName,
                         fontSize = 20.sp,
@@ -380,11 +375,13 @@ fun FoodInfoCardNew(
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Filled.DeleteForever,
-                        contentDescription = null
+                        modifier = Modifier.size(18.dp),
+                        contentDescription = "Expiration date icon"
                     )
                     Text(
-                        text = ": ${DateUtil.getExpirationDate(foodInfo)}",
-                        fontSize = 16.sp,
+                        text = DateUtil.getExpirationDate(foodInfo),
+                        fontSize = 15.sp,
+                        modifier = Modifier.horizontalScroll(expirationDateScrollState)
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }
