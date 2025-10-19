@@ -59,4 +59,13 @@
     <string name="search_placeholder">Search by name or type</string>
     <string name="buy_author_coffee">Buy the author a cup of coffee</string>
     <string name="author_notice">This software is completely open-source, and the author has not authorized any channel to use it for a fee.</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="diagnostic_data_permission_question">Allow the app to send diagnostic data?</string>
+    <string name="diagnostic_data_includes">Diagnostic data includes:</string>
+    <string name="diagnostic_data_includes_app_stats">App launch statistics,</string>
+    <string name="diagnostic_data_includes_crash_logs">App crash logs,</string>
+    <string name="diagnostic_data_excludes">Diagnostic data does not include:</string>
+    <string name="diagnostic_data_excludes_user_data">Any data you add or any settings you configure</string>
+    <string name="diagnostic_data_dialog_title">App Data Transmission Request</string>
 </resources>

@@ -60,4 +60,13 @@
     <string name="search_placeholder">搜尋名稱或種類</string>
     <string name="buy_author_coffee">買杯咖啡給作者</string>
     <string name="author_notice">本軟體完全開源，作者並未授權任何管道進行收費使用哦~</string>
+    <string name="allow">允許</string>
+    <string name="deny">拒絕</string>
+    <string name="diagnostic_data_permission_question">是否允許應用程式回傳診斷數據?</string>
+    <string name="diagnostic_data_includes">診斷數據包括:</string>
+    <string name="diagnostic_data_includes_app_stats">應用程式啟動統計,</string>
+    <string name="diagnostic_data_includes_crash_logs">應用程式異常日誌,</string>
+    <string name="diagnostic_data_excludes">診斷數據不包括:</string>
+    <string name="diagnostic_data_excludes_user_data">您添加的任何數據或您設定的任何數據</string>
+    <string name="diagnostic_data_dialog_title">應用程式數據回傳申請</string>
 </resources>

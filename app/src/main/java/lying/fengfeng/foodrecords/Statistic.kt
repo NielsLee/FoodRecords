@@ -1,3 +1,4 @@
+import android.os.Build
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -9,11 +10,17 @@ import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.BuildConfig
 import java.util.Locale
 
+enum class StatisticPermissionState() {
+    INIT,
+    ALLOWED,
+    DENIED
+}
+
 object Statistic {
-    private val backendHost = BuildConfig.BACKEND_HOST
+    private const val backendHost = "103.30.41.129:8811"
     private val client = OkHttpClient()
-    private val language = Locale.getDefault().language
-    private val version = BuildConfig.VERSION_NAME
+    private var language = Locale.getDefault().language
+    private const val version = BuildConfig.VERSION_NAME
 
     fun uploadOpenData(uuid: String, open_time: String) {
         val url = "http://${backendHost}/statistic/"
@@ -23,7 +30,9 @@ object Statistic {
                 "uuid": "$uuid",
                 "language": "$language",
                 "open_time": "$open_time",
-                "version": "$version"
+                "version": "$version",
+                "device_product": "${Build.PRODUCT}",
+                "device_version": "${Build.VERSION.SDK_INT}"
             }
         """.trimIndent()
 
@@ -33,13 +42,13 @@ object Statistic {
             .url(url)
             .post(body)
             .build()
-        CoroutineScope(Dispatchers.IO).launch {
+        Thread {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     Log.e("uploadOpenData",  "error: $response")
                 }
                 Log.e("uploadOpenData", "response is $response")
             }
-        }
+        }.start()
     }
 }

@@ -1,5 +1,7 @@
 package lying.fengfeng.foodrecords
 
+import Statistic
+import StatisticPermissionState
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -27,6 +29,9 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
@@ -134,6 +139,19 @@ class MainActivity : ComponentActivity() {
                     e.printStackTrace()
                 } finally {
                     descriptor?.close()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            val canPhoneHome = if ( AppRepo.getPhoneHomePermissionState() == StatisticPermissionState.ALLOWED.ordinal) true else false
+            if ((!BuildConfig.DEBUG) && canPhoneHome) {
+                val uuid = AppRepo.getOrCreateUuid()
+                val openTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                try {
+                    Statistic.uploadOpenData(uuid, openTime)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

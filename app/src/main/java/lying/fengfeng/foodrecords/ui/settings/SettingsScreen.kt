@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.ui.settings
 
+import StatisticPermissionState
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -43,12 +44,13 @@ import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -67,7 +69,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,17 +82,23 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.MainActivity
 import lying.fengfeng.foodrecords.R
 import lying.fengfeng.foodrecords.entities.FoodTypeInfo
 import lying.fengfeng.foodrecords.entities.ShelfLifeInfo
+import lying.fengfeng.foodrecords.repository.AppRepo
 import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.theme.ThemeOptions
@@ -103,6 +110,63 @@ fun SettingsScreen(
 ) {
 
     val scrollState = rememberScrollState()
+    val phoneHomePermissionState by remember {
+        mutableIntStateOf(AppRepo.getPhoneHomePermissionState())
+    }
+
+    var showPhoneHomeDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (phoneHomePermissionState == 0) {
+        LaunchedEffect(phoneHomePermissionState) {
+            delay(1000) // delay 1s
+            showPhoneHomeDialog = true
+        }
+    }
+
+    if (showPhoneHomeDialog) {
+        AlertDialog(onDismissRequest = {
+            AppRepo.setPhoneHomePermissionState(StatisticPermissionState.DENIED.ordinal) // no
+            showPhoneHomeDialog = false
+        }, confirmButton = {
+            Button(onClick = {
+                AppRepo.setPhoneHomePermissionState(StatisticPermissionState.ALLOWED.ordinal) // yes!!!
+                showPhoneHomeDialog = false
+            }) {
+                Text(text = stringResource(id = R.string.allow))
+            }
+
+            Button(onClick = {
+                AppRepo.setPhoneHomePermissionState(StatisticPermissionState.DENIED.ordinal) // no
+                showPhoneHomeDialog = false
+            }) {
+                Text(text = stringResource(id = R.string.deny))
+            }
+        },
+            title = {
+                Text(text = stringResource(id = R.string.diagnostic_data_dialog_title))
+            },
+            text = {
+                Text(
+                    text = buildAnnotatedString {
+                        append(stringResource(id = R.string.diagnostic_data_permission_question) + "\n")
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(id = R.string.diagnostic_data_includes))
+                        }
+                        append(stringResource(id = R.string.diagnostic_data_includes_app_stats))
+                        append(stringResource(id = R.string.diagnostic_data_includes_crash_logs))
+                        append("\n")
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(id = R.string.diagnostic_data_excludes))
+                        }
+                        append(stringResource(id = R.string.diagnostic_data_excludes_user_data))
+                    }
+                )
+            }
+
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -633,7 +697,9 @@ fun SettingsScreen(
                     Row {
                         LazyHorizontalStaggeredGrid(
                             rows = StaggeredGridCells.Fixed(1),
-                            modifier = Modifier.padding(top = 12.dp).heightIn(max = bigIconSize),
+                            modifier = Modifier
+                                .padding(top = 12.dp)
+                                .heightIn(max = bigIconSize),
                             contentPadding = PaddingValues(horizontal = iconSize),
                             horizontalItemSpacing = 24.dp
                         ) {

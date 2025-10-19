@@ -59,4 +59,13 @@
     <string name="search_placeholder">Rechercher par nom ou par type</string>
     <string name="buy_author_coffee">Offrez une tasse de café à l\'auteur</string>
     <string name="author_notice">Ce logiciel est entièrement open-source, et l\'auteur n\'a autorisé aucun canal à l\'utiliser en contrepartie d\'un paiement.</string>
+    <string name="allow">Autoriser</string>
+    <string name="deny">Refuser</string>
+    <string name="diagnostic_data_permission_question">Autoriser l\'application à renvoyer des données de diagnostic ?</string>
+    <string name="diagnostic_data_includes">Les données de diagnostic incluent :</string>
+    <string name="diagnostic_data_includes_app_stats">Statistiques de démarrage de l\'application,</string>
+    <string name="diagnostic_data_includes_crash_logs">Journaux d\'erreurs de l\'application,</string>
+    <string name="diagnostic_data_excludes">Les données de diagnostic n\'incluent pas :</string>
+    <string name="diagnostic_data_excludes_user_data">Aucune des données que vous ajoutez ou des paramètres que vous définissez</string>
+    <string name="diagnostic_data_dialog_title">Demande de transmission de données d\'application</string>
 </resources>

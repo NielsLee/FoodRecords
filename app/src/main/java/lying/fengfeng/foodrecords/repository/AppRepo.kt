@@ -1,5 +1,6 @@
 package lying.fengfeng.foodrecords.repository
 
+import StatisticPermissionState
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
@@ -212,6 +213,14 @@ object AppRepo {
 
     fun isExtraColumnLayout(): Boolean {
         return sp.getBoolean("is_extra_column_layout", false)
+    }
+
+    fun setPhoneHomePermissionState(state: Int) {
+        sp.edit().putInt("phone_home_permission_state", state).apply()
+    }
+
+    fun getPhoneHomePermissionState(): Int {
+        return sp.getInt("phone_home_permission_state", StatisticPermissionState.INIT.ordinal)
     }
 
     fun getOrCreateUuid(): String {
