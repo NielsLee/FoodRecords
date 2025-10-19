@@ -704,7 +704,7 @@ fun SettingsScreen(
                             horizontalItemSpacing = 24.dp
                         ) {
                             items(
-                                count = 6
+                                count = 7
                             ) { index ->
                                 IconButton(
                                     onClick = {
@@ -729,6 +729,7 @@ fun SettingsScreen(
                                             3 -> ColorPainter(Color.Green)
                                             4 -> ColorPainter(Color.Blue)
                                             5 -> ColorPainter(Color.Magenta)
+                                            6 -> ColorPainter(Color.White)
                                             else -> ColorPainter(Color.Transparent)
                                         },
                                         contentDescription = null,

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.materialkolor.PaletteStyle
 import com.materialkolor.rememberDynamicColorScheme
 
 private val DarkColorScheme = darkColorScheme(
@@ -52,6 +53,7 @@ fun FoodRecordsTheme(
         ThemeOptions.GREEN -> rememberDynamicColorScheme(Color.Green, darkTheme)
         ThemeOptions.BLUE -> rememberDynamicColorScheme(Color.Blue, darkTheme)
         ThemeOptions.MAGENTA -> rememberDynamicColorScheme(Color.Magenta, darkTheme)
+        ThemeOptions.WHITE -> rememberDynamicColorScheme(Color.White, darkTheme, style = PaletteStyle.Fidelity)
         else -> when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
@@ -85,7 +87,8 @@ enum class ThemeOptions(val int: Int) {
     YELLOW(2),
     GREEN(3),
     BLUE(4),
-    MAGENTA(5);
+    MAGENTA(5),
+    WHITE(6);
 
     companion object {
         fun fromInt(value: Int): ThemeOptions {
