@@ -1,0 +1,3 @@
+Corrigidos alguns problemas de interface
+Solicita consentimento do usuário antes de coletar dados de diagnóstico
+Adicionado um novo tema branco

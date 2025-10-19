@@ -1,0 +1,3 @@
+Fixed some UI issues
+Ask for user consent before collecting diagnostic data
+Added a new white theme
