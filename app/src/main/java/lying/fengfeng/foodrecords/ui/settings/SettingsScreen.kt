@@ -693,8 +693,11 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         Switch(
                             checked = isNewUI,
-                            onCheckedChange = {
-                                appViewModel.setIsNewUI(it)
+                            onCheckedChange = { isNewUiEnabled ->
+                                appViewModel.setIsNewUI(isNewUiEnabled)
+                                if (!isNewUiEnabled) {
+                                    appViewModel.setIsExtraColumnLayout(false) // new ui 横向布局太多，三行会有显示bug
+                                }
                             },
                         )
                     }
@@ -710,9 +713,10 @@ fun SettingsScreen(
                         ) { Text(text = stringResource(id = R.string.badge_new)) }
                         Spacer(modifier = Modifier.weight(1f))
                         Switch(
+                            enabled = appViewModel.isNewUI.value,
                             checked = appViewModel.isExtraColumnLayout.value,
-                            onCheckedChange = {
-                                appViewModel.setIsExtraColumnLayout(it)
+                            onCheckedChange = { isExtraColumnEnabled ->
+                                appViewModel.setIsExtraColumnLayout(isExtraColumnEnabled)
                                 appViewModel.setIsNewUITried(true) // no need to switch back
                             },
                         )
