@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.util.Size
-import androidx.camera.view.CameraController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,10 +30,8 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ujizin.camposer.CameraPreview
-import com.ujizin.camposer.state.CamSelector
-import com.ujizin.camposer.state.CameraState
-import com.ujizin.camposer.state.ImageTargetSize
-import com.ujizin.camposer.state.rememberCamSelector
+import com.ujizin.camposer.session.CameraSession
+import com.ujizin.camposer.state.properties.selector.CamSelector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -51,10 +47,10 @@ import java.io.File
 fun FoodPreview(
     uuid: String,
     context: Context,
-    cameraState: CameraState,
+    cameraSession: CameraSession,
     mutableCameraStatus: MutableState<CameraStatus>
 ) {
-    val camSelector by rememberCamSelector(CamSelector.Back)
+    var camSelector by remember { mutableStateOf(CamSelector.Back) }
     var cameraPermissionGranted by remember { mutableStateOf(checkCameraPermission(context)) }
 
     Box(
@@ -94,12 +90,12 @@ fun FoodPreview(
             CameraStatus.PREVIEWING -> {
 
                 CameraPreview(
-                    cameraState = cameraState,
+                    cameraSession = cameraSession,
                     camSelector = camSelector,
                     modifier = Modifier.fillMaxSize(),
                     isFocusOnTapEnabled = false,
-                    imageCaptureTargetSize = ImageTargetSize(
-                        outputSize = CameraController.OutputSize(Size(480, 640)))
+//                    imageCaptureTargetSize = ImageTargetSize(
+//                        outputSize = CameraController.OutputSize(Size(480, 640)))
                 ) {
 
                 }

@@ -70,7 +70,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.ujizin.camposer.state.rememberCameraState
+import com.ujizin.camposer.controller.camera.CameraController
+import com.ujizin.camposer.session.rememberCameraSession
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import lying.fengfeng.foodrecords.R
@@ -86,6 +87,7 @@ import lying.fengfeng.foodrecords.utils.DateUtil.dateWithFormat
 import lying.fengfeng.foodrecords.utils.DateUtil.todayMillis
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import java.io.File
+import androidx.compose.ui.res.stringResource
 
 /**
  * 添加食物记录的弹窗
@@ -126,7 +128,8 @@ fun InsertionDialog(
     var tipsInputShown by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
-    val cameraState = rememberCameraState()
+    val controller = remember { CameraController() }
+    val cameraSession = rememberCameraSession(controller)
     val mutableCameraStatus = dialogViewModel.cameraStatus
     CompositionLocalProvider(LocalUUID provides uuid) {
 
@@ -157,7 +160,7 @@ fun InsertionDialog(
 
                 ) {
                     Text(
-                        text = if (existedFoodInfo == null) context.getString(R.string.title_add_new) else context.getString(R.string.edit),
+                        text = if (existedFoodInfo == null) stringResource(R.string.title_add_new) else stringResource(R.string.edit),
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -191,7 +194,7 @@ fun InsertionDialog(
                                     },
                                     isError = isNameInputError,
                                     maxLines = 1,
-                                    label = { Text(text = context.getString(R.string.title_name)) },
+                                    label = { Text(text = stringResource(R.string.title_name)) },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .focusRequester(focusRequester),
@@ -215,7 +218,7 @@ fun InsertionDialog(
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = context.getString(R.string.title_production_date),
+                                        text = stringResource(R.string.title_production_date),
                                         fontSize = 10.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
@@ -240,7 +243,7 @@ fun InsertionDialog(
 
                                     Spacer(modifier = Modifier.weight(1f))
                                     Text(
-                                        text = context.getString(R.string.title_expiration_date),
+                                        text = stringResource(R.string.title_expiration_date),
                                         fontSize = 10.sp
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
@@ -316,7 +319,7 @@ fun InsertionDialog(
                                                     }
                                                 },
                                             ) {
-                                                Text(context.getString(R.string.ok))
+                                                Text(stringResource(R.string.ok))
                                             }
                                         },
                                         dismissButton = {
@@ -325,7 +328,7 @@ fun InsertionDialog(
                                                     openDialog = false
                                                 }
                                             ) {
-                                                Text(context.getString(R.string.cancel))
+                                                Text(stringResource(R.string.cancel))
                                             }
                                         },
                                         properties = DialogProperties(
@@ -356,11 +359,11 @@ fun InsertionDialog(
                                     value = if (isExpireDate) {
                                         "####"
                                     } else {
-                                        "$shelfLife ${context.getString(R.string.shelf_life_day)}"
+                                        "$shelfLife ${stringResource(R.string.shelf_life_day)}"
                                     },
                                     maxLines = 1,
                                     onValueChange = { },
-                                    label = { Text(text = context.getString(R.string.title_shelf_life)) },
+                                    label = { Text(text = stringResource(R.string.title_shelf_life)) },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(
                                             expanded = shelfLifeExpanded
@@ -389,7 +392,7 @@ fun InsertionDialog(
                                             text = {
                                                 Text(
                                                     text = "${selectionOption.life} ${
-                                                        context.getString(
+                                                        stringResource(
                                                             R.string.shelf_life_day
                                                         )
                                                     }"
@@ -415,7 +418,7 @@ fun InsertionDialog(
                                     value = foodType,
                                     maxLines = 1,
                                     onValueChange = { },
-                                    label = { Text(text = context.getString(R.string.title_type)) },
+                                    label = { Text(text = stringResource(R.string.title_type)) },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(
                                             expanded = typeSelectionExpanded
@@ -465,7 +468,7 @@ fun InsertionDialog(
                                     .fillMaxWidth()
                                     .aspectRatio(3f / 4f)
                             ) {
-                                FoodPreview(uuid, context, cameraState, mutableCameraStatus)
+                                FoodPreview(uuid, context, cameraSession, mutableCameraStatus)
                             }
 
                             NumberPickerWithButtons(
@@ -513,7 +516,7 @@ fun InsertionDialog(
                                     EffectUtil.playVibrationEffect(context)
                                     val file = File(AppRepo.getPicturePath(uuid))
                                     dialogViewModel.uuid.value = uuid
-                                    cameraState.takePicture(file) {
+                                    cameraSession.controller.takePicture(file) {
                                         cameraStatus = CameraStatus.IMAGE_READY
                                     }
                                 }
@@ -552,7 +555,7 @@ fun InsertionDialog(
                             )
                         },
                         title = {
-                            Text(text = context.getString(R.string.tips_title))
+                            Text(text = stringResource(R.string.tips_title))
                         },
                         text = {
                             OutlinedTextField(

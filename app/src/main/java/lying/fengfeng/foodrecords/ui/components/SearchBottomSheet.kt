@@ -53,7 +53,7 @@ fun SearchBottomSheet(
         sheetState = sheetState
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier.padding(horizontal = 5.dp)
         ) {
             OutlinedTextField(value = inputText,
                 onValueChange = {
