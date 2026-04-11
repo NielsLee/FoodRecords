@@ -48,12 +48,12 @@ fun FoodRecordsTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when (themeOption) {
-        ThemeOptions.RED -> rememberDynamicColorScheme(Color.Red, darkTheme)
+        ThemeOptions.WHITE -> rememberDynamicColorScheme(Color.White, darkTheme)
         ThemeOptions.YELLOW -> rememberDynamicColorScheme(Color.Yellow, darkTheme)
         ThemeOptions.GREEN -> rememberDynamicColorScheme(Color.Green, darkTheme)
         ThemeOptions.BLUE -> rememberDynamicColorScheme(Color.Blue, darkTheme)
         ThemeOptions.MAGENTA -> rememberDynamicColorScheme(Color.Magenta, darkTheme)
-        ThemeOptions.WHITE -> rememberDynamicColorScheme(Color.White, darkTheme, style = PaletteStyle.Fidelity)
+        ThemeOptions.RED -> rememberDynamicColorScheme(Color.Red, darkTheme)
         else -> when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
@@ -83,12 +83,12 @@ fun FoodRecordsTheme(
 
 enum class ThemeOptions(val int: Int) {
     DYNAMIC(0),
-    RED(1),
+    WHITE(1),
     YELLOW(2),
     GREEN(3),
     BLUE(4),
     MAGENTA(5),
-    WHITE(6);
+    RED(6);
 
     companion object {
         fun fromInt(value: Int): ThemeOptions {

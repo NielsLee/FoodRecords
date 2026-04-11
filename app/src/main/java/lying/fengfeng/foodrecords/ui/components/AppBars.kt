@@ -67,7 +67,7 @@ fun FoodRecordsTopBar(title: String) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
         title = {
             Text(text = title)
@@ -79,11 +79,12 @@ fun FoodRecordsTopBar(title: String) {
                 Icon(
                     imageVector = Icons.Filled.CalendarMonth,
                     contentDescription = null,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                Text(text = currentDate)
+                Text(text = currentDate, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 IconButton(onClick = { isDropdownMenuExpanded = !isDropdownMenuExpanded }) {
-                    Icon(imageVector = Icons.Outlined.ImportExport, contentDescription = null)
+                    Icon(imageVector = Icons.Outlined.ImportExport, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
                 DropdownMenu(
                     expanded = isDropdownMenuExpanded,

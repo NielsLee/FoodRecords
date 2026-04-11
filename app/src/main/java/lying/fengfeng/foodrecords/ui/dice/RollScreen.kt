@@ -79,7 +79,7 @@ fun RollScreen() {
                 text = context.getString(R.string.roll_title_primary),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onSurface,
                 lineHeight = 32.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 16.dp)
@@ -88,7 +88,7 @@ fun RollScreen() {
                 text = context.getString(R.string.roll_title_secondary),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onSurface,
                 lineHeight = 24.sp,
                 textAlign = TextAlign.Center
             )
@@ -145,7 +145,7 @@ fun RollScreen() {
                 .background(MaterialTheme.colorScheme.primaryContainer),
             enabled = !isFoodInfoEmpty
         ) {
-            Icon(painter = painterResource(id = R.drawable.dice5_svg), null)
+            Icon(painter = painterResource(id = R.drawable.dice5_svg), null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
         }
     }
 }
@@ -160,7 +160,7 @@ fun EmptyView() {
             text = stringResource(id = R.string.dice_view_empty_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
     }

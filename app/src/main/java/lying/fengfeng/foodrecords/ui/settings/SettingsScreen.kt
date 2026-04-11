@@ -228,12 +228,14 @@ fun SettingsScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.food_drumstick_svg),
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.food_type_option),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -246,7 +248,8 @@ fun SettingsScreen(
                             .size(iconSize)
                             .clickable {
                                 foodTypeDialogShown = true
-                            }
+                            },
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -258,7 +261,8 @@ fun SettingsScreen(
                         .rotate(if (foodTypeOptionExpanded) 180f else 0f)
                         .clickable {
                             foodTypeOptionExpanded = !foodTypeOptionExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -290,7 +294,8 @@ fun SettingsScreen(
                                     label = {
                                         Text(
                                             text = foodTypeInfo.type,
-                                            fontSize = subTitleFontSize
+                                            fontSize = subTitleFontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                         if (selected) {
                                             Icon(
@@ -316,12 +321,13 @@ fun SettingsScreen(
                                                             }
                                                         }
                                                     }
-                                                }
+                                                },
+                                                tint = MaterialTheme.colorScheme.onSurface
                                             )
                                         }
                                     },
                                     colors = InputChipDefaults.inputChipColors(
-                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer
                                     ),
                                     border = null
                                 )
@@ -345,12 +351,14 @@ fun SettingsScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.calendar_range_svg),
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.shelf_life_option),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(paddingValues = titlePadding)
+                    modifier = Modifier.padding(paddingValues = titlePadding),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -363,7 +371,8 @@ fun SettingsScreen(
                             .size(iconSize)
                             .clickable {
                                 shelfLifeDialogShown = true
-                            }
+                            },
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -375,7 +384,8 @@ fun SettingsScreen(
                         .rotate(if (shelfOptionExpanded) 180f else 0f)
                         .clickable {
                             shelfOptionExpanded = !shelfOptionExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -402,7 +412,8 @@ fun SettingsScreen(
                                     label = {
                                         Text(
                                             text = shelfLifeInfo.life + stringResource(id = R.string.shelf_life_day),
-                                            fontSize = subTitleFontSize
+                                            fontSize = subTitleFontSize,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                         if (selected) {
                                             Icon(
@@ -432,13 +443,14 @@ fun SettingsScreen(
                                                             }
                                                         }
                                                     }
-                                                }
+                                                },
+                                                tint = MaterialTheme.colorScheme.onSurface
                                             )
                                         }
                                     },
                                     onClick = { selected = !selected },
                                     colors = InputChipDefaults.inputChipColors(
-                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer
                                     ),
                                     border = null,
                                 )
@@ -462,12 +474,14 @@ fun SettingsScreen(
                 Icon(
                     imageVector = Icons.Filled.Numbers,
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.date_format_option),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -480,7 +494,8 @@ fun SettingsScreen(
                         .rotate(if (dateFormatOptionExpanded) 180f else 0f)
                         .clickable {
                             dateFormatOptionExpanded = !dateFormatOptionExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -514,7 +529,8 @@ fun SettingsScreen(
                                     text = dateFormatList[index].uppercase(Locale.getDefault()),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(8.dp),
-                                    fontSize = subTitleFontSize
+                                    fontSize = subTitleFontSize,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -543,13 +559,15 @@ fun SettingsScreen(
                 Icon(
                     imageVector = Icons.Filled.Notifications,
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = stringResource(id = R.string.notification_option),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(paddingValues = titlePadding)
+                    modifier = Modifier.padding(paddingValues = titlePadding),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -562,7 +580,8 @@ fun SettingsScreen(
                         .rotate(if (notificationOptionExpanded) 180f else 0f)
                         .clickable {
                             notificationOptionExpanded = !notificationOptionExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -576,7 +595,8 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(id = R.string.enable_notification),
                             fontSize = titleFontSize,
-                            modifier = Modifier.padding(paddingValues = titlePadding)
+                            modifier = Modifier.padding(paddingValues = titlePadding),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -602,7 +622,8 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(id = R.string.days_of_advance_notice),
                             fontSize = titleFontSize,
-                            modifier = Modifier.padding(paddingValues = titlePadding)
+                            modifier = Modifier.padding(paddingValues = titlePadding),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -631,13 +652,15 @@ fun SettingsScreen(
                 Icon(
                     imageVector = Icons.Filled.ColorLens,
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = stringResource(id = R.string.theme_option),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(paddingValues = titlePadding)
+                    modifier = Modifier.padding(paddingValues = titlePadding),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Badge(modifier = Modifier.padding(start = 8.dp), containerColor = if (isNewUITried) Color.Transparent else Color.Red)
@@ -652,7 +675,8 @@ fun SettingsScreen(
                         .rotate(if (themeOptionExpanded) 180f else 0f)
                         .clickable {
                             themeOptionExpanded = !themeOptionExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -664,7 +688,7 @@ fun SettingsScreen(
                         modifier = Modifier.padding(12.dp)
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
-                        Text(text = stringResource(id = R.string.use_new_ui))
+                        Text(text = stringResource(id = R.string.use_new_ui), color = MaterialTheme.colorScheme.onSurface)
 
                         Spacer(modifier = Modifier.weight(1f))
                         Switch(
@@ -680,7 +704,7 @@ fun SettingsScreen(
                         modifier = Modifier.padding(horizontal = 12.dp)
                     ) {
                         Spacer(modifier = Modifier.size(iconSize))
-                        Text(text = stringResource(id = R.string.extra_column_layout))
+                        Text(text = stringResource(id = R.string.extra_column_layout), color = MaterialTheme.colorScheme.onSurface)
                         Badge(
                             modifier = Modifier.padding(start = 8.dp)
                         ) { Text(text = stringResource(id = R.string.badge_new)) }
@@ -724,12 +748,12 @@ fun SettingsScreen(
                                 ) {
                                     Image(
                                         painter = when(index) {
-                                            1 -> ColorPainter(Color.Red)
+                                            1 -> ColorPainter(Color.White)
                                             2 -> ColorPainter(Color.Yellow)
                                             3 -> ColorPainter(Color.Green)
                                             4 -> ColorPainter(Color.Blue)
                                             5 -> ColorPainter(Color.Magenta)
-                                            6 -> ColorPainter(Color.White)
+                                            6 -> ColorPainter(Color.Red)
                                             else -> ColorPainter(Color.Transparent)
                                         },
                                         contentDescription = null,
@@ -757,13 +781,15 @@ fun SettingsScreen(
                 Icon(
                     imageVector = Icons.Filled.Info,
                     contentDescription = null,
-                    modifier = Modifier.size(iconSize)
+                    modifier = Modifier.size(iconSize),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = stringResource(id = R.string.about_app),
                     fontSize = titleFontSize,
-                    modifier = Modifier.padding(paddingValues = titlePadding)
+                    modifier = Modifier.padding(paddingValues = titlePadding),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -776,7 +802,8 @@ fun SettingsScreen(
                         .rotate(if (infoExpanded) 180f else 0f)
                         .clickable {
                             infoExpanded = !infoExpanded
-                        }
+                        },
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -790,7 +817,8 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(id = R.string.source_code_repo),
                             fontSize = titleFontSize,
-                            modifier = Modifier.padding(paddingValues = titlePadding)
+                            modifier = Modifier.padding(paddingValues = titlePadding),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -809,7 +837,8 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(id = R.string.contact_author),
                             fontSize = titleFontSize,
-                            modifier = Modifier.padding(paddingValues = titlePadding)
+                            modifier = Modifier.padding(paddingValues = titlePadding),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -843,7 +872,8 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(id = R.string.buy_author_coffee),
                             fontSize = titleFontSize,
-                            modifier = Modifier.padding(paddingValues = titlePadding)
+                            modifier = Modifier.padding(paddingValues = titlePadding),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(modifier = Modifier.weight(1f))

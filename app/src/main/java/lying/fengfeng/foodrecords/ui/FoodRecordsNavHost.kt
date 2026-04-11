@@ -38,7 +38,9 @@ fun FoodRecordsNavHost(
         navController = navController,
         startDestination = "home",
         modifier = modifier.background(
-            Brush.verticalGradient(Pair(0.1f, MaterialTheme.colorScheme.primaryContainer), Pair(0.9f, Color.Transparent))
+            Brush.verticalGradient(listOf(
+                MaterialTheme.colorScheme.primaryContainer, Color.Transparent
+            ))
         ),
         enterTransition = {
             slideIntoContainer(getSlideDirection(initialState, targetState), spring())

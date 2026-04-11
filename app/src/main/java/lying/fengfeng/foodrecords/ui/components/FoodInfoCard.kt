@@ -39,6 +39,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -141,7 +142,8 @@ fun FoodInfoCard(
                         .padding(4.dp)
                         .horizontalScroll(scrollState),
                     style = TextStyle(
-                        fontSize = 24.sp
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 )
             }
@@ -201,11 +203,12 @@ fun FoodInfoCard(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
-                    Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
                     Text(
                         text = foodInfo.amount.toString(),
                         fontStyle = FontStyle.Italic,
-                        modifier = Modifier.horizontalScroll(l1ScrollState)
+                        modifier = Modifier.horizontalScroll(l1ScrollState),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     // 把旧版卡片的设置按钮放到数量这一行,这样不容易被挤走
@@ -318,22 +321,24 @@ fun FoodInfoCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Filled.TypeSpecimen, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.TypeSpecimen, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
                     Text(
                         text = foodInfo.foodType,
                         fontStyle = FontStyle.Italic,
-                        modifier = Modifier.horizontalScroll(l2ScrollState)
+                        modifier = Modifier.horizontalScroll(l2ScrollState),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.DeleteForever, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
                     Text(
                         text = DateUtil.getExpirationDate(foodInfo),
                         fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.horizontalScroll(l3ScrollState)
+                        modifier = Modifier.horizontalScroll(l3ScrollState),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -406,8 +411,8 @@ fun RemainingDaysWindow(
     foodInfo: FoodInfo,
     isHorizontal: Boolean = false
 ) {
-    val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
     val context = LocalContext.current
+    val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
     Box(
         modifier = Modifier
             .wrapContentHeight()
