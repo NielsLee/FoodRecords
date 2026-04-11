@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessAlarm
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Edit
@@ -96,9 +97,13 @@ fun FoodInfoCardNew(
     val iconButtonSize = 24.dp
     val numberFontSize = 24.sp
 
+    val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
+    val expiredColor = if (isExpired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+    val expiredTextColor = if (isExpired) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary
+
     Card(
         modifier = modifier
-            .padding(4.dp)
+            .padding(2.dp)
             .fillMaxWidth(1f / screenParams.listColumnNum),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -245,10 +250,10 @@ fun FoodInfoCardNew(
             // content row
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
                 ),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary)
             ) {
                 // for picture, shelf life, amount
                 Card(
@@ -274,19 +279,18 @@ fun FoodInfoCardNew(
                                     brush = Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
-                                            MaterialTheme.colorScheme.primaryContainer.copy(0.7f),
-                                            MaterialTheme.colorScheme.primaryContainer.copy(0.8f)
+                                            MaterialTheme.colorScheme.secondary.copy(0.7f),
+                                            MaterialTheme.colorScheme.secondary.copy(0.9f),
+                                            MaterialTheme.colorScheme.secondary.copy(1f)
                                         ),
                                     )
                                 )
                         ) {
                             Row {
                                 // for shelf life
-                                val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp, top = 4.dp)
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.Bottom
@@ -299,12 +303,13 @@ fun FoodInfoCardNew(
                                                     it.toString()
                                                 }
                                             },
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            color = if (isExpired) expiredColor else expiredTextColor,
                                             fontSize = numberFontSize
                                         )
                                         Text(
                                             text = stringResource(id = R.string.shelf_life_day),
-                                            fontSize = 12.sp
+                                            fontSize = 12.sp,
+                                            color = if (isExpired) expiredColor else expiredTextColor,
                                         )
                                     }
 
@@ -314,9 +319,7 @@ fun FoodInfoCardNew(
                                             text =
                                             if (isExpired) stringResource(id = R.string.expired)
                                             else stringResource(id = R.string.valid_in),
-                                            color =
-                                            if (isExpired) MaterialTheme.colorScheme.onError
-                                            else MaterialTheme.colorScheme.onPrimary,
+                                            color = expiredTextColor,
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(16.dp))
                                                 .background(
@@ -335,7 +338,7 @@ fun FoodInfoCardNew(
                                 // for amount
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(end = 8.dp, bottom = 4.dp, top = 4.dp)
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.Bottom
@@ -345,12 +348,13 @@ fun FoodInfoCardNew(
                                         ) {
                                             Text(
                                                 text = "x",
-                                                fontSize = 12.sp
-                                            )
+                                                fontSize = 12.sp,
+                                                color = if (isExpired) expiredColor else expiredTextColor,
+                                                )
                                         }
                                             Text(
                                                 text = foodInfo.amount.toString(),
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                color = if (isExpired) expiredColor else expiredTextColor,
                                                 fontSize = numberFontSize
                                             )
                                         }
@@ -378,14 +382,16 @@ fun FoodInfoCardNew(
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        imageVector = Icons.Filled.DeleteForever,
+                        imageVector = if (isExpired) Icons.Filled.DeleteForever else Icons.Filled.AccessAlarm,
                         modifier = Modifier.size(18.dp),
-                        contentDescription = "Expiration date icon"
+                        contentDescription = "Expiration date icon",
+                        tint = expiredTextColor
                     )
                     Text(
                         text = DateUtil.getExpirationDate(foodInfo),
                         fontSize = 15.sp,
-                        modifier = Modifier.horizontalScroll(expirationDateScrollState)
+                        modifier = Modifier.horizontalScroll(expirationDateScrollState),
+                        color = expiredTextColor
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }

@@ -438,26 +438,30 @@ fun RemainingDaysWindow(
                     color = remainingTitleColor,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp
+                    fontSize = 10.sp
                 )
             }
 
-            Text(
-                text = remainingDays.let {
-                    if (it > 99) {
-                        "99+"
-                    } else {
-                        it.toString()
-                    }
-                },
-                modifier = Modifier,
-                style = TextStyle(
-                    fontSize = fontSize,
-                    color = remainingTitleColor
+            Row(
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    text = remainingDays.let {
+                        if (it > 99) {
+                            "99+"
+                        } else {
+                            it.toString()
+                        }
+                    },
+                    modifier = Modifier,
+                    style = TextStyle(
+                        fontSize = fontSize,
+                        color = remainingTitleColor
+                    )
                 )
-            )
 
-            Text(text = context.getString(R.string.shelf_life_day))
+                Text(text = context.getString(R.string.shelf_life_day))
+            }
         }
 
         if (isHorizontal) {
