@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -247,9 +248,12 @@ fun FoodInfoCardNew(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 // for picture, shelf life, amount
-                Card {
+                Card(
+                    shape = RoundedCornerShape(0.dp)
+                ) {
                     Box(
                         modifier = Modifier,
                         contentAlignment = Alignment.Center
