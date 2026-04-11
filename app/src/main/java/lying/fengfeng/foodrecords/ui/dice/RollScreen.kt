@@ -44,6 +44,7 @@ import lying.fengfeng.foodrecords.ui.FoodRecordsAppViewModel
 import lying.fengfeng.foodrecords.ui.LocalActivityContext
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCard
 import lying.fengfeng.foodrecords.ui.components.FoodInfoCardNew
+import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import kotlin.random.Random
 
@@ -110,12 +111,16 @@ fun RollScreen() {
 
         IconButton(
             onClick = {
-                if (foodInfoList.size == 1) {
+                val notExpiredFoodList = foodInfoList.filterNot { foodInfo ->
+                    val (_, isExpired) = DateUtil.getRemainingDays(foodInfo)
+                    return@filterNot isExpired
+                }
+                if (notExpiredFoodList.size == 1) {
                     Toast.makeText(context, context.getString(R.string.only_one), Toast.LENGTH_SHORT).show()
                     return@IconButton
                 }
                 coroutineScope.launch {
-                    val pageList = selectRandomElements(foodInfoList, 13)
+                    val pageList = selectRandomElements(notExpiredFoodList, 13)
                     val smoothList = generateDeceleratedSequence(
                         100,
                         800,
@@ -125,7 +130,7 @@ fun RollScreen() {
                     for ((pageIndex, pageValue) in pageList.withIndex()) {
                         delay(smoothList[pageIndex].toLong())
 
-                        val indexOfCard = foodInfoList.indexOf(pageValue)
+                        val indexOfCard = notExpiredFoodList.indexOf(pageValue)
                         pagerState.scrollToPage(
                             page = indexOfCard
                         )
