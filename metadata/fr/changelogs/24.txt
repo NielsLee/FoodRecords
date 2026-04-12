@@ -1,0 +1,2 @@
+1. Ajusté le style de la carte
+2. Ajouté quelques petites animations

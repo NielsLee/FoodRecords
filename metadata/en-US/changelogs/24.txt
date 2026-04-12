@@ -1,0 +1,2 @@
+1. Adjusted card style
+2. Added some small animations

@@ -1,0 +1,2 @@
+1. Ajustado o estilo do cartão
+2. Adicionadas algumas pequenas animações
