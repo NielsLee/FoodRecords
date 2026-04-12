@@ -29,7 +29,7 @@
     <string name="type_cereal">Cereais</string>
     <string name="type_can">Alimentos Enlatados</string>
     <string name="type_condiment">Condimentos</string>
-    <string name="dice_view_empty_title">Ainda não há nenhum registro de alimentos~</string>
+    <string name="dice_view_empty_title">"Não há nenhum alimento não vencido.  "</string>
     <string name="thanks_when_email">Obrigado por compartilhar suas opiniões e sugestões sobre este aplicativo</string>
     <string name="no_email_app">Nenhum aplicativo de email encontrado</string>
     <string name="confirm">Confirmar</string>

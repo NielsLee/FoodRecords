@@ -68,8 +68,13 @@ fun RollScreen() {
         val pagerState = rememberPagerState(pageCount = {
             foodInfoList.size
         })
-        var isFoodInfoEmpty by remember { mutableStateOf(foodInfoList.isEmpty()) }
         val isNewUI by remember { appViewModel.isNewUI }
+
+        val notExpiredFoodList = foodInfoList.filterNot { foodInfo ->
+            val (_, isExpired) = DateUtil.getRemainingDays(foodInfo)
+            isExpired
+        }
+        var isNotExpiredFoodInfoEmpty by remember { mutableStateOf(notExpiredFoodList.isEmpty()) }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,23 +103,19 @@ fun RollScreen() {
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            LaunchedEffect(key1 = foodInfoList.size) {
-                isFoodInfoEmpty = foodInfoList.isEmpty()
+            LaunchedEffect(key1 = notExpiredFoodList.size) {
+                isNotExpiredFoodInfoEmpty = notExpiredFoodList.isEmpty()
             }
 
-            if (isFoodInfoEmpty) {
+            if (isNotExpiredFoodInfoEmpty) {
                 EmptyView()
             } else {
-                DiceView(cardDataList = foodInfoList, pagerState = pagerState, isNewUI = isNewUI)
+                DiceView(cardDataList = notExpiredFoodList, pagerState = pagerState, isNewUI = isNewUI)
             }
         }
 
         IconButton(
             onClick = {
-                val notExpiredFoodList = foodInfoList.filterNot { foodInfo ->
-                    val (_, isExpired) = DateUtil.getRemainingDays(foodInfo)
-                    return@filterNot isExpired
-                }
                 if (notExpiredFoodList.size == 1) {
                     Toast.makeText(context, context.getString(R.string.only_one), Toast.LENGTH_SHORT).show()
                     return@IconButton
@@ -148,7 +149,7 @@ fun RollScreen() {
                 .padding(32.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),
-            enabled = !isFoodInfoEmpty
+            enabled = !isNotExpiredFoodInfoEmpty
         ) {
             Icon(painter = painterResource(id = R.drawable.dice5_svg), null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
         }

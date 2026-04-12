@@ -29,7 +29,7 @@
     <string name="type_cereal">Céréales</string>
     <string name="type_can">Conserves</string>
     <string name="type_condiment">Condiment</string>
-    <string name="dice_view_empty_title">Euh… Aucun enregistrement d\'aliments pour le moment.</string>
+    <string name="dice_view_empty_title">"Il n'y a aucun aliment non périmé.  "</string>
     <string name="thanks_when_email">Merci de partager vos avis et suggestions sur cette application</string>
     <string name="no_email_app">Aucune application de messagerie trouvée</string>
     <string name="confirm">Confirmer</string>
