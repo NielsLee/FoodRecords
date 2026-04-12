@@ -39,7 +39,7 @@ fun FoodRecordsNavHost(
         startDestination = "home",
         modifier = modifier.background(
             Brush.verticalGradient(listOf(
-                MaterialTheme.colorScheme.primaryContainer, Color.Transparent
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f), Color.Transparent
             ))
         ),
         enterTransition = {

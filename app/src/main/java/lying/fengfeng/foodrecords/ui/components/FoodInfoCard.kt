@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.TypeSpecimen
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -102,6 +103,7 @@ fun FoodInfoCard(
     var isEditing by remember { mutableStateOf(false) }
     var isAmountAnimating by remember { mutableStateOf(false) }
 
+    val (remainingDays, isExpired) = DateUtil.getRemainingDays(foodInfo)
 
     val screenParams = LocalScreenParams.current
 
@@ -112,7 +114,10 @@ fun FoodInfoCard(
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(12.dp),
-            )
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isExpired) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.secondaryContainer,
+        )
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp),

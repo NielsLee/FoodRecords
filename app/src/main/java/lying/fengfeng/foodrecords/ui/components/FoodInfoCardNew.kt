@@ -109,7 +109,10 @@ fun FoodInfoCardNew(
         modifier = modifier
             .padding(2.dp)
             .fillMaxWidth(1f / screenParams.listColumnNum),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isExpired) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.secondaryContainer,
+        )
     ) {
 
         val foodNameScrollState = rememberScrollState()
@@ -117,7 +120,10 @@ fun FoodInfoCardNew(
 
         // inner card for padding
         Card(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            )
         ) {
             // Title Row
             Box(
@@ -412,12 +418,6 @@ fun FoodInfoCardNew(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = if (isExpired) Icons.Filled.DeleteForever else Icons.Filled.AccessAlarm,
-                        modifier = Modifier.size(18.dp),
-                        contentDescription = "Expiration date icon",
-                        tint = expiredTextColor
-                    )
                     Text(
                         text = DateUtil.getExpirationDate(foodInfo),
                         fontSize = 15.sp,
