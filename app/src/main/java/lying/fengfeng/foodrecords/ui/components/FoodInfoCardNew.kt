@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -93,6 +96,7 @@ fun FoodInfoCardNew(
     val coroutineScope = rememberCoroutineScope()
 
     var isEditing by remember { mutableStateOf(false) }
+    var isAmountAnimating by remember { mutableStateOf(false) }
 
     val iconButtonSize = 24.dp
     val numberFontSize = 24.sp
@@ -180,6 +184,9 @@ fun FoodInfoCardNew(
                                     if (foodInfo.amount > 1) {
                                         foodInfo.amount -= 1
                                         appViewModel.updateFoodInfo(foodInfo)
+                                        launch(Dispatchers.Main) {
+                                            isAmountAnimating = true
+                                        }
                                     } else {
                                         deleteFood(appViewModel, foodInfo)
                                     }
@@ -203,6 +210,9 @@ fun FoodInfoCardNew(
                                 coroutineScope.launch(Dispatchers.IO) {
                                     foodInfo.amount += 1
                                     appViewModel.updateFoodInfo(foodInfo)
+                                    launch(Dispatchers.Main) {
+                                        isAmountAnimating = true
+                                    }
                                 }
                             }
                         )
@@ -343,6 +353,26 @@ fun FoodInfoCardNew(
                                     Row(
                                         verticalAlignment = Alignment.Bottom
                                     ) {
+                                        val shakeAnimation = animateFloatAsState(
+                                            targetValue = if (isAmountAnimating) 1f else 0f,
+                                            animationSpec = keyframes {
+                                                0f at 0
+                                                -5f at 100
+                                                5f at 200
+                                                -5f at 300
+                                                5f at 400
+                                                -5f at 500
+                                                5f at 600
+                                                -5f at 700
+                                                5f at 800
+                                                0f at 1000
+                                            },
+                                            finishedListener = { 
+                                                if (isAmountAnimating) {
+                                                    isAmountAnimating = false
+                                                }
+                                            }
+                                        )
                                         Row(
                                             verticalAlignment = Alignment.Bottom
                                         ) {
@@ -354,6 +384,7 @@ fun FoodInfoCardNew(
                                         }
                                             Text(
                                                 text = foodInfo.amount.toString(),
+                                                modifier = Modifier.offset(x = shakeAnimation.value.dp),
                                                 color = if (isExpired) expiredColor else expiredTextColor,
                                                 fontSize = numberFontSize
                                             )

@@ -2,6 +2,8 @@ package lying.fengfeng.foodrecords.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -19,8 +21,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -78,7 +82,6 @@ import lying.fengfeng.foodrecords.utils.DateUtil
 import lying.fengfeng.foodrecords.utils.EffectUtil
 import lying.fengfeng.foodrecords.utils.ImageUtil
 import java.io.File
-import kotlin.math.absoluteValue
 
 @Composable
 fun FoodInfoCard(
@@ -97,6 +100,7 @@ fun FoodInfoCard(
     val coroutineScope = rememberCoroutineScope()
 
     var isEditing by remember { mutableStateOf(false) }
+    var isAmountAnimating by remember { mutableStateOf(false) }
 
 
     val screenParams = LocalScreenParams.current
@@ -204,10 +208,33 @@ fun FoodInfoCard(
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
                     Icon(imageVector = Icons.Filled.ShoppingCartCheckout, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                    val shakeAnimation = animateFloatAsState(
+                        targetValue = if (isAmountAnimating) 1f else 0f,
+                        animationSpec = keyframes {
+                            0f at 0
+                            -5f at 100
+                            5f at 200
+                            -5f at 300
+                            5f at 400
+                            -5f at 500
+                            5f at 600
+                            -5f at 700
+                            5f at 800
+                            0f at 1000
+                        },
+                        finishedListener = { 
+                            if (isAmountAnimating) {
+                                isAmountAnimating = false
+                            }
+                        }
+                    )
                     Text(
                         text = foodInfo.amount.toString(),
                         fontStyle = FontStyle.Italic,
-                        modifier = Modifier.horizontalScroll(l1ScrollState),
+                        modifier = Modifier
+                            .width(24.dp)
+                            .horizontalScroll(l1ScrollState)
+                            .offset(x = shakeAnimation.value.dp),
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
@@ -245,17 +272,20 @@ fun FoodInfoCard(
                                     Text(text = context.getString(R.string.eat))
                                 },
                                 onClick = {
-                                    EffectUtil.playVibrationEffect(context)
-                                    dropDownMenuExpanded = false
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        if (foodInfo.amount > 1) {
-                                            foodInfo.amount -= 1
-                                            appViewModel.updateFoodInfo(foodInfo)
-                                        } else {
-                                            deleteFood(appViewModel, foodInfo)
+                                EffectUtil.playVibrationEffect(context)
+                                dropDownMenuExpanded = false
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    if (foodInfo.amount > 1) {
+                                        foodInfo.amount -= 1
+                                        appViewModel.updateFoodInfo(foodInfo)
+                                        launch(Dispatchers.Main) {
+                                            isAmountAnimating = true
                                         }
+                                    } else {
+                                        deleteFood(appViewModel, foodInfo)
                                     }
                                 }
+                            }
                             )
 
                             DropdownMenuItem(
@@ -269,13 +299,16 @@ fun FoodInfoCard(
                                     Text(text = context.getString(R.string.supplement))
                                 },
                                 onClick = {
-                                    EffectUtil.playVibrationEffect(context)
-                                    dropDownMenuExpanded = false
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        foodInfo.amount += 1
-                                        appViewModel.updateFoodInfo(foodInfo)
+                                EffectUtil.playVibrationEffect(context)
+                                dropDownMenuExpanded = false
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    foodInfo.amount += 1
+                                    appViewModel.updateFoodInfo(foodInfo)
+                                    launch(Dispatchers.Main) {
+                                        isAmountAnimating = true
                                     }
                                 }
+                            }
                             )
 
                             DropdownMenuItem(
